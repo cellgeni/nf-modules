@@ -1,4 +1,4 @@
-process IMAGING_GENERATECOMPANION {
+process IMAGINGGENERATECOMPANION {
     tag "$meta.id"
     label 'process_single'
 

@@ -1,4 +1,4 @@
-process IMAGING_PREPROCESS {
+process IMAGINGPREPROCESS {
     tag "$meta.id"
     label 'process_medium'
 

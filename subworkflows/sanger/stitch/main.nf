@@ -1,5 +1,5 @@
-include { IMAGING_GENERATECOMPANION } from "../modules/sanger/imaging/generatecompanion"
-include { IMAGING_PREPROCESS } from "../modules/sanger/imaging/preprocess"
+include { IMAGINGGENERATECOMPANION } from "../modules/sanger/imaging/generatecompanion"
+include { IMAGINGPREPROCESS } from "../modules/sanger/imaging/preprocess"
 
 
 workflow STITCH {
@@ -11,18 +11,18 @@ workflow STITCH {
     main:
     ch_versions = Channel.empty()
 
-    IMAGING_GENERATECOMPANION(experiments_ch)
-    ch_versions = ch_versions.mix(IMAGING_GENERATECOMPANION.out.versions.first())
+    IMAGINGGENERATECOMPANION(experiments_ch)
+    ch_versions = ch_versions.mix(IMAGINGGENERATECOMPANION.out.versions.first())
 
-    tiles = IMAGING_GENERATECOMPANION.out.csv.splitCsv(header: true, strip:true, sep: ",").map {row ->
+    tiles = IMAGINGGENERATECOMPANION.out.csv.splitCsv(header: true, strip:true, sep: ",").map {row ->
         [row[0], row[1].index, file(row[1].root_xml), row[1].image_id]
     }
-    IMAGING_PREPROCESS(tiles, psf_folder)
-    ch_versions = ch_versions.mix(IMAGING_PREPROCESS.out.versions.first())
+    IMAGINGPREPROCESS(tiles, psf_folder)
+    ch_versions = ch_versions.mix(IMAGINGPREPROCESS.out.versions.first())
 
     emit:
-    tiles = IMAGING_PREPROCESS.out.fovs
-    companion = IMAGING_GENERATECOMPANION.out.companion
+    tiles = IMAGINGPREPROCESS.out.fovs
+    companion = IMAGINGGENERATECOMPANION.out.companion
 
     versions = ch_versions                     // channel: [ versions.yml ]
 }
