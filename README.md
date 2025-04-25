@@ -1,5 +1,8 @@
 # nf-modules
 
+## Prerequisites
+- nf-core tools:  `module load cellgen/nf-core/3.2.0` 
+
 ## Usage
 ### List all modules
 This will show all all the modules available in the repository.
@@ -35,7 +38,7 @@ nf-core modules -g https://github.com/cellgeni/nf-modules.git list local
 ### Remove a module
 If you want to remove a module, you can do it with the following command:
 ```bash
-nf-core modules -g https://github.com/cellgeni/nf-modules.git remove <module_name>
+nf-core modules -g https://github.com/cellgeni/nf-modules.git remove <module_name>d
 ```
 
 ### List all installed subworkflows
