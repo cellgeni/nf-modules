@@ -1,5 +1,5 @@
-include { IMAGINGPREPROCESS } from "../modules/sanger/imaging/preprocess"
-include { IMAGINGGENERATECOMPANION } from "../modules/sanger/imaging/generatecompanion"
+include { IMAGINGPREPROCESS } from "../../../modules/sanger/imaging/preprocess"
+include { IMAGINGGENERATECOMPANION } from "../../../modules/sanger/imaging/generatecompanion"
 
 
 workflow STITCH {
