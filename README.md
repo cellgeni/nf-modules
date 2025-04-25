@@ -38,7 +38,7 @@ nf-core modules -g https://github.com/cellgeni/nf-modules.git list local
 ### Remove a module
 If you want to remove a module, you can do it with the following command:
 ```bash
-nf-core modules -g https://github.com/cellgeni/nf-modules.git remove <module_name>d
+nf-core modules -g https://github.com/cellgeni/nf-modules.git remove <module_name>
 ```
 
 ### List all installed subworkflows
