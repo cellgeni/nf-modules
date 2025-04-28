@@ -9,11 +9,11 @@ import pandas as pd
 import os
 
 
-def main(file_with_ome_md, tiles_csv, companion_xml):
+def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"):
     """
     Generate a companion file for a given image file.
     """
-    img = AICSImage(f"{file_with_ome_md}/Index.idx.xml")
+    img = AICSImage(f"{file_with_ome_md}/{master_file}")
     absolute_path = os.path.realpath(file_with_ome_md)
     ome_str = to_xml(img.metadata)
     df = pd.DataFrame(
