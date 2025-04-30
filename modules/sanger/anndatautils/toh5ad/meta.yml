@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "anndatautils_toh5ad"
+description: A module to convert AnnData convertable files to AnnData object and save it as .h5ad file
+keywords:
+  - AnnData
+tools:
+  - "anndatautils":
+      description: ""
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence: 
+      identifier: 
+
+input:
+    - files:
+        type: list[sample_id, file]
+        description: Input files to be converted to AnnData object. The first element of the tuple is the sample ID, and the second element is the file path.
+        pattern: 
+        ontologies:
+          - edam: ""
+    - delimiter:
+        type: string
+        description: Delimiter to be used to create obs_names in the format sample_id + delimiter + barcode
+        pattern:
+
+output:
+  - output:
+    - "*.h5ad":
+        type: file
+        description: .h5ad file containing the AnnData object
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: ""
+
+
+authors:
+  - "@claptar"
+maintainers:
+  - "@claptar"
