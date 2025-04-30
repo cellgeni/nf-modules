@@ -16,9 +16,9 @@ tools:
 
 input:
     - files:
-        type: list[sample_id, file]
+        type: list
         description: Input files to be converted to AnnData object. The first element of the tuple is the sample ID, and the second element is the file path.
-        pattern: 
+        pattern: ""
         ontologies:
           - edam: ""
     - delimiter:
