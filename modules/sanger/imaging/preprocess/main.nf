@@ -3,7 +3,7 @@ process IMAGING_PREPROCESS {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/clij2"
+    container "quay.io/cellgeni/clij2:latest"
 
     input:
     tuple val(meta), val(index), path(root_folder), val(image_id)

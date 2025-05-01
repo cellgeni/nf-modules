@@ -7,7 +7,9 @@ from aicsimageio.writers.ome_tiff_writer import OmeTiffWriter
 import numpy as np
 import tifffile as tf
 import time  # Import the time module
-from clij2fft.richardson_lucy import richardson_lucy_nc
+from clij2fft.richardson_lucy import richardson_lucy_nc, richardson_lucy
+# from cucim.skimage.restoration import richardson_lucy
+# from skimage.restoration import richardson_lucy
 from pathlib import Path
 import pyopencl as cl
 import logging
@@ -17,8 +19,33 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
-
 logger = logging.getLogger(__name__)
+
+
+def load_and_process_psf(
+        z_stack,
+        psf_file,
+        original_z_step,
+        psf_z_step=0.1
+    ):
+    """
+    Load the PSF file and process it to match the dimensions of the input stack.
+    """
+    psf = tf.imread(psf_file)
+    psf_shape = psf.shape
+    if len(psf_shape) != 3:
+        raise ValueError("PSF file must have 3 dimensions.")
+    Z = z_stack.shape[0]
+    # Get the shape of the PSF
+    if Z > psf_shape[0]:
+        raise ValueError("Z planes in the input stack is greater than the PSF Z planes.")
+    step = original_z_step // psf_z_step
+    print(step)
+    indices_to_keep = np.array([psf_shape[0]//2 + int(step) * (i - Z // 2) for i in range(Z)])
+    indices_to_keep = indices_to_keep[(indices_to_keep >= 0) & (indices_to_keep < psf_shape[0])]
+    print(indices_to_keep)
+    # Subsample the PSF to match the number of Z planes in the input stack
+    return psf[indices_to_keep, :, :]
 
 
 def main(root_folder, index, out_img_name,
@@ -45,6 +72,8 @@ def main(root_folder, index, out_img_name,
     start_time = time.time()
     cursor = start_time
     img = AICSImage(f"{root_folder}/{master_file}")
+    physical_pixel_sizes = img.physical_pixel_sizes
+    print(f"Physical pixel sizes: {physical_pixel_sizes}")
     # Print the time taken to load the image
     print(f"Time taken to load the image: {time.time() - cursor} seconds")
     cursor = time.time()
@@ -58,12 +87,15 @@ def main(root_folder, index, out_img_name,
         cz_stack = img.get_image_data("CZYX", T=t)
         for c, c_name in enumerate(img.channel_names):
             print(c_name)
-            current_psf = f"{root_folder}/{psf_folder}/{c_name}.tif"
+            current_psf = f"{psf_folder}/{c_name}.tif"
             if Path(current_psf).exists():
                 logger.info(f"PSF file found: {current_psf}")
-                psf = tf.imread(current_psf)
+                psf = load_and_process_psf(cz_stack[c], current_psf, physical_pixel_sizes.Z)
                 before_decon = time.time()
                 z_stack = richardson_lucy_nc(cz_stack[c], psf, iterations)
+                # z_stack = richardson_lucy(cz_stack[c], psf, iterations)
+                # z_stack = richardson_lucy(cp.asarray(cz_stack[c]), cp.asarray(psf), iterations, clip=False).get()
+                # z_stack = richardson_lucy(cz_stack[c], psf, iterations, filter_epsilon=0.05)
                 after_decon = time.time()
                 logger.info(f"Deconvolution time: {after_decon - before_decon} seconds")
             else:
