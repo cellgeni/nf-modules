@@ -13,10 +13,10 @@ process ANNDATAUTILS_TOH5AD {
     script:
         """
         convert_to_h5ad.py \
-            --input ${input} \
-            --sample_id ${sample_id} \
-            --delimiter ${delimiter} \
-            --output ${sample_id}.h5ad
+            --input "${input}" \
+            --sample_id "${sample_id}" \
+            --delimiter "${delimiter}" \
+            --output "${sample_id}.h5ad"
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -26,6 +26,7 @@ process ANNDATAUTILS_TOH5AD {
         """
     stub:
         """
-        touch ${sample_id}.h5ad
+        touch "${sample_id}.h5ad"
+        touch versions.yml
         """
 }
