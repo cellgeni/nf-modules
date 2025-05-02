@@ -2,12 +2,11 @@ nextflow_process {
 
     name "Test Process ANNDATAUTILS_TOH5AD"
     script "../main.nf"
-    config './nextflow.config'
     process "ANNDATAUTILS_TOH5AD"
 
     tag "modules"
     tag "modules_sanger"
-    tag "anndatautils"
+    tag "anndatautils" 
     tag "anndatautils/toh5ad"
 
     // TODO nf-core: Change the test name preferably indicating the test-data and file-format used
@@ -15,7 +14,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = ['pbmc_1k_h5', file("/lustre/scratch127/cellgen/cellgeni/aljes/nf-modules/data/anndatautils/pbmc_1k.h5")]
+                input[0] = ['pbmc_1k_h5', file(params.test_data_base + "anndatautils/pbmc_1k.h5")]
                 input[1] = "___"
                 """
             }
@@ -46,7 +45,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = ['pbmc_1k_mtx', file("/lustre/scratch127/cellgen/cellgeni/aljes/nf-modules/data/anndatautils/raw_feature_bc_matrix")]
+                input[0] = ['pbmc_1k_mtx', file(params.test_data_base + "anndatautils/raw_feature_bc_matrix")]
                 input[1] = "___"
                 """
             }
@@ -80,8 +79,8 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.fromList([
-                    ['pbmc_1k_h5', file("/lustre/scratch127/cellgen/cellgeni/aljes/nf-modules/data/anndatautils/pbmc_1k.h5")],
-                    ['pbmc_1k_mtx', file("/lustre/scratch127/cellgen/cellgeni/aljes/nf-modules/data/anndatautils/raw_feature_bc_matrix")]
+                    ['pbmc_1k_h5', file(params.test_data_base + "anndatautils/pbmc_1k.h5")],
+                    ['pbmc_1k_mtx', file(params.test_data_base + "anndatautils/raw_feature_bc_matrix")]
                 ])
                 input[1] = Channel.fromList(["___", "___"])
                 """
