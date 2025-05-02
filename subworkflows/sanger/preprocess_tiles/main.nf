@@ -1,8 +1,7 @@
 include { IMAGING_PREPROCESS } from "../../../modules/sanger/imaging/preprocess"
 include { IMAGING_GENERATECOMPANION } from "../../../modules/sanger/imaging/generatecompanion"
 
-
-workflow STITCH {
+workflow PREPROCESS_TILES {
 
     take:
     experiments_ch // channel: [ val(meta), [ imaging_experiment ] ]
@@ -26,3 +25,4 @@ workflow STITCH {
 
     versions = ch_versions                     // channel: [ versions.yml ]
 }
+
