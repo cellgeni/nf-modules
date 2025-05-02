@@ -21,7 +21,7 @@ def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"
             "image_id" : [img.metadata.images[i].id for i in np.arange(len(img.scenes))]
         }
     )
-    df["root_xml"] = absolute_path
+    df["root_folder"] = absolute_path
     df["index"] = np.arange(len(img.scenes))
 
     df.to_csv(tiles_csv, index=False)
