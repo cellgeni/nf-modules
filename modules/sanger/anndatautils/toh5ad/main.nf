@@ -8,8 +8,8 @@ process ANNDATAUTILS_TOH5AD {
         tuple val(sample_id), path(input, name: 'input/*')
         val(delimiter)
     output:
-        tuple val(sample_id), path("${sample_id}.h5ad"), emit: 'h5ad'
-        path "versions.yml", emit: 'versions'
+        tuple val(sample_id), path("${sample_id}.h5ad"), emit: h5ad
+        path "versions.yml", emit: versions
     script:
         """
         convert_to_h5ad.py \
