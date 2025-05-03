@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "anndatautils_toh5ad"
-description: A module to convert AnnData convertable files to AnnData object and save it as .h5ad file
+description: A module to convert AnnData convertible files to AnnData object and save it as .h5ad file
 keywords:
   - anndata
   - h5ad
