@@ -9,7 +9,6 @@ nextflow_process {
     tag "anndatautils" 
     tag "anndatautils/toh5ad"
 
-    // TODO nf-core: Change the test name preferably indicating the test-data and file-format used
     test("Conversion of .h5 file to .h5ad") {
         when {
             process {
