@@ -6,6 +6,28 @@ keywords:
   - anndata
   - h5ad
   - conversion
+tools:
+  - anndata:
+      description: |
+        Anndata is a Python package for handling annotated data
+        matrices in memory and on disk, positioned between pandas
+        and xarray. anndata offers a broad range of computationally
+        efficient features including, among others, sparse data support,
+        lazy operations, and a PyTorch interface.
+      homepage: https://anndata.readthedocs.io/en/stable/
+      documentation: https://anndata.readthedocs.io/en/stable/
+      doi: https://doi.org/10.21105/joss.04371
+      license: BSD-3-Clause
+  - scanpy:
+      description: |
+        Scanpy is a scalable toolkit for analyzing single-cell gene
+        expression data built jointly with anndata. It includes preprocessing,
+        visualization, clustering, trajectory inference and differential expression testing.
+        The Python-based implementation efficiently deals with datasets of more than one million cells.
+      homepage: https://scanpy.readthedocs.io/en/stable/
+      documentation: https://scanpy.readthedocs.io/en/stable/
+      doi: https://doi.org/10.1186/s13059-017-1382-0
+      license: BSD-3-Clause
 
 input:
   - - sample_id:
