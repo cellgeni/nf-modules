@@ -12,7 +12,7 @@ input:
         type: string
         description: |
           Sample ID to be used as obs_names in the AnnData object
-  - - input:
+    - input:
         type: [ "file" , "directory" ]
         description: |
           Input files to be converted to AnnData object. The first element of the tuple is the sample ID, and the second element is the file path.
@@ -22,11 +22,21 @@ input:
           Delimiter to be used to create obs_names in the format sample_id + delimiter + barcode
 
 output:
-  - output:
+  - h5ad:
+    - sample_id:
+        type: string
+        description: |
+          Sample ID that was used as obs_names in the AnnData object
     - "*.h5ad":
         type: file
         description: .h5ad file containing the AnnData object
         pattern: "*.h5ad"
+  - versions:
+    - versions.yml:
+        type: file
+        description: |
+          YML file containing the versions of the software used to create the AnnData object
+        pattern: "versions.yml"
 
 
 authors:
