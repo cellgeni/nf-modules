@@ -16,7 +16,7 @@ tools:
         lazy operations, and a PyTorch interface.
       homepage: https://anndata.readthedocs.io/en/stable/
       documentation: https://anndata.readthedocs.io/en/stable/
-      doi: https://doi.org/10.21105/joss.04371
+      doi: 10.21105/joss.04371
       license: BSD-3-Clause
   - scanpy:
       description: |
@@ -26,7 +26,7 @@ tools:
         The Python-based implementation efficiently deals with datasets of more than one million cells.
       homepage: https://scanpy.readthedocs.io/en/stable/
       documentation: https://scanpy.readthedocs.io/en/stable/
-      doi: https://doi.org/10.1186/s13059-017-1382-0
+      doi: 10.1186/s13059-017-1382-0
       license: BSD-3-Clause
 
 input:
