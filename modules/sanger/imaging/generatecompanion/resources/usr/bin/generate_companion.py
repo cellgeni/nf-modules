@@ -23,7 +23,7 @@ def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"
         for well in md.plates[0].wells:
             print(well)
             for fov in well.well_samples:
-                row = fov.dict()
+                row = fov.model_dump()
                 row['well_id'] = well.id
                 row['column'] = well.column
                 row['row'] = well.row
@@ -32,7 +32,7 @@ def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"
     else:
         # Slide format
         for fov in md.well_samples:
-            row = fov.dict()
+            row = fov.model_dump()
             row['fov_id'] = row['image_ref']['id']
             wells.append(row)
     df = pd.DataFrame(wells)
