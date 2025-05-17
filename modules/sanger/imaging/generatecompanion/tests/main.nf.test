@@ -11,31 +11,7 @@ nextflow_process {
     tag "imaging"
     tag "imaging/generatecompanion"
 
-    test("generatecompanion - hcs") {
-
-        when {
-            params {
-                module_args = "--master_file Index.xml"
-            }
-            process {
-                """
-                input[0] = [
-                    [ id:'test' ], // meta map
-                    file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
-                ]
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
-        }
-    }
-
-    test("generatecompanion - wsi") {
+    test("generatecompanion - PerkinElmer") {
 
         when {
             params {
@@ -45,7 +21,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    file(params.modules_testdata_base_path + '/QC/beadplatetest__2021-02-17T16_03_59-Measurement 1/Images', checkIfExists: true),
+                    file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
                 ]
                 """
             }
@@ -70,8 +46,8 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
+                    [ id:'test' ], // meta map
+                    file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
                 ]
                 """
             }

@@ -14,7 +14,6 @@ def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"
     Generate a companion file for a given image file.
     """
     img = AICSImage(f"{file_with_ome_md}/{master_file}")
-    absolute_path = os.path.realpath(file_with_ome_md)
     md = img.metadata
 
     wells = []
@@ -24,24 +23,19 @@ def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"
             print(well)
             for fov in well.well_samples:
                 row = fov.model_dump()
-                row['well_id'] = well.id
-                row['column'] = well.column
-                row['row'] = well.row
-                row['fov_id'] = row['image_ref']['id']
-                wells.append(row)
+                fov_md = {}
+                fov_md["index"] = fov.index
+                fov_md['well_id'] = well.id
+                fov_md['fov_id'] = row['image_ref']['id']
+                wells.append(fov_md)
     else:
-        # Slide format
-        for fov in md.well_samples:
-            row = fov.model_dump()
-            row['fov_id'] = row['image_ref']['id']
-            wells.append(row)
+        raise ValueError("No plates found in the metadata.")
     df = pd.DataFrame(wells)
-    df["root_folder"] = absolute_path
+    df["root_folder"] = os.path.realpath(file_with_ome_md)
 
     df.to_csv(tiles_csv, index=False)
 
     # Save the OME metadata as an XML file
-    #TODO generate the companion file here!!
     ome_str = to_xml(md)
     with open(companion_xml, "w") as xml_file:
         xml_file.write(ome_str)
