@@ -21,9 +21,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    10, 
+                    "test_well",
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
-                    "hcs_test"
+                    "hcs_test",
+                    10 
                 ]
                 input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: true)
                 """
@@ -48,9 +49,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    2,
+                    "test_well",
                     file(params.modules_testdata_base_path + '/QC/beadplatetest__2021-02-17T16_03_59-Measurement 1/Images', checkIfExists: true),
-                    "wsi_test"
+                    "wsi_test",
+                    2
                 ]
                 input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: true)
                 """
@@ -75,9 +77,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    10, 
+                    "test_well",
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
-                    "hcs_test"
+                    "hcs_test",
+                    10 
                 ]
                 input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: true)
                 """
@@ -102,9 +105,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    2,
+                    "test_well",
                     file(params.modules_testdata_base_path + '/QC/beadplatetest__2021-02-17T16_03_59-Measurement 1/Images', checkIfExists: true),
-                    "wsi_test"
+                    "wsi_test",
+                    2
                 ]
                 input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: true)
                 """
@@ -129,9 +133,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    10, 
+                    "test_well",
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
-                    "hcs_test"
+                    "hcs_test",
+                    10 
                 ]
                 input[1] = []
                 """
@@ -156,9 +161,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    2,
+                    "test_well",
                     file(params.modules_testdata_base_path + '/QC/beadplatetest__2021-02-17T16_03_59-Measurement 1/Images', checkIfExists: true),
-                    "wsi_test"
+                    "wsi_test",
+                    2
                 ]
                 input[1] = []
                 """
@@ -186,9 +192,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    0,
+                    "test_well",
                     file(params.modules_testdata_base_path + '', checkIfExists: true),
-                    "stub_test"
+                    "stub_test",
+                    0
                 ]
                 input[1] = []
                 """
