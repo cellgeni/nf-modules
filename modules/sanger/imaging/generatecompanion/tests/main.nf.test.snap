@@ -56,7 +56,7 @@
                         {
                             "id": "test"
                         },
-                        "test_image_tiles.csv:md5,9a51b1eb34eb6fb361e313213d13348d"
+                        "test_image_tiles.csv:md5,4bc3ccb92716ad35c0dd2c8a43077046"
                     ]
                 ],
                 "1": [
@@ -64,7 +64,7 @@
                         {
                             "id": "test"
                         },
-                        "test_image_companion.xml:md5,0acc6031d1d28a1f2b152349451d997b"
+                        "test_image_companion.xml:md5,6068e51d2c20ca14873729c1ccaae62d"
                     ]
                 ],
                 "2": [
@@ -75,7 +75,7 @@
                         {
                             "id": "test"
                         },
-                        "test_image_companion.xml:md5,0acc6031d1d28a1f2b152349451d997b"
+                        "test_image_companion.xml:md5,6068e51d2c20ca14873729c1ccaae62d"
                     ]
                 ],
                 "csv": [
@@ -83,7 +83,7 @@
                         {
                             "id": "test"
                         },
-                        "test_image_tiles.csv:md5,9a51b1eb34eb6fb361e313213d13348d"
+                        "test_image_tiles.csv:md5,4bc3ccb92716ad35c0dd2c8a43077046"
                     ]
                 ],
                 "versions": [
@@ -95,7 +95,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-05-17T21:58:44.129341651"
+        "timestamp": "2025-05-22T14:49:45.540698037"
     },
     "generatecompanion - wsi": {
         "content": [
