@@ -1,0 +1,99 @@
+{
+    "Conversion of 10x .mtx file to .h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "pbmc_1k_mtx",
+                        "pbmc_1k_mtx.h5ad:md5,767be43af6204bc0069a74ea8dc7f510"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,8e108526f7232315b87c55ec4b8d7887"
+                ],
+                "h5ad": [
+                    [
+                        "pbmc_1k_mtx",
+                        "pbmc_1k_mtx.h5ad:md5,767be43af6204bc0069a74ea8dc7f510"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8e108526f7232315b87c55ec4b8d7887"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-05-02T15:03:33.624797"
+    },
+    "Run -stub for .mtx and .h5 files": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "pbmc_1k_h5",
+                        "pbmc_1k_h5.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        "pbmc_1k_mtx",
+                        "pbmc_1k_mtx.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "h5ad": [
+                    [
+                        "pbmc_1k_h5",
+                        "pbmc_1k_h5.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    [
+                        "pbmc_1k_mtx",
+                        "pbmc_1k_mtx.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-05-02T15:03:57.025663"
+    },
+    "Conversion of .h5 file to .h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "pbmc_1k_h5",
+                        "pbmc_1k_h5.h5ad:md5,dd0b6bedb3ccab368da6fbc97d71ac3f"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,8e108526f7232315b87c55ec4b8d7887"
+                ],
+                "h5ad": [
+                    [
+                        "pbmc_1k_h5",
+                        "pbmc_1k_h5.h5ad:md5,dd0b6bedb3ccab368da6fbc97d71ac3f"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8e108526f7232315b87c55ec4b8d7887"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-05-02T15:02:58.33419"
+    }
+}
