@@ -42,8 +42,7 @@
                         {
                             "id": "test"
                         },
-                        "test_well",
-                        "stub_test.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "Image:0.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -54,8 +53,7 @@
                         {
                             "id": "test"
                         },
-                        "test_well",
-                        "stub_test.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "Image:0.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -67,7 +65,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-05-17T16:57:21.359023629"
+        "timestamp": "2025-06-03T15:35:46.276660283"
     },
     "preprocess - hcs - decon": {
         "content": [
@@ -143,10 +141,9 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "hcs"
                         },
-                        "test_well",
-                        "hcs_test.ome.tif:md5,7ede09929402e5198f35f174b1337761"
+                        "Image:10.tif:md5,83d7b9c90ebe60aa9f6cebaeac88c9ae"
                     ]
                 ],
                 "1": [
@@ -155,10 +152,9 @@
                 "fovs": [
                     [
                         {
-                            "id": "test"
+                            "id": "hcs"
                         },
-                        "test_well",
-                        "hcs_test.ome.tif:md5,7ede09929402e5198f35f174b1337761"
+                        "Image:10.tif:md5,83d7b9c90ebe60aa9f6cebaeac88c9ae"
                     ]
                 ],
                 "versions": [
@@ -170,7 +166,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-05-17T16:48:57.026935687"
+        "timestamp": "2025-06-03T15:31:23.405421255"
     },
     "preprocess - hcs - decon_100": {
         "content": [
@@ -207,7 +203,7 @@
         },
         "timestamp": "2025-05-17T16:52:40.926271686"
     },
-    "preprocess - wsi - decon_10": {
+    "preprocess - hcs - no_decon": {
         "content": [
             {
                 "0": [
@@ -215,8 +211,7 @@
                         {
                             "id": "test"
                         },
-                        "test_well",
-                        "wsi_test.ome.tif:md5,64b2939e7185c68bdfa53f52c38a5f64"
+                        "Image:10.tif:md5,83d7b9c90ebe60aa9f6cebaeac88c9ae"
                     ]
                 ],
                 "1": [
@@ -227,8 +222,7 @@
                         {
                             "id": "test"
                         },
-                        "test_well",
-                        "wsi_test.ome.tif:md5,64b2939e7185c68bdfa53f52c38a5f64"
+                        "Image:10.tif:md5,83d7b9c90ebe60aa9f6cebaeac88c9ae"
                     ]
                 ],
                 "versions": [
@@ -240,7 +234,40 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-05-17T16:50:27.164545122"
+        "timestamp": "2025-06-03T15:35:37.378475228"
+    },
+    "preprocess - wsi - decon_10": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "Image:2.tif:md5,61b6738415d328a66b9d2780926a4f5f"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,7532d207df3aa8c97abafc64c9788d28"
+                ],
+                "fovs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "Image:2.tif:md5,61b6738415d328a66b9d2780926a4f5f"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,7532d207df3aa8c97abafc64c9788d28"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-03T15:32:37.88297373"
     },
     "preprocess - wsi - decon": {
         "content": [
