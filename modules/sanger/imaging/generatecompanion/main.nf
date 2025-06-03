@@ -6,11 +6,11 @@ process IMAGING_GENERATECOMPANION {
     container "quay.io/cellgeni/imagetileprocessor:0.1.13"
 
     input:
-    tuple val(meta), path(file_with_ome_md)
+    tuple val(meta), val(round), path(image_root_folder)
 
     output:
-    tuple val(meta), path("${out_name}"), emit: csv
-    tuple val(meta), path("${out_companion}"), emit: companion
+    tuple val(meta), val(out_folder), path("${out_folder}/${out_name}"), emit: csv
+    tuple val(meta), val(out_folder), path("${out_folder}/${out_companion}"), emit: companion
     path "versions.yml"           , emit: versions
 
     when:
@@ -20,12 +20,14 @@ process IMAGING_GENERATECOMPANION {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_name = "${prefix}_image_tiles.csv"
-    out_companion = "${prefix}_image_companion.xml"
+    out_companion = "${prefix}_image.companion.ome"
+    out_folder = "image${round}"
     """
     generate_companion.py run \\
-        --file_with_ome_md ${file_with_ome_md} \\
+        --image_root_folder ${image_root_folder} \\
         --tiles_csv ${out_name} \\
         --companion_xml ${out_companion} \\
+        --out_folder ${out_folder} \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
@@ -38,10 +40,12 @@ process IMAGING_GENERATECOMPANION {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_name = "${prefix}_image_tiles.csv"
-    out_companion = "${prefix}_image_companion.xml"
+    out_companion = "${prefix}_image.companion.ome"
+    out_folder = "image${round}"
     """
-    touch ${out_name}
-    touch ${out_companion}
+    mkdir -p ${out_folder}
+    touch ${out_folder}/${out_name}
+    touch ${out_folder}/${out_companion}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

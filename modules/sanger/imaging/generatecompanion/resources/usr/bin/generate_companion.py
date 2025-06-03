@@ -46,20 +46,22 @@ def append_tiffdata_to_ome_metadata(
     )
     img_obj.ome_metadata.images[index].pixels.tiff_data_blocks.append(tiff)
 
-def main(file_with_ome_md, tiles_csv, companion_xml, master_file="Index.idx.xml"):
+def main(image_root_folder, tiles_csv, companion_xml, out_folder, master_file="Index.idx.xml"):
     """
     Generate a companion file for a given image file.
     """
-    img = AICSImage(f"{file_with_ome_md}/{master_file}")
+    img = AICSImage(f"{image_root_folder}/{master_file}")
     df = generate_tiles_to_process_csv(img)
-    df["root_xml"] = os.path.realpath(file_with_ome_md)
-    df.to_csv(tiles_csv, index=False)
+    df["root_xml"] = os.path.realpath(image_root_folder)
+    if not os.path.exists(out_folder):
+        os.makedirs(out_folder)
+    df.to_csv(f"{out_folder}/{tiles_csv}", index=False)
 
     for i in np.arange(len(img.scenes)):
         append_tiffdata_to_ome_metadata(img, i)
 
     # Save the OME metadata as an XML file
-    with open(companion_xml, "w") as xml_file:
+    with open(f"{out_folder}/{companion_xml}", "w") as xml_file:
         xml_file.write(to_xml(img.ome_metadata))
 
 def version():

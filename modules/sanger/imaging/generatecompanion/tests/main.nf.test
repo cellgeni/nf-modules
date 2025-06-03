@@ -21,6 +21,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
+                    0,
                     file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
                 ]
                 """
@@ -47,6 +48,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
+                    0,
                     file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
                 ]
                 """
