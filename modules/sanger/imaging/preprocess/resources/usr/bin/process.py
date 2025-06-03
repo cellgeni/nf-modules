@@ -49,7 +49,7 @@ def load_and_process_psf(
     return psf[indices_to_keep, :, :]
 
 
-def main(root_folder, index, out_img_name,
+def main(root_folder, index, out_img_name, out_folder,
          iterations=100,
          master_file="Index.idx.xml",
          psf_folder="psfs",
@@ -110,8 +110,10 @@ def main(root_folder, index, out_img_name,
     print(processed_hyper_stack.shape)
     cursor = time.time()
     new_dim_order = "TCYX" if z_project else "TCZYX"
+    if not os.path.exists(out_folder):
+        os.makedirs(out_folder)
     OmeTiffWriter.save(
-        processed_hyper_stack, f"{out_img_name}",
+        processed_hyper_stack, f"{out_folder}/{out_img_name}",
         dim_order=new_dim_order,
         channel_names=img.channel_names,
         image_names=out_img_name.replace(".ome.tif", ""),

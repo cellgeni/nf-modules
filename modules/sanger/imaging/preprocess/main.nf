@@ -6,11 +6,11 @@ process IMAGING_PREPROCESS {
     container "quay.io/cellgeni/clij2:0.28"
 
     input:
-    tuple val(meta), path(root_folder), val(image_id), val(index)
+    tuple val(meta), val(out_folder), path(root_folder), val(image_id), val(index)
     path(psf_folder, stageAs: 'psfs')
 
     output:
-    tuple val(meta), path("${out_img_name}"), emit: fovs
+    tuple val(meta), path("${out_folder}/${out_img_name}"), emit: fovs
     path "versions.yml"           , emit: versions
 
     when:
@@ -25,6 +25,7 @@ process IMAGING_PREPROCESS {
         --root_folder ${root_folder} \\
         --index ${index} \\
         --out_img_name ${out_img_name} \\
+        --out_folder ${out_folder} \\
         --psf_folder ${psf_folder} \\
         $args
 
@@ -39,7 +40,8 @@ process IMAGING_PREPROCESS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_img_name = "${image_id}.tif"
     """
-    touch ${out_img_name}
+    mkdir -p ${out_folder}
+    touch ${out_folder}/${out_img_name}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
