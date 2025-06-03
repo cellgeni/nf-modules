@@ -1,0 +1,108 @@
+{
+    "preprocess_tiles - xml - decon_10": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "xml_decon"
+                        },
+                        "Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "xml_decon"
+                        },
+                        "image0",
+                        "xml_decon_image.companion.ome:md5,6bf02ffbca8442aef9dd2cc440031388"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,6b57ad7e41b899248d7e0bbfe7c44cce",
+                    "versions.yml:md5,9077b8085d6ac618f00810a072c96d26"
+                ],
+                "companion": [
+                    [
+                        {
+                            "id": "xml_decon"
+                        },
+                        "image0",
+                        "xml_decon_image.companion.ome:md5,6bf02ffbca8442aef9dd2cc440031388"
+                    ]
+                ],
+                "tiles": [
+                    [
+                        {
+                            "id": "xml_decon"
+                        },
+                        "Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,6b57ad7e41b899248d7e0bbfe7c44cce",
+                    "versions.yml:md5,9077b8085d6ac618f00810a072c96d26"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-03T22:49:49.33553322"
+    },
+    "preprocess_tiles - xml - no_decon": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "xml_no-decon"
+                        },
+                        "Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "xml_no-decon"
+                        },
+                        "image0",
+                        "xml_no-decon_image.companion.ome:md5,a0699dc04d68e6930d3ee6d639e92273"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,6b57ad7e41b899248d7e0bbfe7c44cce",
+                    "versions.yml:md5,9077b8085d6ac618f00810a072c96d26"
+                ],
+                "companion": [
+                    [
+                        {
+                            "id": "xml_no-decon"
+                        },
+                        "image0",
+                        "xml_no-decon_image.companion.ome:md5,a0699dc04d68e6930d3ee6d639e92273"
+                    ]
+                ],
+                "tiles": [
+                    [
+                        {
+                            "id": "xml_no-decon"
+                        },
+                        "Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,6b57ad7e41b899248d7e0bbfe7c44cce",
+                    "versions.yml:md5,9077b8085d6ac618f00810a072c96d26"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-03T22:48:24.998439449"
+    }
+}
