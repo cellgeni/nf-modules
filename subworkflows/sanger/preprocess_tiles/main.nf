@@ -14,7 +14,7 @@ workflow PREPROCESS_TILES {
     ch_versions = ch_versions.mix(IMAGING_GENERATECOMPANION.out.versions.first())
 
     tiles = IMAGING_GENERATECOMPANION.out.csv.splitCsv(header: true, strip:true, sep: ",").map {row ->
-        [row[0], row[1].index, file(row[1].root_folder), row[1].image_id]
+        [row[0], file(row[1].root_xml), row[1].image_id, row[1].index]
     }
     IMAGING_PREPROCESS(tiles, psf_folder)
     ch_versions = ch_versions.mix(IMAGING_PREPROCESS.out.versions.first())
