@@ -1,5 +1,5 @@
 process IMAGING_PREPROCESS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -7,11 +7,11 @@ process IMAGING_PREPROCESS {
 
     input:
     tuple val(meta), val(out_folder), path(root_folder), val(image_id), val(index)
-    path(psf_folder, stageAs: 'psfs')
+    path psf_folder, stageAs: 'psfs'
 
     output:
     tuple val(meta), path("${out_folder}/${out_img_name}"), emit: fovs
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,7 +27,7 @@ process IMAGING_PREPROCESS {
         --out_img_name ${out_img_name} \\
         --out_folder ${out_folder} \\
         --psf_folder ${psf_folder} \\
-        $args
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

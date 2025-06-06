@@ -2,7 +2,6 @@ include { IMAGING_PREPROCESS } from "../../../modules/sanger/imaging/preprocess"
 include { IMAGING_GENERATECOMPANION } from "../../../modules/sanger/imaging/generatecompanion"
 
 workflow PREPROCESS_TILES {
-
     take:
     experiments_ch // channel: [ val(meta), [ imaging_experiment ] ]
     psf_folder
@@ -13,16 +12,16 @@ workflow PREPROCESS_TILES {
     IMAGING_GENERATECOMPANION(experiments_ch)
     ch_versions = ch_versions.mix(IMAGING_GENERATECOMPANION.out.versions.first())
 
-    tiles = IMAGING_GENERATECOMPANION.out.csv.splitCsv(header: true, strip:true, sep: ",").map {row ->
-        [row[0], row[1], file(row[2].root_xml), row[2].image_id, row[2].index]
-    }
+    tiles = IMAGING_GENERATECOMPANION.out.csv
+        .splitCsv(header: true, strip: true, sep: ",")
+        .map { row ->
+            [row[0], row[1], file(row[2].root_xml), row[2].image_id, row[2].index]
+        }
     IMAGING_PREPROCESS(tiles, psf_folder)
     ch_versions = ch_versions.mix(IMAGING_PREPROCESS.out.versions.first())
 
     emit:
     tiles = IMAGING_PREPROCESS.out.fovs
     companion = IMAGING_GENERATECOMPANION.out.companion
-
-    versions = ch_versions                     // channel: [ versions.yml ]
+    versions = ch_versions // channel: [ versions.yml ]
 }
-

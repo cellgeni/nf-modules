@@ -1,5 +1,5 @@
 process IMAGING_GENERATECOMPANION {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
@@ -11,7 +11,7 @@ process IMAGING_GENERATECOMPANION {
     output:
     tuple val(meta), val(out_folder), path("${out_folder}/${out_name}"), emit: csv
     tuple val(meta), val(out_folder), path("${out_folder}/${out_companion}"), emit: companion
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,7 +28,7 @@ process IMAGING_GENERATECOMPANION {
         --tiles_csv ${out_name} \\
         --companion_xml ${out_companion} \\
         --out_folder ${out_folder} \\
-        $args
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
