@@ -21,7 +21,6 @@ workflow PREPROCESS_TILES {
     ch_versions = ch_versions.mix(IMAGING_PREPROCESS.out.versions.first())
 
     emit:
-    tiles = IMAGING_PREPROCESS.out.fovs
-    companion = IMAGING_GENERATECOMPANION.out.companion
+    companion = IMAGING_GENERATECOMPANION.out.companion.combine(IMAGING_PREPROCESS.out.fovs, by: 0) // [ meta, companion, [fovs] ]
     versions = ch_versions // channel: [ versions.yml ]
 }
