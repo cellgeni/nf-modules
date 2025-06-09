@@ -10,7 +10,7 @@ process IMAGING_PREPROCESS {
     path psf_folder, stageAs: 'psfs'
 
     output:
-    tuple val(meta), path("${out_folder}/${out_img_name}"), emit: fovs
+    tuple val(meta), path(out_folder), path("${out_folder}/${out_img_name}"), emit: fovs
     path "versions.yml", emit: versions
 
     when:
