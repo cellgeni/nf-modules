@@ -20,8 +20,8 @@ process IMAGING_GENERATECOMPANION {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_name = "${prefix}_image_tiles.csv"
-    out_companion = "${prefix}_image.companion.ome"
     out_folder = "image${round}"
+    out_companion = "${prefix}_${out_folder}.companion.ome"
     """
     generate_companion.py run \\
         --image_root_folder ${image_root_folder} \\
