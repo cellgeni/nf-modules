@@ -46,7 +46,9 @@ process IMAGING_ASHLARCOMPANION {
         ${dfp} \\
         ${ffp}
 
-    sed -i -E 's/UUID="urn:uuid:[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}"/                                                    /g' ${prefix}.ome.tif
+    for file in *${prefix}.ome.tif; do
+        sed -i -E 's/UUID="urn:uuid:[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}"/                                                    /g' "\${file}"
+    done
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

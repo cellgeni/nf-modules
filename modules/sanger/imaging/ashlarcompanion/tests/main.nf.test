@@ -16,8 +16,8 @@ nextflow_process {
                 """
                 input[0] = [
                                 [ id:'test_all' ],
-                                file(params.modules_testdata_base_path + 'imaging/ome-tiff/', checkIfExists: true),
-                                'cycif-tonsil-cycle1.ome.tif'
+                                file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle1.ome.tif', checkIfExists: true),
+                                []
                 ]
                 input[1] = [
                                 file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-dfp.ome.tif', checkIfExists: true)
@@ -45,8 +45,8 @@ nextflow_process {
                 """
                 input[0] = [
                                 [ id:'test_1' ],
-                                file(params.modules_testdata_base_path + 'imaging/ome-tiff', checkIfExists: true),
-                                'cycif-tonsil-cycle1.ome.tif'
+                                file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle1.ome.tif', checkIfExists: true),
+                                []
                 ]
                 input[1] = []
                 input[2] = []
@@ -71,13 +71,11 @@ nextflow_process {
                 input[0] = [
                                 [ id:'test_1' ],
                                 [
-                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff', checkIfExists: true),
+                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle1.ome.tif', checkIfExists: true),
+                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle2.ome.tif', checkIfExists: true),
+                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle3.ome.tif', checkIfExists: true),
                                 ],
-                                [
-                                    'cycif-tonsil-cycle1.ome.tif',
-                                    'cycif-tonsil-cycle2.ome.tif',
-                                    'cycif-tonsil-cycle3.ome.tif'
-                                ]
+                                []
                 ]
                 input[1] = []
                 input[2] = []
@@ -102,13 +100,11 @@ nextflow_process {
                 input[0] = [
                                 [ id:'test_1' ],
                                 [
-                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff', checkIfExists: true),
+                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle1.ome.tif', checkIfExists: true),
+                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle2.ome.tif', checkIfExists: true),
+                                    file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle3.ome.tif', checkIfExists: true),
                                 ],
-                                [
-                                    'cycif-tonsil-cycle1.ome.tif',
-                                    'cycif-tonsil-cycle2.ome.tif',
-                                    'cycif-tonsil-cycle3.ome.tif'
-                                ]
+                                []
                 ]
                 input[1] = [
                                 file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-dfp.ome.tif', checkIfExists: true)
@@ -138,8 +134,8 @@ nextflow_process {
                 """
                 input[0] = [
                                 [ id:'test_all' ],
-                                file(params.modules_testdata_base_path + 'imaging/ome-tiff', checkIfExists: true),
-                                'cycif-tonsil-cycle1.ome.tif'
+                                file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-cycle1.ome.tif', checkIfExists: true),
+                                []
                 ]
                 input[1] = [
                                 file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-dfp.ome.tif', checkIfExists: true)
