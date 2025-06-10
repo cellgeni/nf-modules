@@ -9,8 +9,8 @@ process IMAGING_GENERATECOMPANION {
     tuple val(meta), val(round), path(image_root_folder)
 
     output:
-    tuple val(meta), val(out_folder), path("${out_folder}/${out_name}"), emit: csv
-    tuple val(meta), val(out_folder), path("${out_folder}/${out_companion}"), emit: companion
+    tuple val(meta), path("${out_csv_name}"), emit: csv
+    tuple val(meta), path("${out_companion}"), emit: companion
     path "versions.yml", emit: versions
 
     when:
@@ -18,16 +18,15 @@ process IMAGING_GENERATECOMPANION {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    out_name = "${prefix}_image_tiles.csv"
-    out_folder = "image${round}"
-    out_companion = "${prefix}_${out_folder}.companion.ome"
+    def prefix = task.ext.prefix ?: "${meta.id}_image${round}"
+    out_csv_name = "${prefix}_image_tiles.csv"
+    out_companion = "${prefix}.companion.ome"
     """
     generate_companion.py run \\
         --image_root_folder ${image_root_folder} \\
-        --tiles_csv ${out_name} \\
+        --tiles_csv ${out_csv_name} \\
         --companion_xml ${out_companion} \\
-        --out_folder ${out_folder} \\
+        --prefix ${prefix} \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -38,14 +37,12 @@ process IMAGING_GENERATECOMPANION {
 
     stub:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    out_name = "${prefix}_image_tiles.csv"
+    def prefix = task.ext.prefix ?: "${meta.id}_image${round}"
+    out_csv_name = "${prefix}_image_tiles.csv"
     out_companion = "${prefix}_image.companion.ome"
-    out_folder = "image${round}"
     """
-    mkdir -p ${out_folder}
-    touch ${out_folder}/${out_name}
-    touch ${out_folder}/${out_companion}
+    touch ${out_csv_name}
+    touch ${out_companion}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

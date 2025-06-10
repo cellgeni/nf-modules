@@ -11,16 +11,15 @@ import os
 import uuid
 
 
-def generate_tiles_to_process_csv(
-    img_obj: AICSImage,
-):
+def generate_tiles_to_process_csv(img_obj: AICSImage, prefix: str):
     """
     Generate a CSV file with the tiles to process.
     """
     df = pd.DataFrame(
         {
             "image_id": [
-                img_obj.metadata.images[i].id for i in np.arange(len(img_obj.scenes))
+                prefix + "_" + img_obj.metadata.images[i].id
+                for i in np.arange(len(img_obj.scenes))
             ]
         }
     )
@@ -31,35 +30,34 @@ def generate_tiles_to_process_csv(
 def append_tiffdata_to_ome_metadata(
     img_obj: AICSImage,
     index: int,
+    prefix: str,
 ):
     """
     Append TiffData to the OME metadata.
     """
     current_image = img_obj.ome_metadata.images[index]
-    filename = current_image.id + ".tif"
+    filename = prefix + "_" + current_image.id + ".tif"
     tiff_uuid = TiffData.UUID(value=f"urn:uuid:{uuid.uuid4()}", file_name=filename)
     tiff = TiffData(first_c=0, first_t=0, first_z=0, uuid=tiff_uuid)
     img_obj.ome_metadata.images[index].pixels.tiff_data_blocks.append(tiff)
 
 
 def main(
-    image_root_folder, tiles_csv, companion_xml, out_folder, master_file="Index.idx.xml"
+    image_root_folder, tiles_csv, companion_xml, prefix, master_file="Index.idx.xml"
 ):
     """
     Generate a companion file for a given image file.
     """
     img = AICSImage(f"{image_root_folder}/{master_file}")
-    df = generate_tiles_to_process_csv(img)
+    df = generate_tiles_to_process_csv(img, prefix)
     df["root_xml"] = os.path.realpath(image_root_folder)
-    if not os.path.exists(out_folder):
-        os.makedirs(out_folder)
-    df.to_csv(f"{out_folder}/{tiles_csv}", index=False)
+    df.to_csv(f"{tiles_csv}", index=False)
 
     for i in np.arange(len(img.scenes)):
-        append_tiffdata_to_ome_metadata(img, i)
+        append_tiffdata_to_ome_metadata(img, i, prefix)
 
     # Save the OME metadata as an XML file
-    with open(f"{out_folder}/{companion_xml}", "w") as xml_file:
+    with open(f"{companion_xml}", "w") as xml_file:
         xml_file.write(to_xml(img.ome_metadata))
 
 
