@@ -11,9 +11,10 @@ process IMAGING_ASHLARCOMPANION {
     tuple val(meta), path(companion_names), path(images)
     path opt_dfp, stageAs: 'dfp*/*'
     path opt_ffp, stageAs: 'ffp*/*'
+    val opt_is_plate
 
     output:
-    tuple val(meta), path("*.ome.tif"), emit: tif
+    tuple val(meta), path("${expected_output}"), emit: tif
     path "versions.yml", emit: versions
 
     when:
@@ -21,7 +22,9 @@ process IMAGING_ASHLARCOMPANION {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
+    def is_plate = opt_is_plate ? "--plates" : ""
+    expected_output = is_plate ? "*/*_${prefix}.ome.tif" : "${prefix}.ome.tif"
     def dfp = opt_dfp ? "--dfp ${opt_dfp}" : ""
     def ffp = opt_ffp ? "--ffp ${opt_ffp}" : ""
     def num_files = companion_names instanceof List ? companion_names.size() : 1
@@ -42,6 +45,7 @@ process IMAGING_ASHLARCOMPANION {
     ashlar \\
         -o ${prefix}.ome.tif \\
         ${companion_names} \\
+        ${is_plate} \\
         ${args} \\
         ${dfp} \\
         ${ffp}
@@ -57,7 +61,9 @@ process IMAGING_ASHLARCOMPANION {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
+    def is_plate = opt_is_plate ? "--plates" : ""
+    expected_output = is_plate ? "*/*_${prefix}.ome.tif" : "${prefix}.ome.tif"
     def num_files = companion_names instanceof List ? companion_names.size() : 1
     def opt_dfp_size = opt_dfp instanceof List ? opt_dfp.size() : 1
     def opt_ffp_size = opt_ffp instanceof List ? opt_ffp.size() : 1

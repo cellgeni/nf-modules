@@ -25,6 +25,7 @@ nextflow_process {
                 input[2] = [
                                 file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-ffp.ome.tif', checkIfExists: true)
                 ]
+                input[3] = false
                 """
             }
         }
@@ -50,6 +51,7 @@ nextflow_process {
                 ]
                 input[1] = []
                 input[2] = []
+                input[3] = false
                 """
             }
         }
@@ -79,6 +81,7 @@ nextflow_process {
                 ]
                 input[1] = []
                 input[2] = []
+                input[3] = false
                 """
             }
         }
@@ -112,6 +115,7 @@ nextflow_process {
                 input[2] = [
                                 file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-ffp.ome.tif', checkIfExists: true)
                 ]
+                input[3] = false
                 """
             }
         }
@@ -143,6 +147,7 @@ nextflow_process {
                 input[2] = [
                                 file(params.modules_testdata_base_path + 'imaging/ome-tiff/cycif-tonsil-ffp.ome.tif', checkIfExists: true)
                 ]
+                input[3] = false
                 """
             }
         }
