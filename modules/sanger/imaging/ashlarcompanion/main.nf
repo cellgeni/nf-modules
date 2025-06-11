@@ -50,7 +50,7 @@ process IMAGING_ASHLARCOMPANION {
         ${dfp} \\
         ${ffp}
 
-    for file in *${prefix}.ome.tif; do
+    for file in ${expected_output}; do
         sed -i -E 's/UUID="urn:uuid:[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}"/                                                    /g' "\${file}"
     done
 
