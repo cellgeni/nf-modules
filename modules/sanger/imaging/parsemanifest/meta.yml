@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "imaging_parsemanifest"
+description: write your description here
+keywords:
+  - manitest
+  - ETL
+  - parser
+
+tools:
+  - "imaging":
+      description: "Imaging module for parsing manifest files"
+      homepage: "https://"
+      documentation: "https://"
+      tool_dev_url: "https://"
+      doi: ""
+      licence: ["MIT"]
+      identifier:
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+
+    - manifest:
+        type: file
+        description: Manifest file to get sample information for stitching
+        pattern: "*.{.csv, .xlsx, .tsv}"
+
+output:
+  - bam:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}_manifest.json":
+          type: file
+          description: json file with sample information
+          pattern: "*.json"
+
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+
+authors:
+  - "@prete"
+  - "@BioinfoTongLI"
+maintainers:
+  - "@prete"
+  - "@BioinfoTongLI"
