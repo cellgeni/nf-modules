@@ -23,9 +23,9 @@ nextflow_workflow {
                 input[0] = [
                     [ id:'xml_no-decon' ], // meta map
                     0,
-                    file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
                 ]
-                input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: false)
+                input[1] = file(params.modules_testdata_base_path + 'PSFs/', checkIfExists: true)
                 """
             }
         }
@@ -50,9 +50,9 @@ nextflow_workflow {
                 input[0] = [
                     [ id:'xml_decon' ], // meta map
                     0,
-                    file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
                 ]
-                input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: false)
+                input[1] = file(params.modules_testdata_base_path + 'PSFs/', checkIfExists: true)
                 """
             }
         }

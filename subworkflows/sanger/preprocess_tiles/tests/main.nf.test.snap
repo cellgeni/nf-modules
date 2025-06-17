@@ -7,8 +7,10 @@
                         {
                             "id": "xml_decon"
                         },
-                        "xml_decon_image0.companion.ome:md5,a7bd0dd0ba5df40099e5541dce2d793f",
-                        "xml_decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        "xml_decon_image0.companion.ome:md5,c228d074eba208f27e16c33d7192c994",
+                        [
+                            "xml_decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        ]
                     ]
                 ],
                 "1": [
@@ -20,8 +22,10 @@
                         {
                             "id": "xml_decon"
                         },
-                        "xml_decon_image0.companion.ome:md5,a7bd0dd0ba5df40099e5541dce2d793f",
-                        "xml_decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        "xml_decon_image0.companion.ome:md5,c228d074eba208f27e16c33d7192c994",
+                        [
+                            "xml_decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        ]
                     ]
                 ],
                 "versions": [
@@ -34,7 +38,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-06-10T12:42:43.864446791"
+        "timestamp": "2025-06-17T16:22:39.978608949"
     },
     "preprocess_tiles - xml - no_decon": {
         "content": [
@@ -44,8 +48,10 @@
                         {
                             "id": "xml_no-decon"
                         },
-                        "xml_no-decon_image0.companion.ome:md5,b1afd7f6e54118beeb3048a0c7dcc8a7",
-                        "xml_no-decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        "xml_no-decon_image0.companion.ome:md5,2449ae4f2fb30495364ea5da0f00e09f",
+                        [
+                            "xml_no-decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        ]
                     ]
                 ],
                 "1": [
@@ -57,8 +63,10 @@
                         {
                             "id": "xml_no-decon"
                         },
-                        "xml_no-decon_image0.companion.ome:md5,b1afd7f6e54118beeb3048a0c7dcc8a7",
-                        "xml_no-decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        "xml_no-decon_image0.companion.ome:md5,2449ae4f2fb30495364ea5da0f00e09f",
+                        [
+                            "xml_no-decon_image0_Image:0.tif:md5,d28c2fbb2ec387ec2a9968ef1eaef093"
+                        ]
                     ]
                 ],
                 "versions": [
@@ -71,6 +79,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-06-10T12:41:20.377828645"
+        "timestamp": "2025-06-17T16:21:18.568400573"
     }
 }
