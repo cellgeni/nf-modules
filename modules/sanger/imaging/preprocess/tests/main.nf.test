@@ -21,12 +21,11 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'hcs' ], // meta map
-                    "image0",
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
                     "Image:10",
                     10 
                 ]
-                input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: false)
+                input[1] = file('s3://spatial_demo_datasets/PSFs/', checkIfExists: true)
                 """
             }
         }
@@ -49,12 +48,11 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    "image0",
                     file(params.modules_testdata_base_path + '/QC/beadplatetest__2021-02-17T16_03_59-Measurement 1/Images', checkIfExists: true),
                     "Image:2",
                     2
                 ]
-                input[1] = file('/lustre/scratch127/cellgen/cellgeni/projects/imaging_PSFs/', checkIfExists: false)
+                input[1] = file('s3://spatial_demo_datasets/PSFs/', checkIfExists: true)
                 """
             }
         }
@@ -78,7 +76,6 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    "image0",
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
                     "Image:10",
                     10 
@@ -110,7 +107,6 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
-                    "image0",
                     file(params.modules_testdata_base_path + '', checkIfExists: true),
                     "Image:0",
                     0
