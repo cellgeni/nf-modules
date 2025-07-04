@@ -1,0 +1,2 @@
+subworkflows/microaligner_registration:
+  - subworkflows/sanger/microaligner_registration/**

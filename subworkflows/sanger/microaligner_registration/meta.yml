@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "microaligner_registration"
+description: Register microscopy images using two-step microaligner
+keywords:
+  - linear registration
+  - non-linear registration
+  - microaligner
+components:
+  - microaligner
+## TODO nf-core: List all of the channels used as input with a description and their structure
+input:
+  - images:
+      type: file
+      description: |
+        Structure: [ val(meta), path(image) ]
+      pattern: "*.{tif/tiff}"
+output:
+  - csi:
+      type: file
+      description: |
+        Reigtstered images in tif format
+        Structure: [ val(meta), path(tif) ]
+      pattern: "*.tif"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
