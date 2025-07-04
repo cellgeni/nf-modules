@@ -1,0 +1,63 @@
+// nf-core modules test imaging/concatenatewkts
+nextflow_process {
+
+    name "Test Process IMAGING_CONCATENATEWKTS"
+    script "../main.nf"
+    process "IMAGING_CONCATENATEWKTS"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/concatenatewkts"
+
+    test("mouse heart - wkt ") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'test_merged_peaks_ch_-1.wkt', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("mouse heart - wkt - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'test_merged_peaks_ch_-1.wkt', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

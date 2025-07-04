@@ -1,0 +1,260 @@
+{
+    "mouse_heart - tiff - stub": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_100_100-diam_20_cp_outlines.wkt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    "versions.yml:md5,788c0df84369a53972b9b700e85517db"
+                ],
+                "cp_plots": [
+                    
+                ],
+                "outlines": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,788c0df84369a53972b9b700e85517db"
+                ],
+                "wkts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_100_100-diam_20_cp_outlines.wkt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-14T13:59:33.790387511"
+    },
+    "mouse_heart - tiff - 500": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_500_500-diam_20_cp_outlines.txt:md5,adb12dc55d990539b15f3ce61d7c8efe"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_500_500-diam_20_cp_outlines.wkt:md5,fe837bbb6adc3d13928ed9b3405e4d9c"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test-0_0_500_500-diam_20_cp_masks.png:md5,a1e143c85d8314e9abe9d2d35ea9760a",
+                            "test-0_0_500_500-diam_20_outlines.png:md5,36b8f6235c68416d267290547010f453"
+                        ]
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                ],
+                "cp_plots": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test-0_0_500_500-diam_20_cp_masks.png:md5,a1e143c85d8314e9abe9d2d35ea9760a",
+                            "test-0_0_500_500-diam_20_outlines.png:md5,36b8f6235c68416d267290547010f453"
+                        ]
+                    ]
+                ],
+                "outlines": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_500_500-diam_20_cp_outlines.txt:md5,adb12dc55d990539b15f3ce61d7c8efe"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                ],
+                "wkts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_500_500-diam_20_cp_outlines.wkt:md5,fe837bbb6adc3d13928ed9b3405e4d9c"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-14T13:58:27.28570216"
+    },
+    "mouse_heart - tiff - 200": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_20_cp_outlines.txt:md5,c5b8d1848233c7636be9fd1ed6b00010"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_20_cp_outlines.wkt:md5,78ad1ddefc488c798b46ad3c18025912"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test-0_0_200_200-diam_20_cp_masks.png:md5,96c74f7dc06a1ffb1143ad03c4796029",
+                            "test-0_0_200_200-diam_20_outlines.png:md5,b3bdb19c06bf039f6c6bfaf051ff32fa"
+                        ]
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                ],
+                "cp_plots": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test-0_0_200_200-diam_20_cp_masks.png:md5,96c74f7dc06a1ffb1143ad03c4796029",
+                            "test-0_0_200_200-diam_20_outlines.png:md5,b3bdb19c06bf039f6c6bfaf051ff32fa"
+                        ]
+                    ]
+                ],
+                "outlines": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_20_cp_outlines.txt:md5,c5b8d1848233c7636be9fd1ed6b00010"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                ],
+                "wkts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_20_cp_outlines.wkt:md5,78ad1ddefc488c798b46ad3c18025912"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-14T13:58:53.169774973"
+    },
+    "mouse_heart - tiff - 200 - large cell diameter": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_50_cp_outlines.txt:md5,ddc6f3da007fb90b5c9ea30c9a3ae807"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_50_cp_outlines.wkt:md5,bf5ce6d27e28f6985c4dbdfbf5d3f0ab"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test-0_0_200_200-diam_50_cp_masks.png:md5,2385b7e1d3a3432166029074d43b15dd",
+                            "test-0_0_200_200-diam_50_outlines.png:md5,129fd998c787dc5a62575a3c8a7f2bb2"
+                        ]
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                ],
+                "cp_plots": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test-0_0_200_200-diam_50_cp_masks.png:md5,2385b7e1d3a3432166029074d43b15dd",
+                            "test-0_0_200_200-diam_50_outlines.png:md5,129fd998c787dc5a62575a3c8a7f2bb2"
+                        ]
+                    ]
+                ],
+                "outlines": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_50_cp_outlines.txt:md5,ddc6f3da007fb90b5c9ea30c9a3ae807"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                ],
+                "wkts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test-0_0_200_200-diam_50_cp_outlines.wkt:md5,bf5ce6d27e28f6985c4dbdfbf5d3f0ab"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-14T13:59:19.215323688"
+    }
+}

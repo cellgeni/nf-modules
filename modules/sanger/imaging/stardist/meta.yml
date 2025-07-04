@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "imaging_stardist"
+description: a wrapper for starDist
+keywords:
+  - segmentation
+  - image analysis
+  - starDist
+tools:
+  - "imaging":
+      description: "A wrapper for starDist"
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence:
+      identifier:
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - x_min:
+        type: int
+        description: "Minimum x coordinate"
+    - x_max:
+        type: int
+        description: "Maximum x coordinate"
+    - y_min:
+        type: int
+        description: "Minimum y coordinate"
+    - y_max:
+        type: int
+        description: "Maximum y coordinate"
+    - image:
+        type: file
+        description: "Image file"
+        pattern: "*.{png,jpg,jpeg,tiff}"
+
+output:
+  - outlines:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+
+      - "*.wkt":
+          type: file
+          description: WKT file
+          pattern: "*.wkt"
+
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

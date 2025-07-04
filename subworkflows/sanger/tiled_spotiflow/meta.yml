@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "tiled_spotiflow"
+description: Sort SAM/BAM/CRAM file
+keywords:
+  - deep-learning
+  - peak-calling
+  - smFISH
+components:
+  - Spotiflow
+input:
+  - ch_bam:
+      type: file
+      description: |
+        The input image files
+        Structure: [ val(meta), path(images) ]
+      pattern: "*.{tif/tiff}"
+output:
+  - spots_in_csv:
+      type: file
+      description: |
+        CSV file contains the peak locations
+        Structure: [ val(meta), path(csv) ]
+      pattern: "*.csv"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

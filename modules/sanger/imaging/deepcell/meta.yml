@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "imaging_deepcell"
+description: This module runs deepcell on a crop of an image
+keywords:
+  - image analysis
+  - image segmentation
+  - imaging
+tools:
+  - "imaging":
+      description: "This module runs deepcell on a crop of an image"
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence:
+      identifier:
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - x_min:
+        type: int
+        description: x_min of the crop
+    - x_max:
+        type: int
+        description: x_max of the crop
+    - y_min:
+        type: int
+        description: y_min of the crop
+    - y_max:
+        type: int
+        description: y_max of the crop
+    - image:
+        type: file
+        description: image file
+        pattern: "*.{png,jpg,tiff}"
+
+output:
+  - wkts:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${output_name}":
+          type: file
+          description: WKT file
+          pattern: "*.wkt"
+
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

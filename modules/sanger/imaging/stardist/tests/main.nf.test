@@ -1,0 +1,63 @@
+// TODO nf-core: Once you have added the required tests, please run the following command to build this file:
+// nf-core modules test imaging/stardist
+nextflow_process {
+
+    name "Test Process IMAGING_STARDIST"
+    script "../main.nf"
+    process "IMAGING_STARDIST"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/stardist"
+
+    test("stardist - tif") {
+
+        when {
+            process {
+                """
+
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    0,  0, 500, 500, // x_min, x_max, y_min, y_max
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("stardist - tif - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    0,  0, 500, 500, // x_min, x_max, y_min, y_max
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

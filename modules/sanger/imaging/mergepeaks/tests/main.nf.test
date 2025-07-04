@@ -1,0 +1,67 @@
+// nf-core modules test imaging/mergepeaks
+nextflow_process {
+
+    name "Test Process IMAGING_MERGEPEAKS"
+    script "../main.nf"
+    process "IMAGING_MERGEPEAKS"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/mergepeaks"
+
+    test("dummy - csv ") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    0,
+                    [
+                        file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0.csv', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0_.csv', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("dummy - csv - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    0,
+                    [
+                        file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0.csv', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0_.csv', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

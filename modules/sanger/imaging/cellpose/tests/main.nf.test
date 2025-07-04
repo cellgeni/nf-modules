@@ -1,0 +1,109 @@
+nextflow_process {
+
+    name "Test Process IMAGING_CELLPOSE"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "IMAGING_CELLPOSE"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/cellpose"
+
+    test("mouse_heart - tiff - 500") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test'],
+                    0, 0, 500, 500,
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    20,
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("mouse_heart - tiff - 200") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test'],
+                    0, 0, 200, 200,
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    20,
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+
+    test("mouse_heart - tiff - 200 - large cell diameter") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test'],
+                    0, 0, 200, 200,
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    50,
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("mouse_heart - tiff - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test',],
+                    0, 0, 100, 100,
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    20,
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

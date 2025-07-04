@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "imaging_instanseg"
+description: A wrapper of InstanSeg segmentation tool
+keywords:
+  - image analysis
+  - segmentation
+  - instanseg
+tools:
+  - "imaging":
+      description: "A wrapper of InstanSeg segmentation tool"
+      homepage: "https://github.com/instanseg/instanseg/tree/main"
+      documentation: "https://github.com/instanseg/instanseg/tree/main"
+      tool_dev_url: "https://github.com/instanseg/instanseg/tree/main"
+      doi: ""
+      licence: Apache-2.0
+      identifier:
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - x_min:
+        type: int
+        description: "Minimum x coordinate"
+    - x_max:
+        type: int
+        description: "Maximum x coordinate"
+    - y_min:
+        type: int
+        description: "Minimum y coordinate"
+    - y_max:
+        type: int
+        description: "Maximum y coordinate"
+    - img:
+        type: file
+        description: Image file
+        pattern: "*.{tif,tiff,png,jpg,jpeg}"
+
+output:
+  - wkts:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "{prefix}.wkt":
+          type: file
+          description: wkt segmentation file
+          pattern: "*.wkt"
+
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

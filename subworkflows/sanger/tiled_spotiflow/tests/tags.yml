@@ -1,0 +1,2 @@
+subworkflows/tiled_spotiflow:
+  - subworkflows/sanger/tiled_spotiflow/**

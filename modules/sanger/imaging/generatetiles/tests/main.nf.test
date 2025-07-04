@@ -1,0 +1,60 @@
+// nf-core modules test IMAGING/generatetiles
+nextflow_process {
+
+    name "Test Process IMAGING_GENERATETILES"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "IMAGING_GENERATETILES"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/generatetiles"
+
+    test("mouse_heart - tiff") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("mouse_heart - tiff - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test',], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

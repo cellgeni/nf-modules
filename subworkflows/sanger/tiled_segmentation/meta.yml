@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "tiled_cellpose"
+description: A tiled version of CellPose to faciliate processing of large images on HPC
+keywords:
+  - cellpose
+  - segmentation
+  - instance segmentation
+  - deep-learning
+  - large-scale image processing
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test' ]`
+  - images:
+        type: file
+        description: |
+          The input channel containing the image files
+          Structure: [ val(meta), path(image) ]
+        pattern: "*.ome.{tif/tiff}"
+  - method:
+      type: string
+      description: |
+        The method to use for segmentation
+        Options: [ 'cellpose', 'stardist', 'instanseg' ]
+      
+output:
+  - wkt:
+      type: file
+      description: |
+        2D segmentation polygons in wkt format
+        Structure: [ val(meta), path(wkt) ]
+      pattern: "*.wkt"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

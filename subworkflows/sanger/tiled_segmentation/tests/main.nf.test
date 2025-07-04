@@ -1,0 +1,107 @@
+nextflow_workflow {
+
+    name "Test Subworkflow TILED_SEGMENTATION"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "TILED_SEGMENTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_sanger"
+    tag "subworkflows/tiled_segmentation"
+
+    test("nuclear - tif - cellpose") {
+
+        when {
+            params {
+                cell_diameters = 30
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ])
+                input[1] = 'CELLPOSE'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - stardist") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ])
+                input[1] = 'STARDIST'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - instanseg") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ])
+                input[1] = 'INSTANSEG'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - deepcell") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ])
+                input[1] = 'DEEPCELL'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+}

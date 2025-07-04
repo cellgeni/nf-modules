@@ -1,0 +1,68 @@
+{
+    "dummy - csv ": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_merged_peaks_ch_0.wkt:md5,25c0054be03fcb2cd27b2165996bac90"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,78bffdc58887416d3a0f24aaedd12936"
+                ],
+                "merged_peaks": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_merged_peaks_ch_0.wkt:md5,25c0054be03fcb2cd27b2165996bac90"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,78bffdc58887416d3a0f24aaedd12936"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-15T01:39:31.351711898"
+    },
+    "dummy - csv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_merged_peaks_ch_0.wkt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,78bffdc58887416d3a0f24aaedd12936"
+                ],
+                "merged_peaks": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_merged_peaks_ch_0.wkt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,78bffdc58887416d3a0f24aaedd12936"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-15T01:39:38.646386945"
+    }
+}

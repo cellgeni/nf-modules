@@ -1,0 +1,65 @@
+nextflow_process {
+
+    name "Test Process IMAGING_MERGEOUTLINES"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "IMAGING_MERGEOUTLINES"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/mergeoutlines"
+
+    test("mouse heart - wkt") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'test-0_0_200_200-diam_20_cp_outlines.wkt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'test-0_0_500_500-diam_20_cp_outlines.wkt', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("mouse heart - wkt - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'test-0_0_200_200-diam_20_cp_outlines.wkt', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'test-0_0_500_500-diam_20_cp_outlines.wkt', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

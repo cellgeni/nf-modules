@@ -1,0 +1,60 @@
+nextflow_process {
+
+    name "Test Process IMAGING_INSTANSEG"
+    script "../main.nf"
+    process "IMAGING_INSTANSEG"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "imaging"
+    tag "imaging/instanseg"
+
+    test("mouse_heart - tiff") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mouse_heart'],
+                    0, 0, 200, 200,
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("mouse_heart - tiff - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mouse_heart'],
+                    0, 0, 200, 200,
+                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}
