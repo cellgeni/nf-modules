@@ -6,7 +6,7 @@ nextflow_workflow {
     workflow "TILED_SEGMENTATION"
 
     tag "subworkflows"
-    tag "subworkflows_sanger"
+    tag "subworkflows_sanger-cellgeni"
     tag "subworkflows/tiled_segmentation"
 
     test("nuclear - tif - cellpose") {

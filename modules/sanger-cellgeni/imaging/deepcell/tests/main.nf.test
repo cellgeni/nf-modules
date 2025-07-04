@@ -6,7 +6,7 @@ nextflow_process {
     process "IMAGING_DEEPCELL"
 
     tag "modules"
-    tag "modules_sanger"
+    tag "modules_sanger-cellgeni"
     tag "imaging"
     tag "imaging/deepcell"
 

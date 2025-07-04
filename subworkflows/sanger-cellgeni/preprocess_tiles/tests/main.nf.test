@@ -7,7 +7,7 @@ nextflow_workflow {
     config "./nextflow.config"
 
     tag "subworkflows"
-    tag "subworkflows_sanger"
+    tag "subworkflows_sanger-cellgeni"
     tag "subworkflows/preprocess_tiles"
 
 

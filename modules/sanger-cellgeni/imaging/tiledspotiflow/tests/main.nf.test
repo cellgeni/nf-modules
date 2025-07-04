@@ -6,7 +6,7 @@ nextflow_process {
     process "IMAGING_TILEDSPOTIFLOW"
 
     tag "modules"
-    tag "modules_sanger"
+    tag "modules_sanger-cellgeni"
     tag "IMAGING"
     tag "IMAGING/tiledspotiflow"
 

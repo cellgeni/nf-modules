@@ -1,13 +1,13 @@
 #!/usr/bin/env/ nextflow
 
-include { IMAGING_MICROALIGNER } from '../../../modules/sanger/imaging/microaligner/main'
+include { IMAGING_MICROALIGNER } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
 
 params.referece_channel = "DAPI"
 params.reference_cycle = 1
 
 params.debug = true
 
-include { IMAGING_MICROALIGNER as MICROALIGNER_FEATREG ; IMAGING_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger/imaging/microaligner/main'
+include { IMAGING_MICROALIGNER as MICROALIGNER_FEATREG ; IMAGING_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
 
 
 process GENERATE_FEAT_REG_YAML {

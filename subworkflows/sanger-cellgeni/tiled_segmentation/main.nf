@@ -1,9 +1,9 @@
-include { IMAGING_CELLPOSE as CELLPOSE } from '../../../modules/sanger/imaging/cellpose/main'
-include { IMAGING_STARDIST as STARDIST } from '../../../modules/sanger/imaging/stardist/main'
-include { IMAGING_INSTANSEG as INSTANSEG } from '../../../modules/sanger/imaging/instanseg/main'
-include { IMAGING_DEEPCELL as DEEPCELL } from '../../../modules/sanger/imaging/deepcell/main'
-include { IMAGING_MERGEOUTLINES as MERGEOUTLINES } from '../../../modules/sanger/imaging/mergeoutlines/main'
-include { IMAGING_GENERATETILES as GENERATE_TILE_COORDS } from '../../../modules/sanger/imaging/generatetiles/main'
+include { IMAGING_CELLPOSE as CELLPOSE } from '../../../modules/sanger-cellgeni/imaging/cellpose/main'
+include { IMAGING_STARDIST as STARDIST } from '../../../modules/sanger-cellgeni/imaging/stardist/main'
+include { IMAGING_INSTANSEG as INSTANSEG } from '../../../modules/sanger-cellgeni/imaging/instanseg/main'
+include { IMAGING_DEEPCELL as DEEPCELL } from '../../../modules/sanger-cellgeni/imaging/deepcell/main'
+include { IMAGING_MERGEOUTLINES as MERGEOUTLINES } from '../../../modules/sanger-cellgeni/imaging/mergeoutlines/main'
+include { IMAGING_GENERATETILES as GENERATE_TILE_COORDS } from '../../../modules/sanger-cellgeni/imaging/generatetiles/main'
 
 
 workflow TILED_SEGMENTATION {

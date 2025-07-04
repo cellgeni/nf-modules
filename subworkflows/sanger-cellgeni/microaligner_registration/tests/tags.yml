@@ -1,2 +1,2 @@
 subworkflows/microaligner_registration:
-  - subworkflows/sanger/microaligner_registration/**
+  - subworkflows/sanger-cellgeni/microaligner_registration/**

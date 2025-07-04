@@ -1,2 +1,2 @@
 subworkflows/tiled_spotiflow:
-  - subworkflows/sanger/tiled_spotiflow/**
+  - subworkflows/sanger-cellgeni/tiled_spotiflow/**
