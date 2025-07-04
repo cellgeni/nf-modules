@@ -1,7 +1,7 @@
 process IMAGING_POSTCODE {
     tag "${meta.id}"
 
-    container "quay.io/bioinfotongli/postcode:0.2.0"
+    container "quay.io/cellgeni/postcode:0.2.0"
 
     input:
     tuple val(meta), file(spot_profile), file(spot_loc), file(codebook), file(readouts), val(R)
