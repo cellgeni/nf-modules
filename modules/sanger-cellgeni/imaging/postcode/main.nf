@@ -14,10 +14,16 @@ process IMAGING_POSTCODE {
     script:
     prefix = meta.id ?: "none"
     out_name = "${prefix}_decoded_spots.csv"
+    readouts = readouts ? "--readouts ${readouts}" : ""
     def args = task.ext.args ?: ""
     """
-    decode.py run --spot_profile_p ${spot_profile} --spot_locations_p ${spot_loc} \\
-        --codebook_p ${codebook} --out_name ${out_name} --readouts_csv ${readouts} --R ${R} \
+    decode.py run \
+        --spot_profile_p ${spot_profile} \
+        --spot_locations_p ${spot_loc} \
+        --codebook_p ${codebook} \
+        --out_name ${out_name} \
+        --R ${R} \
+        ${readouts}  \
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
