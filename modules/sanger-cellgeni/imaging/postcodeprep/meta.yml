@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "imaging_postcodeprep"
+description: Preprocess both profile to be decoded and the corresponding codebook for PoSTCode decoding
+keywords:
+  - spatial transcriptomics
+  - decoding
+  - codebook
+  - starfish
+tools:
+  - "imaging":
+      description: "a toolset for bioimage analysis"
+      homepage: "https://"
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - profile:
+        type: file
+        description: Profile to be decoded in the [N, Channel, Round] shape.
+        pattern: "*.npy"
+
+    - tabular_codebook:
+        type: file
+        description: Codebook for decoding.
+        pattern: "*.{tsv,csv,xlsx}"
+
+    - readout_file:
+        type: file
+        description: File containing readout information.
+        pattern: "*.{tsv,csv}"
+    - R:
+        type: integer
+        description: Number of rounds in the experiment.
+
+output:
+  for_decoding:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.reformatted_profile.npy":
+          type: file
+          description: reformatted profile file
+          pattern: "*.npy"
+
+      - "*.starfish_codebook.json":
+          type: file
+          description: reformatted starfish file
+          pattern: "*.json"
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

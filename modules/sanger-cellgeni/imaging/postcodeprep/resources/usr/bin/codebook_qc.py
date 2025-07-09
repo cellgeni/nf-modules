@@ -47,7 +47,7 @@ def filter_columns_by_regex(df: pd.DataFrame, pattern: str) -> pd.DataFrame:
     return df.loc[:, df.columns.to_series().apply(lambda x: bool(regex.match(x)))]
 
 
-def load_codebook(codebook_path: str, codebook_code_col: str) -> pd.DataFrame:
+def load_tabular_codebook(codebook_path: str, codebook_code_col: str) -> pd.DataFrame:
     """
     Read codebook from a file.
 

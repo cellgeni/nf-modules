@@ -4,7 +4,7 @@ process IMAGING_POSTCODE {
     container "quay.io/cellgeni/postcode:0.2.0"
 
     input:
-    tuple val(meta), file(spot_profile), file(spot_loc), file(codebook), file(readouts), val(R)
+    tuple val(meta), file(profile), file(spot_loc), file(starfish_codebook), file(readouts), val(R)
 
     output:
     tuple val(meta), path("${out_name}"), emit: decoded_peaks
@@ -18,9 +18,9 @@ process IMAGING_POSTCODE {
     def args = task.ext.args ?: ""
     """
     decode.py run \
-        --spot_profile_p ${spot_profile} \
+        --spot_profile_p ${profile} \
         --spot_locations_p ${spot_loc} \
-        --codebook_p ${codebook} \
+        --codebook_p ${starfish_codebook} \
         --out_name ${out_name} \
         --R ${R} \
         ${readouts}  \
