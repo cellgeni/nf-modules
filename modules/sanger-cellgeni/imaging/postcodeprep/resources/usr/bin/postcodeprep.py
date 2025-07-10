@@ -108,6 +108,7 @@ def decode(
         is_merfish=is_merfish,
     )
     starfish_book.to_json(out_starfish_codebook)
+    codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
 
     spot_profile = np.load(profile)
 
@@ -120,9 +121,16 @@ def decode(
         processed_spot_profile, _ = average_spot_profiles(
             reordered_profile, readouts_csv
         )
+        barcodes_0123_str = ["".join(k) for k in codebook_arr[:, 0, :].astype(str)]
     else:
         processed_spot_profile = reordered_profile
+        barcodes_0123_str = [
+            "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
+        ]
     np.save(out_reformatted_profile, processed_spot_profile)
+    with open("barcodes_0123_str.txt", "w") as f:
+        for barcode in barcodes_0123_str:
+            f.write(f"{barcode}\n")
 
 
 if __name__ == "__main__":
