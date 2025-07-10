@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright (c) 2024 Wellcome Sanger Institute
+# Copyright (c) 2025 Wellcome Sanger Institute
 
 import numpy as np
 import pandas as pd
@@ -8,56 +8,68 @@ import fire
 from avg_spot_profile import main as average_spot_profiles
 import logging
 
-# from prepare_ISS import prepare_iss
 import os
 from codebook_qc import load_tabular_codebook, qc_codebook, to_starfish_codebook
-from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
-# def ReadPrepCodebook_ISS(codebook_path):
-#     '''
-#     ISS stands for In Situ Sequencing. It is a method for encoding ISS data.
-#     '''
-#     #I consider single channel!
-#     codebook_in = load_codebook(codebook_path)
-#     codes = codebook_in['code']
-#     n_genes = len(codes); n_rounds = len(str(codes[0]))
-#     n_channel = -1
-#     for channel in codebook_in.columns:
-#         if 'channel' in channel:
-#             channel_index = int(channel.split('_')[1].replace('channel', ''))
-#             if channel_index > n_channel:
-#                 n_channel = channel_index
-#     n_channel -= 1 #remove DAPI/Hoechst channel
-#     codebook_3d = np.zeros((n_genes, n_channel, n_rounds), dtype =  'uint8')
-#     for ng in range(n_genes):
-#         for nr in range(n_rounds):
-#             for nch in range(n_channel):
-#                 codebook_3d[ng, nch, nr] = int(codebook_in['channel_' + str(nch+1)][ng][nr])
-#                 # codebook_3d[ng, 0, nr] = int(str(codes[ng])[nr])
-#     gene_list_obj = np.array(codebook_in['gene'], dtype = object)
-#     return gene_list_obj, codebook_3d, n_genes
+def reorder_profile(profile, channel_orders=[0, 1, 2, 3, 4], n_cycles=None):
+    """
+    Reorder hyperstack based on channel orders for each cycle
 
+    Parameters:
+    -----------
+    profile : np.ndarray
+        Input hyperstack array with shape (n_channels * n_cycle, ...) or (n_cycles * n_channels, ...)
+    channel_orders : list, optional
+        List containing channel orders for each cycle.
+    n_cycles : int, optional
+        Number of cycles in the hyperstack. If not provided, it will be inferred from the
+        shape of the profile.
 
-# def ReadPrepCodebook_MER(codebook_path, N_readouts):
-#     '''
-#     MER stands for Multiplex Error Robust. It is a method for encoding MERFISH data.
-#     '''
-#     codebook_in = load_codebook(codebook_path)
-#     print(codebook_in)
-#     n_genes = codebook_in.shape[0]; n_rounds = N_readouts
-#     codebook_3d = np.zeros((n_genes, 1, n_rounds), dtype =  'uint8')
-#     for ng in range(n_genes):
-#         for nr in range(n_rounds):
-#             column_name = 'Readout_' + str(nr+1)
-#             codebook_3d[ng, 0, nr] = int(codebook_in[column_name][ng])
-#     gene_list_obj = np.array(codebook_in['gene'], dtype = object)
-#     return gene_list_obj, codebook_3d, n_genes
+    Returns:
+    --------
+    np.ndarray
+        Reordered hyperstack with correct channel ordering
+    """
+    assert (
+        len(profile.shape) == 2
+    ), "Profile should be a 2D array with shape (n_channels * n_cycles, n_features)"
+    n_total_channels = profile.shape[0]
+    channel_orders = np.array(channel_orders, dtype=int)
+    n_channel = len(channel_orders)
+    cycle_channel_mask = channel_orders != 0
+    print(cycle_channel_mask)
+    if n_channel != n_total_channels:
+        assert (
+            n_total_channels % n_channel == 0
+        ), f"Number of channels ({n_total_channels}) must be a multiple of the number of channel ({n_channel})"
+        n_cycles = n_total_channels // n_channel if n_cycles is None else n_cycles
+        channel_orders = np.vstack(
+            [
+                (i * n_channel + channel_orders) * cycle_channel_mask
+                for i in range(n_cycles)
+            ]
+        )
+        channel_orders = channel_orders[channel_orders != 0] - 1
+    else:
+        assert (
+            n_cycles is not None
+        ), "n_cycles should be set if complete channel_orders is provided"
+        n_channel = n_total_channels // n_cycles
+        # User gave the full channel orders, should be 0-based
+        channel_orders = channel_orders
+    print(channel_orders)
+    # Reorder the profile
+    return (
+        profile[channel_orders]
+        .reshape(n_channel, n_cycles, profile.shape[1])
+        .transpose(2, 0, 1)
+    )
 
 
 def decode(
@@ -70,6 +82,7 @@ def decode(
     codebook_targer_col: str = "Gene",
     codebook_code_col: str = "code",
     coding_col_prefix: str = "cycle\d_channel\d_+",
+    channel_orders: list = [0, 1, 2, 3, 4],
 ) -> pd.DataFrame:
     """
     Decodes spots using the Postcode algorithm.
@@ -99,55 +112,17 @@ def decode(
     spot_profile = np.load(profile)
 
     if len(spot_profile.shape) == 2 and R:
-        # if the spot_profile is two dimensional, it is assumed that the spot_profile is in
-        # the shape of (n_channel*n_cycle, n_spot). Then reshape it.
-        n_ch, n_spots = spot_profile.shape
-        # fine DAPI/Hoechst channel indexes and remove them from the profile
-        n_chs_per_cycle = n_ch // R
-        coding_mask_pre_cycle = np.ones(n_chs_per_cycle)
-        coding_mask_pre_cycle[0] = 0  # remove DAPI/Hoechst channel
-        coding_ch_mask = np.array(list(coding_mask_pre_cycle) * R, dtype=bool)
-        spot_profile = spot_profile[coding_ch_mask].reshape(
-            R, n_chs_per_cycle - 1, n_spots
-        )
-        spot_profile = spot_profile.transpose(2, 1, 0)
-        # np.save(f"{stem}_reshaped_spot_profile.npy", spot_profile)
-        print(
-            spot_profile.shape,
-            "\n",
-            spot_profile[0],
-            type(spot_profile[0]),
-            "\n",
-            spot_profile[0].dtype,
+        reordered_profile = reorder_profile(
+            spot_profile, channel_orders=channel_orders, n_cycles=R
         )
 
     if is_merfish:
-        spot_profile, _ = average_spot_profiles(spot_profile, readouts_csv)
-    # if os.path.getsize(readouts_csv) != 0: # MERFISH-like data, this file should be provided
-    #     spot_profile, N_readouts = average_spot_profiles(spot_profile, readouts_csv) # Average is chosen over max for MERFISH-like profiles
-    #     gene_list, codebook_arr, K = ReadPrepCodebook_MER(codebook_p, N_readouts)
-    # else:
-    #     codebook_arr, spot_profile, gene_list, K = prepare_iss(codebook_p, spot_profile_p, **prepare_iss_kwargs)
-
-    np.save(out_reformatted_profile, spot_profile)
-
-    # # Decode using postcode
-    # out = decoding_function(spot_profile, codebook_arr, print_training_progress=False)
-
-    # # Reformat output into pandas dataframe
-    # df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
-    # if is_merfish:
-    #     barcodes_0123_str = ["".join(k) for k in codebook_arr[:, 0, :].astype(str)]
-    # else:
-    #     barcodes_0123_str = [
-    #         "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
-    #     ]
-    #     # barcodes_0123_str = ["".join(k) for k in codebook_arr.astype(str)]
-    # # barcodes_0123 = codebook_arr[:,0,:]
-    # # barcodes_AGCT = np.empty(K, dtype='object')
-    # # for k in range(K):
-    # #     barcodes_AGCT[k] = ''.join(list(barcodes_0123[k, :].astype(str)))
-    # df_class_codes = np.concatenate((barcodes_0123_str, ["NA", "0000", "NA"]))
+        processed_spot_profile, _ = average_spot_profiles(
+            reordered_profile, readouts_csv
+        )
+    else:
+        processed_spot_profile = reordered_profile
+    np.save(out_reformatted_profile, processed_spot_profile)
 
 
 if __name__ == "__main__":
