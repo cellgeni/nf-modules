@@ -1,1 +1,1 @@
-__all__ = ['avg_spot_profile', 'decoding_functions']
+__all__ = ["decoding_functions"]
