@@ -41,6 +41,8 @@ def decode(
     Returns:
         pd.DataFrame: A pandas DataFrame containing the decoded spots and their locations.
     """
+    with open(barcode_0123_p, "r") as file:
+        barcodes_0123_str = [line.strip() for line in file]
     starfish_book = Codebook.open_json(starfish_codebook_p)
     codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
     gene_list = np.array(starfish_book.target)
@@ -64,8 +66,6 @@ def decode(
 
     # Reformat output into pandas dataframe
     df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
-    with open(barcode_0123_p, "r") as file:
-        barcodes_0123_str = [line.strip() for line in file]
     df_class_codes = np.concatenate(
         (barcodes_0123_str, ["infeasible", "background", "NA"])
     )
