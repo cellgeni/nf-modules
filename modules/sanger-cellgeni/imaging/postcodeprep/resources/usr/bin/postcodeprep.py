@@ -77,6 +77,7 @@ def decode(
     tabular_codebook: str,
     out_starfish_codebook: str,
     out_reformatted_profile: str,
+    out_barcodes_0123_str: str,
     readouts_csv: str = None,
     R: int = None,
     codebook_targer_col: str = "Gene",
@@ -128,7 +129,7 @@ def decode(
             "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
         ]
     np.save(out_reformatted_profile, processed_spot_profile)
-    with open("barcodes_0123_str.txt", "w") as f:
+    with open(out_barcodes_0123_str, "w") as f:
         for barcode in barcodes_0123_str:
             f.write(f"{barcode}\n")
 
