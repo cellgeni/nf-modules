@@ -117,6 +117,8 @@ def decode(
         reordered_profile = reorder_profile(
             spot_profile, channel_orders=channel_orders, n_cycles=R
         )
+    else:
+        reordered_profile = spot_profile
 
     if is_merfish:
         processed_spot_profile, _ = average_spot_profiles(

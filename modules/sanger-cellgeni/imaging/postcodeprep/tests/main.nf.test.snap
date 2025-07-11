@@ -1,0 +1,76 @@
+{
+    "ISS - npy": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reformatted_profile.npy:md5,ee3dc5826c11d393aaf813b08026c5c2",
+                        "test_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "test_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ],
+                "for_decoding": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reformatted_profile.npy:md5,ee3dc5826c11d393aaf813b08026c5c2",
+                        "test_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "test_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-07-11T14:40:18.112071426"
+    },
+    "ISS - npy - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reformatted_profile.npy:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_starfish_codebook.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_barcodes_0123_str.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ],
+                "for_decoding": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_reformatted_profile.npy:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_starfish_codebook.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test_barcodes_0123_str.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-07-11T14:40:00.276319431"
+    }
+}
