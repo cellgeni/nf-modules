@@ -10,6 +10,32 @@ nextflow_process {
     tag "imaging"
     tag "imaging/postcodeprep"
 
+    test("merfish - npy") {
+
+        when {
+            params.postcodeprep_args = "--coding_col_prefix Readouts* --codebook_targer_col gene "
+            process {
+                """
+                input[0] = [
+                    [ id:'merfish' ], // meta map
+                    file(params.modules_testdata_base_path + '/ISS/decoding/merfish_transcript_profile.npy', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/ISS/decoding/codebook.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + '/ISS/decoding/readouts.csv', checkIfExists: true),
+                    6,
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
     test("ISS - npy") {
 
         when {
@@ -17,10 +43,10 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test' ], // meta map
+                    [ id:'iss' ], // meta map
                     file(params.modules_testdata_base_path + '/ISS/decoding/merfish_transcript_profile.npy', checkIfExists: true),
                     file(params.modules_testdata_base_path + '/ISS/decoding/codebook.csv', checkIfExists: true),
-                    file(params.modules_testdata_base_path + '/ISS/decoding/readouts.csv', checkIfExists: true),
+                    [],
                     6,
                 ]
                 """
