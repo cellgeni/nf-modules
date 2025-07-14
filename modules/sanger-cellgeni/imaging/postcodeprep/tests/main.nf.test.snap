@@ -36,6 +36,43 @@
         },
         "timestamp": "2025-07-11T14:54:28.742097893"
     },
+    "merfish - npy - 1": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merfish_1"
+                        },
+                        "merfish_1_reformatted_profile.npy:md5,1767337178874628135d325468822e8a",
+                        "merfish_1_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_1_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ],
+                "for_decoding": [
+                    [
+                        {
+                            "id": "merfish_1"
+                        },
+                        "merfish_1_reformatted_profile.npy:md5,1767337178874628135d325468822e8a",
+                        "merfish_1_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_1_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-07-11T23:18:05.16106763"
+    },
     "merfish - npy": {
         "content": [
             {
@@ -73,6 +110,80 @@
         },
         "timestamp": "2025-07-11T14:50:35.173031726"
     },
+    "merfish - npy - 100000": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merfish_100000"
+                        },
+                        "merfish_100000_reformatted_profile.npy:md5,45f2e67209caf00d01113dc3802c8519",
+                        "merfish_100000_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_100000_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ],
+                "for_decoding": [
+                    [
+                        {
+                            "id": "merfish_100000"
+                        },
+                        "merfish_100000_reformatted_profile.npy:md5,45f2e67209caf00d01113dc3802c8519",
+                        "merfish_100000_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_100000_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-07-11T23:18:38.814057637"
+    },
+    "merfish - npy - 5000": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merfish_5000"
+                        },
+                        "merfish_5000_reformatted_profile.npy:md5,ee3dc5826c11d393aaf813b08026c5c2",
+                        "merfish_5000_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_5000_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ],
+                "for_decoding": [
+                    [
+                        {
+                            "id": "merfish_5000"
+                        },
+                        "merfish_5000_reformatted_profile.npy:md5,ee3dc5826c11d393aaf813b08026c5c2",
+                        "merfish_5000_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_5000_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-07-11T23:18:27.430999861"
+    },
     "ISS - npy - stub": {
         "content": [
             {
@@ -109,5 +220,42 @@
             "nextflow": "24.10.5"
         },
         "timestamp": "2025-07-11T14:40:00.276319431"
+    },
+    "merfish - npy - 200": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merfish_200"
+                        },
+                        "merfish_200_reformatted_profile.npy:md5,5a3d1b515873ce5fb3a85cde34c1bad2",
+                        "merfish_200_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_200_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ],
+                "for_decoding": [
+                    [
+                        {
+                            "id": "merfish_200"
+                        },
+                        "merfish_200_reformatted_profile.npy:md5,5a3d1b515873ce5fb3a85cde34c1bad2",
+                        "merfish_200_starfish_codebook.json:md5,846c498cb0b5363e5fcfa44e94bf60b7",
+                        "merfish_200_barcodes_0123_str.txt:md5,1240bdd581957bc56a810734a5b39b0e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,5b96538fa4f568da2baa52f59a47ee67"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-07-11T23:18:16.308555074"
     }
 }
