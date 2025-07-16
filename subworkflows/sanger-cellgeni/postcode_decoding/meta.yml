@@ -1,44 +1,58 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "postcode_decoding"
-## TODO nf-core: Add a description of the subworkflow and list keywords
 description: Sort SAM/BAM/CRAM file
 keywords:
-  - sort
-  - bam
-  - sam
-  - cram
-## TODO nf-core: Add a list of the modules and/or subworkflows used in the subworkflow
+  - spatial transcriptomics
+  - decoding
+  - postcode
+  - probabilistic decoding
 components:
-  - samtools/sort
-  - samtools/index
-## TODO nf-core: List all of the channels used as input with a description and their structure
+  - imaging/postcodeprep
+  - imaging/postcode
 input:
-  - ch_bam:
+  - ch_profile:
       type: file
       description: |
-        The input channel containing the BAM/CRAM/SAM files
-        Structure: [ val(meta), path(bam) ]
-      pattern: "*.{bam/cram/sam}"
-## TODO nf-core: List all of the channels used as output with a descriptions and their structure
+        The input channel containing the spot/cell profile files
+        Structure: [ val(meta), path(profile) ]
+      pattern: "*.npy"
+  - ch_tabular_codebook:
+      type: file
+      description: |
+        The codebook in a tabular format
+        Structure: [ val(meta), path(tab_codebook) ]
+      pattern: "*.{csv/tsv/xlsx}"
+  - ch_readout_file:
+      type: file
+      description: |
+        The input channel containing the readout file for MERFISH-like data
+        Structure: [ val(meta), path(readout) ]
+      pattern: "*.tsv"
+  - ch_R:
+      type: int
+      description: |
+        The number of imaging round for the profile
+        Structure: [ val(meta), 6 ]
+  - ch_loc:
+      type: file
+      description: |
+        The cell/pixel/spot locatisable tsv file 
+        Structure: [ val(meta), path(localisation) ]
+      pattern: "*.{tsv/csv}"
+
 output:
-  - bam:
+  - decoding_result:
       type: file
       description: |
-        Channel containing BAM files
-        Structure: [ val(meta), path(bam) ]
-      pattern: "*.bam"
-  - bai:
+        Channel containing decoded results
+        Structure: [ val(meta), path(csv) ]
+      pattern: "*.csv"
+  - processed_profiles:
       type: file
       description: |
-        Channel containing indexed BAM (BAI) files
-        Structure: [ val(meta), path(bai) ]
-      pattern: "*.bai"
-  - csi:
-      type: file
-      description: |
-        Channel containing CSI files
-        Structure: [ val(meta), path(csi) ]
-      pattern: "*.csi"
+        Channel containing reformatted profile files
+        Structure: [ val(meta), path(profile) ]
+      pattern: "*.npy"
   - versions:
       type: file
       description: |

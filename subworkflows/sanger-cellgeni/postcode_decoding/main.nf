@@ -33,7 +33,7 @@ workflow POSTCODE_DECODING {
     ch_versions = ch_versions.mix(IMAGING_POSTCODEPREP.out.versions.first())
 
     emit:
-    bam = IMAGING_POSTCODE.out.decoded_peaks // channel: [ val(meta), [ bam ] ]
-    csi = IMAGING_POSTCODEPREP.out.for_decoding // channel: [ val(meta), [ csi ] ]
+    decoding_result = IMAGING_POSTCODE.out.decoded_peaks // channel: [ val(meta), [ pixel/cell ] ]
+    processed_profiles = IMAGING_POSTCODEPREP.out.for_decoding // channel: [ val(meta), [ pixel/cell ] ]
     versions = ch_versions // channel: [ versions.yml ]
 }
