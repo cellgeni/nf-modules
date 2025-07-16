@@ -22,7 +22,8 @@ def decode(
     barcode_0123_p: str,
     starfish_codebook_p: str,
     out_name: str,
-    keep_noises=True,
+    decoding_params: str,
+    zero_threshold=0.5,
 ) -> pd.DataFrame:
     """
     Decodes spots using the Postcode algorithm.
@@ -61,8 +62,26 @@ def decode(
     else:
         raise ValueError("spot_locations_p should have 2 or 3 columns")
 
+    # Check if there are too many zeros in the profile
+    zero_proportion = np.mean(spot_profile == 0, axis=(1, 2))
+
+    if np.all(zero_proportion > zero_threshold):
+        logger.info("Too many zeros in the profile, skipping decoding.")
+        spot_locations["Name"] = "high_zero_proportion"
+        spot_locations.to_csv(out_name, index=False)
+        return spot_locations
+
+    print(spot_profile)
     # Decode using postcode
-    out = decoding_function(spot_profile, codebook_arr, print_training_progress=False)
+    try:
+        out = decoding_function(
+            spot_profile, codebook_arr, print_training_progress=False, **decoding_params
+        )
+    except ValueError as e:
+        logger.error(f"Decoding failed: {e}")
+        spot_locations["Name"] = "decoding_failed"
+        spot_locations.to_csv(out_name, index=False)
+        return spot_locations
 
     # Reformat output into pandas dataframe
     df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
@@ -72,14 +91,7 @@ def decode(
     decoded_spots_df = decoding_output_to_dataframe(out, df_class_names, df_class_codes)
 
     decoded_df_s = pd.concat([decoded_spots_df, spot_locations], axis=1)
-
-    if keep_noises:
-        decoded_df_s.to_csv(out_name, index=False)
-    else:
-        # Remove infeasible and background codes
-        decoded_df_s[
-            ~np.isin(decoded_df_s["Name"], ["background", "infeasible"])
-        ].reset_index(drop=True).to_csv(out_name, index=False)
+    decoded_df_s.to_csv(out_name, index=False)
 
 
 if __name__ == "__main__":

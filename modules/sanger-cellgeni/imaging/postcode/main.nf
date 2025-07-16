@@ -4,7 +4,7 @@ process IMAGING_POSTCODE {
     container "quay.io/cellgeni/postcode:0.2.0"
 
     input:
-    tuple val(meta), file(profile), file(spot_loc), file(starfish_codebook), file(readouts), val(R)
+    tuple val(meta), file(profile), file(starfish_codebook), file(barcode_0123), file(spot_loc)
 
     output:
     tuple val(meta), path("${out_name}"), emit: decoded_peaks
@@ -14,16 +14,14 @@ process IMAGING_POSTCODE {
     script:
     prefix = meta.id ?: "none"
     out_name = "${prefix}_decoded_spots.csv"
-    readouts = readouts ? "--readouts ${readouts}" : ""
     def args = task.ext.args ?: ""
     """
     decode.py run \
         --spot_profile_p ${profile} \
         --spot_locations_p ${spot_loc} \
-        --codebook_p ${starfish_codebook} \
+        --starfish_codebook_p ${starfish_codebook} \
+        --barcode_0123_p ${barcode_0123} \
         --out_name ${out_name} \
-        --R ${R} \
-        ${readouts}  \
         ${args}
 
     cat <<-END_VERSIONS > versions.yml

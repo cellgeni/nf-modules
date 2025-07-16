@@ -154,7 +154,7 @@ def decoding_function(
     barcodes_01,
     num_iter=60,
     batch_size=15000,
-    up_prc_to_remove=99.95,
+    up_prc_to_remove: float = 99.95,
     modify_bkg_prior=True,  # should be False when there is a lot of background
     # signal (eg pixel-wise decoding, a lot of noisy
     # boundary tiles)
@@ -204,7 +204,7 @@ def decoding_function(
     else:
         inf_ind = np.empty((0,), dtype=np.int32)
 
-    # normalize spot values
+    # filter out spots that doesn't have appropriate profile
     ind_keep = (
         np.where(
             np.sum(
@@ -217,12 +217,19 @@ def decoding_function(
         if up_prc_to_remove < 100
         else np.arange(0, N)
     )
-    s = torch.tensor(np.percentile(data[ind_keep, :].cpu().numpy(), 60, axis=0))
-    max_s = torch.tensor(np.percentile(data[ind_keep, :].cpu().numpy(), 99.9, axis=0))
-    min_s = torch.min(data[ind_keep, :], dim=0).values
+    if len(ind_keep) == 0:
+        raise ValueError(
+            "There are no spots with appropriate profiles, please check the input data."
+        )
+    filtered_data = data[ind_keep, :]
+    # Get statistics for normalization after removing outliers
+    s = torch.tensor(np.percentile(filtered_data.cpu().numpy(), 60, axis=0))
+    max_s = torch.tensor(np.percentile(filtered_data.cpu().numpy(), 99.9, axis=0))
+    print(s, max_s)
+    min_s = torch.min(filtered_data, dim=0).values
     log_add = (s**2 - max_s * min_s) / (max_s + min_s - 2 * s)
     log_add = torch.max(
-        -torch.min(data[ind_keep, :], dim=0).values + 1e-10, other=log_add.float()
+        -torch.min(filtered_data, dim=0).values + 1e-10, other=log_add.float()
     )
     data_log = torch.log10(data + log_add)
     data_log_mean = data_log[ind_keep, :].mean(dim=0, keepdim=True)
