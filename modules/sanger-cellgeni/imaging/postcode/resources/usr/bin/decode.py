@@ -22,7 +22,7 @@ def decode(
     barcode_0123_p: str,
     starfish_codebook_p: str,
     out_name: str,
-    decoding_params: str,
+    decoding_params: str = None,
     zero_threshold=0.5,
 ) -> pd.DataFrame:
     """
