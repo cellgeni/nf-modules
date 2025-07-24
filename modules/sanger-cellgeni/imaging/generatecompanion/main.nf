@@ -3,7 +3,7 @@ process IMAGING_GENERATECOMPANION {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/imagetileprocessor:0.1.13"
+    container "quay.io/cellgeni/imagetileprocessor:0.1.16"
 
     input:
     tuple val(meta), val(round), path(image_root_folder)
