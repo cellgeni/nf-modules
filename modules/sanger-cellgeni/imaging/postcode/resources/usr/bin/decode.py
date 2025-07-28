@@ -22,7 +22,7 @@ def decode(
     barcode_0123_p: str,
     starfish_codebook_p: str,
     out_name: str,
-    decoding_params: str = None,
+    decoding_params: str = {},
     zero_threshold=0.5,
 ) -> pd.DataFrame:
     """
@@ -49,7 +49,7 @@ def decode(
     gene_list = np.array(starfish_book.target)
     # K = len(starfish_book.target)
 
-    spot_profile = np.load(spot_profile_p)
+    spot_profile = np.load(spot_profile_p).astype(np.float16)
     spot_locations = pd.read_csv(spot_locations_p)
     assert (
         spot_locations.shape[0] == spot_profile.shape[0]
@@ -81,7 +81,7 @@ def decode(
         logger.error(f"Decoding failed: {e}")
         spot_locations["Name"] = "decoding_failed"
         spot_locations.to_csv(out_name, index=False)
-        return spot_locations
+        raise e
 
     # Reformat output into pandas dataframe
     df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
