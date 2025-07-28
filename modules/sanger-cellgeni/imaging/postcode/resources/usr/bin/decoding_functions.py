@@ -58,15 +58,9 @@ def chol_sigma_from_vec(sigma_vec, D):
 
 def e_step(data, w, theta, sigma, N, K, print_training_progress):
     class_probs = torch.ones(N, K)
-    if print_training_progress:
-        for k in tqdm(range(K)):
-            dist = MultivariateNormal(theta[k], sigma)
-            class_probs[:, k] = w[k] * torch.exp(dist.log_prob(data))
-    else:
-        for k in range(K):
-            dist = MultivariateNormal(theta[k], sigma)
-            class_probs[:, k] = w[k] * torch.exp(dist.log_prob(data))
-
+    for k in tqdm(range(K), disable=not print_training_progress):
+        dist = MultivariateNormal(theta[k], sigma)
+        class_probs[:, k] = w[k] * torch.exp(dist.log_prob(data))
     class_prob_norm = class_probs.div(torch.sum(class_probs, dim=1, keepdim=True))
     # class_prob_norm[torch.isnan(class_prob_norm)] = 0
     return class_prob_norm
@@ -137,14 +131,9 @@ def train(
 ):
     pyro.clear_param_store()
     losses = []
-    if print_training_progress:
-        for j in tqdm(range(num_iterations)):
-            loss = svi.step(data, N, D, C, R, K, codes, batch_size)
-            losses.append(loss)
-    else:
-        for j in range(num_iterations):
-            loss = svi.step(data, N, D, C, R, K, codes, batch_size)
-            losses.append(loss)
+    for j in tqdm(range(num_iterations), disable=not print_training_progress):
+        loss = svi.step(data, N, D, C, R, K, codes, batch_size)
+        losses.append(loss)
     return losses
 
 
@@ -225,13 +214,20 @@ def decoding_function(
     # Get statistics for normalization after removing outliers
     s = torch.tensor(np.percentile(filtered_data.cpu().numpy(), 60, axis=0))
     max_s = torch.tensor(np.percentile(filtered_data.cpu().numpy(), 99.9, axis=0))
-    print(s, max_s)
+    # print(s, max_s)
     min_s = torch.min(filtered_data, dim=0).values
     log_add = (s**2 - max_s * min_s) / (max_s + min_s - 2 * s)
     log_add = torch.max(
         -torch.min(filtered_data, dim=0).values + 1e-10, other=log_add.float()
     )
-    data_log = torch.log10(data + log_add)
+    # Add log_add to data for normalization
+    data_log_added = data + log_add
+
+    # Replace any zero values in data_log_added with the smallest positive float
+    zero_mask = data_log_added == 0
+    if zero_mask.any():
+        data_log_added[zero_mask] = np.finfo(float).eps
+    data_log = torch.log10(data_log_added)
     data_log_mean = data_log[ind_keep, :].mean(dim=0, keepdim=True)
     data_log_std = data_log[ind_keep, :].std(dim=0, keepdim=True)
     data_norm = (data_log - data_log_mean) / data_log_std  # column-wise normalization
