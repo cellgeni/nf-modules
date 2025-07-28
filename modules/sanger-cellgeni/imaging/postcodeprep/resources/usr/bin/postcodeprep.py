@@ -124,12 +124,14 @@ def decode(
         processed_spot_profile, _ = average_spot_profiles(
             reordered_profile, readouts_csv
         )
-        barcodes_0123_str = ["".join(k) for k in codebook_arr[:, 0, :].astype(str)]
+        # barcodes_0123_str = ["".join(k) for k in codebook_arr[:, 0, :].astype(str)]
     else:
         processed_spot_profile = reordered_profile
-        barcodes_0123_str = [
-            "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
-        ]
+        # barcodes_0123_str = [
+        #     "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
+        # ]
+    # Convert codebook_arr to the form of barcodes_0123_str
+    barcodes_0123_str = ["".join(map(str, row.flatten())) for row in codebook_arr]
     np.save(out_reformatted_profile, processed_spot_profile)
     with open(out_barcodes_0123_str, "w") as f:
         for barcode in barcodes_0123_str:

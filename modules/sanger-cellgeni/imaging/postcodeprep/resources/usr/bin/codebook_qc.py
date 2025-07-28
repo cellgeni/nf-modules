@@ -12,6 +12,19 @@ import re
 def to_starfish_codebook(
     codebook: pd.DataFrame, target_col: str, code_col: str, is_merfish: bool = False
 ) -> Codebook:
+    all_codes = codebook[code_col]
+    all_codes_lengths = [len(str(code)) for code in all_codes]
+    n_round = max(all_codes_lengths)
+    assert len(set(all_codes_lengths)) == 1, (
+        "All codes in the codebook must have the same length. "
+        f"Found lengths: {set(all_codes_lengths)}"
+    )
+    all_codes_str = "".join(all_codes)
+    max_digit = max(int(digit) for digit in all_codes_str)
+    min_digit = min(int(digit) for digit in all_codes_str)
+    print(f"Largest digit in the set: {max_digit}")
+    is_zero_based = min_digit == 0
+    print(f"Is zero based: {is_zero_based}")
     mappings = []
     for _, row in codebook.iterrows():
         mapping = {}
@@ -26,20 +39,21 @@ def to_starfish_codebook(
                 codeward.append(
                     {
                         Axes.ROUND.value: r,
-                        Axes.CH.value: int(c) - 1,
-                        Features.CODE_VALUE: 1,
+                        Axes.CH.value: 0 if max_digit == 1 else int(c),
+                        Features.CODE_VALUE: c if is_zero_based else int(c) + 1,
                     }
                 )
         mapping[Features.CODEWORD] = codeward
         mappings.append(mapping)
     if is_merfish:
-        return Codebook.from_code_array(
-            mappings, n_round=r + 1, n_channel=1
-        )  # hardcoded to 4 channels since Cartana only uses 4 channels
+        return Codebook.from_code_array(mappings, n_round=n_round, n_channel=1)
     else:
+        # print(mappings)
         return Codebook.from_code_array(
-            mappings, n_round=r + 1, n_channel=4
-        )  # hardcoded to 4 channels since Cartana only uses 4 channels
+            mappings,
+            n_round=n_round,
+            n_channel=max_digit if is_zero_based else max_digit + 1,
+        )
 
 
 def filter_columns_by_regex(df: pd.DataFrame, pattern: str) -> pd.DataFrame:
