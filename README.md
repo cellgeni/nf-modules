@@ -1,7 +1,7 @@
 # nf-modules
 
 ## Prerequisites
-- nf-core tools:  `module load cellgen/nf-core/3.2.0` 
+- nf-core tools:  `module load cellgen/nf-core/3.3.2` 
 
 ## Usage
 ### List all modules
