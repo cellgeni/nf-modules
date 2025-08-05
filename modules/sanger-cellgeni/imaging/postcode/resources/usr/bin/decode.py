@@ -5,9 +5,10 @@
 import numpy as np
 import pandas as pd
 import fire
-from decoding_functions import decoding_function, decoding_output_to_dataframe
+from decoding_functions import train_and_save_model
 from starfish.core.codebook.codebook import Codebook
 import logging
+import torch
 
 
 logging.basicConfig(level=logging.INFO)
@@ -21,8 +22,8 @@ def decode(
     spot_profile_p: str,
     barcode_0123_p: str,
     starfish_codebook_p: str,
-    out_name: str,
-    decoding_params: str = {},
+    output_path: str,
+    train_params: str = {},
     zero_threshold=0.5,
 ) -> pd.DataFrame:
     """
@@ -67,31 +68,44 @@ def decode(
 
     if np.all(zero_proportion > zero_threshold):
         logger.info("Too many zeros in the profile, skipping decoding.")
-        spot_locations["Name"] = "high_zero_proportion"
-        spot_locations.to_csv(out_name, index=False)
-        return spot_locations
+        torch.save({}, output_path)
+        # spot_locations["Name"] = "high_zero_proportion"
+        # spot_locations.to_csv(out_name, index=False)
+        # return spot_locations
 
-    print(spot_profile)
-    # Decode using postcode
+    logger.info(spot_profile)
     try:
-        out = decoding_function(
-            spot_profile, codebook_arr, print_training_progress=False, **decoding_params
+        to_serialize_params = train_and_save_model(
+            spot_profile, codebook_arr, print_training_progress=False, **train_params
         )
     except ValueError as e:
         logger.error(f"Decoding failed: {e}")
-        spot_locations["Name"] = "decoding_failed"
-        spot_locations.to_csv(out_name, index=False)
-        raise e
+        torch.save({}, output_path)
+        return
 
-    # Reformat output into pandas dataframe
-    df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
-    df_class_codes = np.concatenate(
-        (barcodes_0123_str, ["infeasible", "background", "NA"])
-    )
-    decoded_spots_df = decoding_output_to_dataframe(out, df_class_names, df_class_codes)
+    # Serialize parameters, losses, and data_norm to disk
+    torch.save(to_serialize_params, output_path)
 
-    decoded_df_s = pd.concat([decoded_spots_df, spot_locations], axis=1)
-    decoded_df_s.to_csv(out_name, index=False)
+    # Decode using postcode
+    # try:
+    #     out = decoding_function(
+    #         spot_profile, codebook_arr, print_training_progress=False, **decoding_params
+    #     )
+    # except ValueError as e:
+    #     logger.error(f"Decoding failed: {e}")
+    #     spot_locations["Name"] = "decoding_failed"
+    #     spot_locations.to_csv(out_name, index=False)
+    #     raise e
+
+    # # Reformat output into pandas dataframe
+    # df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
+    # df_class_codes = np.concatenate(
+    #     (barcodes_0123_str, ["infeasible", "background", "NA"])
+    # )
+    # decoded_spots_df = decoding_output_to_dataframe(out, df_class_names, df_class_codes)
+
+    # decoded_df_s = pd.concat([decoded_spots_df, spot_locations], axis=1)
+    # decoded_df_s.to_csv(out_name, index=False)
 
 
 if __name__ == "__main__":

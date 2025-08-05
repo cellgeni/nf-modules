@@ -7,13 +7,13 @@ process IMAGING_POSTCODE {
     tuple val(meta), file(profile), file(starfish_codebook), file(barcode_0123), file(spot_loc)
 
     output:
-    tuple val(meta), path("${out_name}"), emit: decoded_peaks
+    tuple val(meta), path("${out_name}"), emit: model_params_and_losses
     tuple val(meta), path("${prefix}_decode_out_parameters.pickle"), optional: true
     path "versions.yml", emit: versions
 
     script:
     prefix = meta.id ?: "none"
-    out_name = "${prefix}_decoded_spots.csv"
+    out_name = "${prefix}_model_params_and_losses.pt"
     def args = task.ext.args ?: ""
     """
     decode.py run \
@@ -21,7 +21,7 @@ process IMAGING_POSTCODE {
         --spot_locations_p ${spot_loc} \
         --starfish_codebook_p ${starfish_codebook} \
         --barcode_0123_p ${barcode_0123} \
-        --out_name ${out_name} \
+        --output_path ${out_name} \
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -32,7 +32,7 @@ process IMAGING_POSTCODE {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
-    out_name = "${prefix}_decoded_spots.csv"
+    out_name = "${prefix}_model_params_and_losses.pt"
     """
     touch ${out_name}
 
