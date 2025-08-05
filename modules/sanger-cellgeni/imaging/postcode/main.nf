@@ -4,10 +4,10 @@ process IMAGING_POSTCODE {
     container "quay.io/cellgeni/postcode:0.2.0"
 
     input:
-    tuple val(meta), file(profile), file(starfish_codebook), file(barcode_0123), file(spot_loc)
+    tuple val(meta), file(profile), file(starfish_codebook), file(spot_loc)
 
     output:
-    tuple val(meta), path("${out_name}"), emit: model_params_and_losses
+    tuple val(meta), path("${out_name}"), file(starfish_codebook), emit: model_params_and_losses
     tuple val(meta), path("${prefix}_decode_out_parameters.pickle"), optional: true
     path "versions.yml", emit: versions
 
@@ -20,7 +20,6 @@ process IMAGING_POSTCODE {
         --spot_profile_p ${profile} \
         --spot_locations_p ${spot_loc} \
         --starfish_codebook_p ${starfish_codebook} \
-        --barcode_0123_p ${barcode_0123} \
         --output_path ${out_name} \
         ${args}
 

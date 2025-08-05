@@ -20,7 +20,6 @@ VERSION = "0.2.0"
 def decode(
     spot_locations_p: str,
     spot_profile_p: str,
-    barcode_0123_p: str,
     starfish_codebook_p: str,
     output_path: str,
     train_params: str = {},
@@ -43,11 +42,9 @@ def decode(
     Returns:
         pd.DataFrame: A pandas DataFrame containing the decoded spots and their locations.
     """
-    with open(barcode_0123_p, "r") as file:
-        barcodes_0123_str = [line.strip() for line in file]
     starfish_book = Codebook.open_json(starfish_codebook_p)
     codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
-    gene_list = np.array(starfish_book.target)
+    # gene_list = np.array(starfish_book.target)
     # K = len(starfish_book.target)
 
     spot_profile = np.load(spot_profile_p).astype(np.float16)

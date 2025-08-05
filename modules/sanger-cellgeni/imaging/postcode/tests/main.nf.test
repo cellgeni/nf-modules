@@ -20,7 +20,6 @@ nextflow_process {
                     [ id:'merfish_1'],
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_reformatted_profile.npy', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_starfish_codebook.json', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_barcodes_0123_str.txt', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_1.csv', checkIfExists: true),
                 ]
                 """
@@ -46,7 +45,6 @@ nextflow_process {
                     [ id:'merfish_5000'],
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_5000_reformatted_profile.npy', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_5000_starfish_codebook.json', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_5000_barcodes_0123_str.txt', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_5000.csv', checkIfExists: true),
                 ] 
                 """
@@ -72,7 +70,6 @@ nextflow_process {
                     [ id:'merfish_100000'],
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_100000_reformatted_profile.npy', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_100000_starfish_codebook.json', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_100000_barcodes_0123_str.txt', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_100000.csv', checkIfExists: true),
                 ]
                 """
@@ -100,7 +97,6 @@ nextflow_process {
                     [ id:'merfish_test'],
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_reformatted_profile.npy', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_starfish_codebook.json', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_barcodes_0123_str.txt', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_1.csv', checkIfExists: true),
                 ]
                 """
