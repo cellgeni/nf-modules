@@ -2,10 +2,10 @@ process IMAGING_POSTCODEPOST {
     tag "${meta.id}"
     label 'process_single'
 
-    container "quay.io/cellgeni/postcode:0.2.0"
+    container "quay.io/cellgeni/postcode:0.2.1"
 
     input:
-    tuple val(meta), path(model_params_and_losses_path)
+    tuple val(meta), path(model_params_and_losses_path), path(spot_loc_path), path(starfish_codebook_path)
 
     output:
     tuple val(meta), path("${decoded_profile}"), emit: decoded_profile
@@ -19,9 +19,11 @@ process IMAGING_POSTCODEPOST {
     def prefix = task.ext.prefix ?: "${meta.id}"
     decoded_profile = "${prefix}_decoded.csv"
     """
-    decode_postprocess.py \\
-        -o ${decoded_profile} \\
-        ${model_params_and_losses_path} \\
+    decode_postprocess.py run \\
+        --model_file_path ${model_params_and_losses_path} \\
+        --spot_locations_path ${spot_loc_path} \\
+        --starfish_codebook_path ${starfish_codebook_path} \\
+        -decoded_spots_df_path ${decoded_profile} \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml

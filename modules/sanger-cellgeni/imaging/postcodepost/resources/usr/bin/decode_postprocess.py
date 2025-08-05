@@ -1,11 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright (c) 2025 Wellcome Sanger Institute
+
 import torch
 from tqdm import tqdm
 from pyro.distributions import MultivariateNormal
 import numpy as np
 import pandas as pd
+from starfish.core.codebook.codebook import Codebook
+
+import fire
 
 import itertools
-import pysnooper
+
+# import pysnooper
 
 
 def e_step(data, w, theta, sigma, N, K, print_training_progress):
@@ -61,13 +69,10 @@ def mat_sqrt(A, D):
     #     return trace.nodes["z"]["value"]
 
 
-@pysnooper.snoop()
-def decode_postprocess(
+# @pysnooper.snoop()
+def fit(
     model_params_and_losses_path,
-    estimate_bkg=True,
     print_training_progress=True,
-    inf_ind=np.array([]),
-    estimate_additional_barcodes=None,
     modify_bkg_prior=True,  # should be False when there is a lot of background
     # signal (eg pixel-wise decoding, a lot of noisy
     # boundary tiles)
@@ -75,7 +80,7 @@ def decode_postprocess(
     # barcodes are used in the e-step with
     # given prior
 ):
-    params = torch.load(model_params_and_losses_path)
+    params = torch.load(model_params_and_losses_path, weights_only=False)
     w_star = params["w_star"]
     sigma_star = params["sigma_star"]
     sigma_ro_star = params["sigma_ro_star"]
@@ -87,23 +92,16 @@ def decode_postprocess(
     K = params["K"]
     C = params["C"]
     D = params["D"]
-    N = params["N"]
     R = params["R"]
+    N = params["N"]
     codes = params["codes"]
     data_norm = params["data_norm"]
 
-    # include background / any additional barcode in codebook
-    if estimate_bkg:
-        bkg_ind = codes.shape[0]
-        codes = torch.cat((codes, torch.zeros(1, D)))
-    else:
-        bkg_ind = np.empty((0,), dtype=np.int32)
+    bkg_ind = params["bkg_ind"]
+    inf_ind = params["inf_ind"]
+    estimate_bkg = params["estimate_bkg"]
 
-    if np.any(estimate_additional_barcodes is not None):
-        inf_ind = codes.shape[0] + np.arange(estimate_additional_barcodes.shape[0])
-        codes = torch.cat((codes, torch_format(estimate_additional_barcodes)))
-    else:
-        inf_ind = np.empty((0,), dtype=np.int32)
+    # include background / any additional barcode in codebook
 
     # computing class probabilities with appropriate prior probabilities
     if w_star is None or not isinstance(w_star, torch.Tensor) or len(w_star.shape) != 1:
@@ -319,3 +317,77 @@ def heatmap_pattern(decoded_df, name, grid=150, thr=0.7, plot_probs=True):
         coords_u, coords_c = np.unique(coords, axis=0, return_counts=True)
         H[coords_u[:, 0], coords_u[:, 1]] = coords_c
     return H
+
+
+def predict(
+    model_file_path,
+    spot_locations_path,
+    starfish_codebook_path,
+    decoded_spots_df_path,
+    decoded_spots_ome_tif_path=None,
+):
+    starfish_book = Codebook.open_json(starfish_codebook_path)
+    codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
+    gene_list = np.array(starfish_book.target)
+    # Convert codebook_arr to the form of barcodes_0123_str
+    codebook_barcodes = ["".join(map(str, row.flatten())) for row in codebook_arr]
+    spot_locations = pd.read_csv(spot_locations_path)
+    Y, X = spot_locations.max().values
+    probs = fit(model_file_path)
+    other_types = [
+        "infeasible",
+        "background",
+        "nan",
+    ]
+    df_class_names = np.concatenate((gene_list, other_types))
+    df_class_codes = np.concatenate((codebook_barcodes, other_types))
+    decoded_spots_df = decoding_output_to_dataframe(
+        probs, df_class_names, df_class_codes
+    )
+    decoded_df_s = pd.concat([decoded_spots_df, spot_locations.reset_index()], axis=1)
+    decoded_df_s.to_csv(decoded_spots_df_path, index=False)
+
+    if decoded_spots_ome_tif_path is not None:
+        from aicsimageio.writers import OmeTiffWriter
+
+        types = decoded_spots_df.Name.unique()
+        celltype_maps = {}
+        for t in tqdm(types):
+            prob_map = np.zeros([Y + 1, X + 1], dtype=np.float16)
+            sub_df = decoded_df_s[decoded_df_s.Name == t]
+            np.add.at(
+                prob_map,
+                (sub_df["y_int"].values, sub_df["x_int"].values),
+                sub_df["Probability"].values,
+            )
+            celltype_maps[t] = prob_map
+        stack = np.array([m for m in celltype_maps.values()])
+        # Keep original zero pixels in the stack
+        zero_pixel_mask = np.all(stack == 0, axis=0)
+
+        # Perform one-hot detection
+        one_hot_stack = np.zeros_like(stack, dtype=np.float16)
+        max_indices = np.argmax(stack, axis=0)
+        np.put_along_axis(one_hot_stack, max_indices[np.newaxis, ...], 1, axis=0)
+
+        # Ensure zero pixels remain zero in one_hot_stack
+        one_hot_stack[:, zero_pixel_mask] = 0
+        channel_names = list(celltype_maps.keys())
+        OmeTiffWriter.save(
+            one_hot_stack.astype(np.uint8),
+            decoded_spots_ome_tif_path,
+            dim_order="CYX",
+            channel_names=channel_names,
+        )
+
+
+def version():
+    return "0.0.1"
+
+
+if __name__ == "__main__":
+    options = {
+        "version": version,
+        "run": predict,
+    }
+    fire.Fire(options)
