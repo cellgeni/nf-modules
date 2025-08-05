@@ -82,27 +82,30 @@ def fit(
     # given prior
 ):
     params = torch.load(model_params_and_losses_path, weights_only=False)
-    w_star = params["w_star"]
-    sigma_star = params["sigma_star"]
-    sigma_ro_star = params["sigma_ro_star"]
-    sigma_ch_star = params["sigma_ch_star"]
-    theta_star = params["theta_star"]
-    codes_tr_consts_v_star = params["codes_tr_consts_v_star"]
-    codes_tr_v_star = params["codes_tr_v_star"]
-    losses = params["losses"]
-    K = params["K"]
-    C = params["C"]
-    D = params["D"]
-    R = params["R"]
-    N = params["N"]
-    codes = params["codes"]
-    data_norm = params["data_norm"]
+    try:
+        w_star = params["w_star"]
+        sigma_star = params["sigma_star"]
+        sigma_ro_star = params["sigma_ro_star"]
+        sigma_ch_star = params["sigma_ch_star"]
+        theta_star = params["theta_star"]
+        codes_tr_consts_v_star = params["codes_tr_consts_v_star"]
+        codes_tr_v_star = params["codes_tr_v_star"]
+        losses = params["losses"]
+        K = params["K"]
+        C = params["C"]
+        D = params["D"]
+        R = params["R"]
+        N = params["N"]
+        codes = params["codes"]
+        data_norm = params["data_norm"]
 
-    bkg_ind = params["bkg_ind"]
-    inf_ind = params["inf_ind"]
-    estimate_bkg = params["estimate_bkg"]
-
-    # include background / any additional barcode in codebook
+        bkg_ind = params["bkg_ind"]
+        inf_ind = params["inf_ind"]
+        estimate_bkg = params["estimate_bkg"]
+    except KeyError as e:
+        raise KeyError(
+            f"Missing key in model parameters: {e}. Ensure the model parameters file is correct."
+        )
 
     # computing class probabilities with appropriate prior probabilities
     if w_star is None or not isinstance(w_star, torch.Tensor) or len(w_star.shape) != 1:
