@@ -19,8 +19,8 @@ nextflow_process {
                 input[0] = [
                     [ id:'merfish_1'],
                     file(params.modules_testdata_base_path + 'POSTCODE/merfish_1_model_params_and_losses.pt', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_1.csv', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_1_starfish_codebook.json', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_1.csv', checkIfExists: true),
                 ]
                 """
             }
@@ -44,8 +44,8 @@ nextflow_process {
                 input[0] = [
                     [ id:'merfish_100000'],
                     file(params.modules_testdata_base_path + 'POSTCODE/merfish_100000_model_params_and_losses.pt', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_100000.csv', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_100000_starfish_codebook.json', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_100000.csv', checkIfExists: true),
                 ]
                 """
             }
@@ -71,8 +71,8 @@ nextflow_process {
                 input[0] = [
                     [ id:'stub' ], // meta map
                     file(params.modules_testdata_base_path + 'POSTCODE/merfish_100000_model_params_and_losses.pt', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_100000.csv', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'MERFISH/for_decoding/merfish_100000_starfish_codebook.json', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'MERFISH/merfish_transcript_locations_100000.csv', checkIfExists: true),
                 ]
                 """
             }

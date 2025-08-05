@@ -5,7 +5,7 @@ process IMAGING_POSTCODEPOST {
     container "quay.io/cellgeni/postcode:0.2.1"
 
     input:
-    tuple val(meta), path(model_params_and_losses_path), path(spot_loc_path), path(starfish_codebook_path)
+    tuple val(meta), path(model_params_and_losses_path), path(starfish_codebook_path), path(spot_loc_path)
 
     output:
     tuple val(meta), path("${decoded_profile}"), emit: decoded_profile

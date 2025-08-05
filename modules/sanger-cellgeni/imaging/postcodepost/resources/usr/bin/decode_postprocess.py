@@ -8,6 +8,7 @@ from pyro.distributions import MultivariateNormal
 import numpy as np
 import pandas as pd
 from starfish.core.codebook.codebook import Codebook
+import pyro
 
 import fire
 
@@ -325,7 +326,9 @@ def predict(
     starfish_codebook_path,
     decoded_spots_df_path,
     decoded_spots_ome_tif_path=None,
+    seed: int = 1,
 ):
+    pyro.set_rng_seed(seed)
     starfish_book = Codebook.open_json(starfish_codebook_path)
     codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
     gene_list = np.array(starfish_book.target)
