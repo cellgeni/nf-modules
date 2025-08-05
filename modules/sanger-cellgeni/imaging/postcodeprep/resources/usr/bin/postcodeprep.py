@@ -43,7 +43,7 @@ def reorder_profile(profile, channel_orders=[0, 1, 2, 3, 4], n_cycles=None):
     channel_orders = np.array(channel_orders, dtype=int)
     n_channel = len(channel_orders)
     cycle_channel_mask = channel_orders != 0
-    print(cycle_channel_mask)
+    logger.info(cycle_channel_mask)
     if n_channel != n_total_channels:
         assert (
             n_total_channels % n_channel == 0
@@ -63,7 +63,7 @@ def reorder_profile(profile, channel_orders=[0, 1, 2, 3, 4], n_cycles=None):
         n_channel = n_total_channels // n_cycles
         # User gave the full channel orders, should be 0-based
         channel_orders = channel_orders
-    print(channel_orders)
+    logger.info(channel_orders)
     # Reorder the profile
     return (
         profile[channel_orders]
@@ -77,7 +77,6 @@ def decode(
     tabular_codebook: str,
     out_starfish_codebook: str,
     out_reformatted_profile: str,
-    out_barcodes_0123_str: str,
     readouts_csv: str = None,
     R: int = None,
     codebook_targer_col: str = "Gene",
@@ -109,7 +108,6 @@ def decode(
         is_merfish=is_merfish,
     )
     starfish_book.to_json(out_starfish_codebook)
-    codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
 
     spot_profile = np.load(profile)
 
@@ -124,18 +122,10 @@ def decode(
         processed_spot_profile, _ = average_spot_profiles(
             reordered_profile, readouts_csv
         )
-        # barcodes_0123_str = ["".join(k) for k in codebook_arr[:, 0, :].astype(str)]
     else:
         processed_spot_profile = reordered_profile
-        # barcodes_0123_str = [
-        #     "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
-        # ]
     # Convert codebook_arr to the form of barcodes_0123_str
-    barcodes_0123_str = ["".join(map(str, row.flatten())) for row in codebook_arr]
     np.save(out_reformatted_profile, processed_spot_profile)
-    with open(out_barcodes_0123_str, "w") as f:
-        for barcode in barcodes_0123_str:
-            f.write(f"{barcode}\n")
 
 
 if __name__ == "__main__":

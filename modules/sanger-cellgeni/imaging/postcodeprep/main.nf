@@ -9,7 +9,7 @@ process IMAGING_POSTCODEPREP {
     tuple val(meta), path(profile), path(tabular_codebook), path(readout_file), val(R)
 
     output:
-    tuple val(meta), path(reformatted_profile), path(starfish_codebook), path(barcode_0123_str), emit: for_decoding
+    tuple val(meta), path(reformatted_profile), path(starfish_codebook), emit: for_decoding
     path "versions.yml", emit: versions
 
     when:
@@ -21,14 +21,12 @@ process IMAGING_POSTCODEPREP {
     def readout = readout_file ? "--readouts_csv ${readout_file}" : ""
     reformatted_profile = "${prefix}_reformatted_profile.npy"
     starfish_codebook = "${prefix}_starfish_codebook.json"
-    barcode_0123_str = "${prefix}_barcodes_0123_str.txt"
     """
     postcodeprep.py run \\
         --profile ${profile} \\
         --tabular_codebook ${tabular_codebook} \\
         --out_starfish_codebook ${starfish_codebook} \\
         --out_reformatted_profile ${reformatted_profile} \\
-        --out_barcodes_0123_str ${barcode_0123_str} \\
         --R ${R} \\
         ${readout} \\
         ${args}
