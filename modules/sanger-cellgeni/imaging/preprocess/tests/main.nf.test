@@ -15,13 +15,14 @@ nextflow_process {
 
         when {
             params {
-                module_args = "--master_file Index.xml -iterations 10"
+                module_args = "-iterations 10"
             }
             process {
                 """
                 input[0] = [
                     [ id:'hcs' ], // meta map
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
+                    "Index.xml",
                     "Image:10",
                     10 
                 ]
@@ -42,13 +43,14 @@ nextflow_process {
 
         when {
             params {
-                module_args = "--master_file Index.idx.xml -iterations 10"
+                module_args = "-iterations 10"
             }
             process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
                     file(params.modules_testdata_base_path + '/QC/beadplatetest__2021-02-17T16_03_59-Measurement 1/Images', checkIfExists: true),
+                    "Index.idx.xml",
                     "Image:2",
                     2
                 ]
@@ -70,13 +72,14 @@ nextflow_process {
 
         when {
             params {
-                module_args = "--master_file Index.xml"
+                module_args = ""
             }
             process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
                     file(params.modules_testdata_base_path + '/TL_STP/TL_STP_RVT-HFF-20220623__2022-06-24T13_50_10-Measurement 1/Images', checkIfExists: true),
+                    "Index.xml",
                     "Image:10",
                     10 
                 ]
@@ -100,7 +103,7 @@ nextflow_process {
 
         when {
             params {
-                module_args = "--master_file Index.idx.xml"
+                module_args = ""
             }
             process {
                 
@@ -108,6 +111,7 @@ nextflow_process {
                 input[0] = [
                     [ id:'test' ], // meta map
                     file(params.modules_testdata_base_path + '', checkIfExists: true),
+                    "Index.idx.xml",
                     "Image:0",
                     0
                 ]
