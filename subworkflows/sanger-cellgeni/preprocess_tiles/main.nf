@@ -3,19 +3,19 @@ include { IMAGING_GENERATECOMPANION } from "../../../modules/sanger-cellgeni/ima
 
 workflow PREPROCESS_TILES {
     take:
-    experiments_ch // channel: [ val(meta), [ imaging_experiment ] ]
+    master_file_ch // channel: [ val(meta), val(round_index), file(master_file_folder), val(master_file_name) ]
     psf_folder
 
     main:
     ch_versions = Channel.empty()
 
-    IMAGING_GENERATECOMPANION(experiments_ch)
+    IMAGING_GENERATECOMPANION(master_file_ch)
     ch_versions = ch_versions.mix(IMAGING_GENERATECOMPANION.out.versions.first())
 
     tiles = IMAGING_GENERATECOMPANION.out.csv
         .splitCsv(header: true, strip: true, sep: ",")
         .map { row ->
-            [row[0], file(row[1].root_xml), row[1].image_id, row[1].index]
+            [row[0], file(row[1].root_xml), row[1].master_file, row[1].image_id, row[1].index]
         }
     IMAGING_PREPROCESS(tiles, psf_folder)
     ch_versions = ch_versions.mix(IMAGING_PREPROCESS.out.versions.first())

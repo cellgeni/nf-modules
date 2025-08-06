@@ -15,8 +15,8 @@ nextflow_workflow {
 
         when {
             params {
-                generatecompanion_args = "--master_file Index.idx.xml "
-                preprocess_args = "--master_file Index.idx.xml"
+                generatecompanion_args = ""
+                preprocess_args = ""
             }
             workflow {
                 """
@@ -24,6 +24,7 @@ nextflow_workflow {
                     [ id:'xml_no-decon' ], // meta map
                     0,
                     file(params.modules_testdata_base_path + 'PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    "Index.idx.xml"
                 ]
                 input[1] = file(params.modules_testdata_base_path + 'PSFs/', checkIfExists: true)
                 """
@@ -42,8 +43,8 @@ nextflow_workflow {
 
         when {
             params {
-                generatecompanion_args = "--master_file Index.idx.xml "
-                preprocess_args = "--master_file Index.idx.xml -iterations 10"
+                generatecompanion_args = ""
+                preprocess_args = "-iterations 10"
             }
             workflow {
                 """
@@ -51,6 +52,7 @@ nextflow_workflow {
                     [ id:'xml_decon' ], // meta map
                     0,
                     file(params.modules_testdata_base_path + 'PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    "Index.idx.xml"
                 ]
                 input[1] = file(params.modules_testdata_base_path + 'PSFs/', checkIfExists: true)
                 """
