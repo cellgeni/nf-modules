@@ -51,6 +51,7 @@ def main(
     img = AICSImage(f"{image_root_folder}/{master_file}")
     df = generate_tiles_to_process_csv(img, prefix)
     df["root_xml"] = os.path.realpath(image_root_folder)
+    df["master_file"] = master_file
     df.to_csv(f"{tiles_csv}", index=False)
 
     for i in np.arange(len(img.scenes)):
@@ -65,7 +66,7 @@ def version():
     """
     Print the version of the script.
     """
-    return "0.2.0"
+    return "0.2.1"
 
 
 if __name__ == "__main__":

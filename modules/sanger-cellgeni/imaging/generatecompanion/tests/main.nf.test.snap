@@ -56,7 +56,7 @@
                         {
                             "id": "test"
                         },
-                        "test_image0_image_tiles.csv:md5,358ff90ea6674c10a433e0262397d059"
+                        "test_image0_image_tiles.csv:md5,22668134ef136a28c5d31779ced3356d"
                     ]
                 ],
                 "1": [
@@ -64,18 +64,18 @@
                         {
                             "id": "test"
                         },
-                        "test_image0.companion.ome:md5,286c55aaafb141032753cfe3929157e0"
+                        "test_image0.companion.ome:md5,e133e3b9eb9adf173a01f400f2a9a738"
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,82df7297bf00de74e36c7db6bfbfa342"
+                    "versions.yml:md5,6363bd51aeb5975f10efdad99ce5b307"
                 ],
                 "companion": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_image0.companion.ome:md5,286c55aaafb141032753cfe3929157e0"
+                        "test_image0.companion.ome:md5,e133e3b9eb9adf173a01f400f2a9a738"
                     ]
                 ],
                 "csv": [
@@ -83,11 +83,11 @@
                         {
                             "id": "test"
                         },
-                        "test_image0_image_tiles.csv:md5,358ff90ea6674c10a433e0262397d059"
+                        "test_image0_image_tiles.csv:md5,22668134ef136a28c5d31779ced3356d"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,82df7297bf00de74e36c7db6bfbfa342"
+                    "versions.yml:md5,6363bd51aeb5975f10efdad99ce5b307"
                 ]
             }
         ],
@@ -95,7 +95,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-08-06T19:49:08.199772238"
+        "timestamp": "2025-08-06T20:12:12.139809947"
     },
     "generatecompanion - wsi": {
         "content": [
@@ -219,7 +219,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,82df7297bf00de74e36c7db6bfbfa342"
+                    "versions.yml:md5,6363bd51aeb5975f10efdad99ce5b307"
                 ],
                 "companion": [
                     [
@@ -238,7 +238,7 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,82df7297bf00de74e36c7db6bfbfa342"
+                    "versions.yml:md5,6363bd51aeb5975f10efdad99ce5b307"
                 ]
             }
         ],
@@ -246,6 +246,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-06-10T11:30:34.507793418"
+        "timestamp": "2025-08-06T20:12:19.345642549"
     }
 }
