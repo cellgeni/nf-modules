@@ -15,7 +15,7 @@ nextflow_process {
 
         when {
             params {
-                module_args = "--master_file Index.idx.xml"
+                module_args = ""
             }
             process {
                 """
@@ -23,6 +23,7 @@ nextflow_process {
                     [ id:'test' ], // meta map
                     0,
                     file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    'Index.idx.xml'
                 ]
                 """
             }
@@ -50,6 +51,7 @@ nextflow_process {
                     [ id:'test' ], // meta map
                     0,
                     file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    'Index.idx.xml'
                 ]
                 """
             }

@@ -6,7 +6,7 @@ process IMAGING_GENERATECOMPANION {
     container "quay.io/cellgeni/imagetileprocessor:0.1.16"
 
     input:
-    tuple val(meta), val(round), path(image_root_folder)
+    tuple val(meta), val(round), path(image_root_folder), val(master_file_name)
 
     output:
     tuple val(meta), path("${out_csv_name}"), emit: csv
@@ -26,6 +26,7 @@ process IMAGING_GENERATECOMPANION {
         --image_root_folder ${image_root_folder} \\
         --tiles_csv ${out_csv_name} \\
         --companion_xml ${out_companion} \\
+        --master_file ${master_file_name} \\
         --prefix ${prefix} \\
         ${args}
 
