@@ -36,16 +36,26 @@
         "content": [
             {
                 "0": [
-                    
+                    [
+                        {
+                            "id": "PE"
+                        },
+                        "PE.companion.ome:md5,8d00a40362a9dbc79c4c1215b778ae04"
+                    ]
                 ],
                 "1": [
-                    
+                    "versions.yml:md5,2c13973c13bfc633ac0a7917e5d32d71"
                 ],
                 "companion": [
-                    
+                    [
+                        {
+                            "id": "PE"
+                        },
+                        "PE.companion.ome:md5,8d00a40362a9dbc79c4c1215b778ae04"
+                    ]
                 ],
                 "versions": [
-                    
+                    "versions.yml:md5,2c13973c13bfc633ac0a7917e5d32d71"
                 ]
             }
         ],
@@ -53,6 +63,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-08-07T15:19:38.339326222"
+        "timestamp": "2025-08-07T16:34:40.485709707"
     }
 }
