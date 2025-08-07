@@ -1,0 +1,58 @@
+{
+    "PE images - ome.tif - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,2c13973c13bfc633ac0a7917e5d32d71"
+                ],
+                "companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,2c13973c13bfc633ac0a7917e5d32d71"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-08-07T16:28:26.374059054"
+    },
+    "PE images - ome.tif": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    
+                ],
+                "companion": [
+                    
+                ],
+                "versions": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-08-07T15:19:38.339326222"
+    }
+}
