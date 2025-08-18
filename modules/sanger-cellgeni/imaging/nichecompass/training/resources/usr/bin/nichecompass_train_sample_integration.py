@@ -27,14 +27,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import anndata as ad
-import numpy as np
-import scanpy as sc
-import squidpy as sq
-import scipy.sparse as sp
+import anndata as ad # pyright: ignore[reportMissingImports]
+import numpy as np # pyright: ignore[reportMissingImports]
+import scanpy as sc # pyright: ignore[reportMissingImports]
+import squidpy as sq # pyright: ignore[reportMissingImports]
+import scipy.sparse as sp # pyright: ignore[reportMissingImports]
+import torch # pyright: ignore[reportMissingImports]
 
-from nichecompass.models import NicheCompass
-from nichecompass.utils import (
+#TODO: Need to fix downloading omnipathdb every single run
+from nichecompass.models import NicheCompass # pyright: ignore[reportMissingImports]
+from nichecompass.utils import ( # pyright: ignore[reportMissingImports]
     add_gps_from_gp_dict_to_adata,
     filter_and_combine_gp_dict_gps_v2,
     extract_gp_dict_from_mebocost_ms_interactions,
@@ -86,7 +88,7 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
     repo = "nichecompass"
     zip_url = f"https://github.com/{owner}/{repo}/archive/refs/tags/{tag}.zip"
     logging.info("Downloading NicheCompass data from: %s", zip_url)
-    import requests  # lazy import
+    import requests  # lazy import # pyright: ignore[reportMissingModuleSource, reportMissingImports]
 
     try:
         resp = requests.get(zip_url, timeout=300)
@@ -209,9 +211,11 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     """
     Argument parser
     """
+    # 'pre' parser for parsing params from json config
     pre = argparse.ArgumentParser(add_help=False)
-    pre.add_argument("--config", type=Path, default=None, help="Path to JSON config file (snake_case keys).")
+    pre.add_argument("--config", type=Path, default=None, help="Path to JSON config file.")
 
+    # 'parser' for parsing params from CLI
     parser = argparse.ArgumentParser(
         prog="nichecompass_train_sample_integration.py",
         description=(
@@ -222,53 +226,54 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
         parents=[pre],
     )
 
+    # Grouping parameters
     g_main = parser.add_argument_group("MAIN (I/O & run identity)")
-    g_main.add_argument("--batches", nargs="+", type=Path, help="Space-separated paths to input .h5ad files (≥1).")
-    g_main.add_argument("--outdir", type=Path, default=Path.cwd(), help="Base output directory.")
+    g_main.add_argument("--batches", nargs="+", type=Path, default=argparse.SUPPRESS, help="Paths to input .h5ad files (≥1).")
+    g_main.add_argument("--outdir", type=Path, default=Path.cwd(), help="Base output directory (default: current working directory).") #TODO Need to change awkward Path.cwd() parsing in help message
     g_main.add_argument("--prefix", type=str, default="nichecompass", help="Run prefix used in folder names.")
     g_main.add_argument("--species", type=str, default="human", help="Species tag for prior knowledge lookup.")
     g_main.add_argument("--nichecompass_version", type=str, default="0.3.0",
-                        help="GitHub tag (Lotfollahi-lab/nichecompass) to fetch 'data/'.")
+                        help="GitHub tag (Lotfollahi-lab/nichecompass) to fetch 'data/' containing prepared reference.")
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 
     g_dataset = parser.add_argument_group("DATASET / GRAPH")
-    g_dataset.add_argument("--spatial_key", type=str, default="spatial", help="obsm key for spatial coordinates.")
-    g_dataset.add_argument("--n_neighbors", type=int, default=4, help="Number of spatial neighbors per node.")
     g_dataset.add_argument("--sample_key", type=str, default="batch", help="obs key for sample/batch.")
     g_dataset.add_argument("--cell_type_key", type=str, default="Main_molecular_cell_type",
                            help="obs key for cell type labels.")
+    g_dataset.add_argument("--spatial_key", type=str, default="spatial", help="obsm key for spatial coordinates.")
+    g_dataset.add_argument("--n_neighbors", type=int, default=4, help="Number of spatial neighbors per node.")
 
     g_ad = parser.add_argument_group("AnnData keys")
     g_ad.add_argument("--counts_key", type=str, default="counts", help="layer name for counts (falls back to X).")
-    g_ad.add_argument("--adj_key", type=str, default="spatial_connectivities", help="obsp key for spatial adjacency.")
-    g_ad.add_argument("--gp_names_key", type=str, default="nichecompass_gp_names")
-    g_ad.add_argument("--active_gp_names_key", type=str, default="nichecompass_active_gp_names")
-    g_ad.add_argument("--gp_targets_mask_key", type=str, default="nichecompass_gp_targets")
-    g_ad.add_argument("--gp_targets_categories_mask_key", type=str, default="nichecompass_gp_targets_categories")
-    g_ad.add_argument("--gp_sources_mask_key", type=str, default="nichecompass_gp_sources")
-    g_ad.add_argument("--gp_sources_categories_mask_key", type=str, default="nichecompass_gp_sources_categories")
-    g_ad.add_argument("--latent_key", type=str, default="nichecompass_latent")
+    g_ad.add_argument("--adj_key", type=str, default="spatial_connectivities", help="obsp key for spatial adjacency matrix.")
+    g_ad.add_argument("--gp_names_key", type=str, default="nichecompass_gp_names", help="uns key for gene program names.")
+    g_ad.add_argument("--active_gp_names_key", type=str, default="nichecompass_active_gp_names", help="uns key for active gene program names.")
+    g_ad.add_argument("--gp_targets_mask_key", type=str, default="nichecompass_gp_targets", help="varm key for gene program targets mask.")
+    g_ad.add_argument("--gp_targets_categories_mask_key", type=str, default="nichecompass_gp_targets_categories", help="varm key for gene program targets categories mask.")
+    g_ad.add_argument("--gp_sources_mask_key", type=str, default="nichecompass_gp_sources", help="varm key for gene program sources mask.")
+    g_ad.add_argument("--gp_sources_categories_mask_key", type=str, default="nichecompass_gp_sources_categories", help="varm key for gene program sources categories mask.")
+    g_ad.add_argument("--latent_key", type=str, default="nichecompass_latent", help="obsm key for latent / gene program representation of active gene programs after model training.")
 
     g_model = parser.add_argument_group("MODEL / ARCHITECTURE")
-    g_model.add_argument("--cat_covariates_keys", nargs="+", type=str, default=None,
-                         help="Categorical covariate keys injected into the model (default: [sample_key]).")
+    g_model.add_argument("--cat_covariates_keys", nargs="+", type=str, default=argparse.SUPPRESS,
+                         help="obs key for categorical covariates (default: [sample_key]).")
     g_model.add_argument("--cat_covariates_embeds_injection", nargs="+", type=str,
-                         default=["gene_expr_decoder"], help="Injection locations for covariate embeddings.")
+                         default=["gene_expr_decoder"], help="List of VGPGAE modules in which the categorical covariates embeddings are injected.")
     g_model.add_argument("--cat_covariates_embeds_nums", nargs="+", type=int, default=[3],
-                         help="Embedding dimensions per covariate.")
+                         help="List of number of embedding nodes for all categorical covariates.")
     g_model.add_argument("--cat_covariates_no_edges", nargs="+", type=str, default=["true"],
-                         help="True/False per covariate; whether covariates apply to nodes only.")
+                         help="List of booleans that indicate whether there can be edges between different categories of the categorical covariates.")
     g_model.add_argument("--conv_layer_encoder", type=str, default="gcnconv", help="Encoder conv layer type.")
     g_model.add_argument("--active_gp_thresh_ratio", type=float, default=0.01,
                          help="Threshold ratio for active GP selection.")
-
     g_tr = parser.add_argument_group("TRAINER")
     g_tr.add_argument("--n_epochs", type=int, default=400, help="Total training epochs.")
     g_tr.add_argument("--n_epochs_all_gps", type=int, default=25, help="Warmup epochs training all GPs.")
     g_tr.add_argument("--lr", type=float, default=1e-3, help="Learning rate.")
     g_tr.add_argument("--lambda_edge_recon", type=float, default=500000.0, help="Edge reconstruction weight.")
     g_tr.add_argument("--lambda_gene_expr_recon", type=float, default=300.0, help="Gene expression reconstruction weight.")
-    g_tr.add_argument("--lambda_l1_masked", type=float, default=0.0, help="L1 regularization on masked decoders.")
+    g_tr.add_argument("--lambda_l1_masked", type=float, default=0.0, help="L1 regularization on masked GPs.")
+    g_tr.add_argument("--lambda_l1_addon", type=float, default=30.0, help="L1 regularization on addon GPs.")
     g_tr.add_argument("--edge_batch_size", type=int, default=16384, help="Edge batch size.")
     g_tr.add_argument("--n_sampled_neighbors", type=int, default=4, help="Number of sampled neighbors.")
     g_tr.add_argument("--use_cuda_if_available", type=str, choices=["true", "false"], default="true",
@@ -358,9 +363,9 @@ def main(argv: list[str] | None = None) -> None:
 
     logging.info("Extracting OmniPath GP dict...")
     omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
-        species=params.species,
-        load_from_disk=True,
-        save_to_disk=False,
+        species=species, # pyright: ignore[reportArgumentType]
+        load_from_disk=data_dir_exist,
+        save_to_disk=not(data_dir_exist),
         lr_network_file_path=str(omnipath_lr_network_file_path),
         gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
         plot_gp_gene_count_distributions=False,
@@ -390,10 +395,77 @@ def main(argv: list[str] | None = None) -> None:
         gp_gene_count_distributions_save_path=str(params.figure_folder_path / "mebocost_gp_gene_count_distributions.svg"),
     )
 
-    logging.info("Combining GP dicts...")
-    gp_dicts = [omnipath_gp_dict, nichenet_gp_dict, mebocost_gp_dict]
-    combined_gp_dict = filter_and_combine_gp_dict_gps_v2(gp_dicts, verbose=True)
-    logging.info("Number of gene programs after filtering and combining: %d", len(combined_gp_dict))
+    logging.info("Combining GP dicts…")
+    combined_gp_dict = filter_and_combine_gp_dict_gps_v2(
+        [omnipath_gp_dict, nichenet_gp_dict, mebocost_gp_dict],
+        verbose=True,
+    )
+    logging.info(
+        f"Number of gene programs after filtering and combining: %d",
+        len(combined_gp_dict),
+    )
+    return combined_gp_dict
+
+
+#TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
+def main(argv: list[str] | None = None) -> None:
+    ### 1. Parse parameters ###
+    parser, pre = build_parser()
+    pre_args, remaining = pre.parse_known_args(argv)
+
+    # if --config is provided, load params from json file
+    cfg_params: dict[str, Any] = {}
+    if pre_args.config:
+        cfg_params = load_config_json(pre_args.config)
+
+    # parse the params provided from other options
+    args = parser.parse_args(remaining)
+
+    # Merge the params provided from --config and other options
+    try:
+        params = merge_config_and_args(args, cfg_params)
+    except Exception as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        sys.exit(2)
+
+    ###########################
+
+    # Fix seed for reproducibility
+    fixed_seeds(0)
+
+    ###########################
+
+    ### 2. Create output directories and set up loggers ###
+    # Set output directories paths
+    params.finalize_paths()
+
+    params.run_root.mkdir(parents=True, exist_ok=True)  # pyright: ignore[reportOptionalMemberAccess]
+    setup_logging(params.run_root, params.debug)  # pyright: ignore[reportArgumentType]
+    logging.info("=== NicheCompass Sample Integration: START ===")
+    logging.info("Resolved parameters: %s", json.dumps(asdict(params), indent=2, default=str))
+
+    # Create artifacts directories
+    params.figure_folder_path.mkdir(parents=True, exist_ok=True)  # pyright: ignore[reportOptionalMemberAccess]
+    params.model_folder_path.mkdir(parents=True, exist_ok=True)  # pyright: ignore[reportOptionalMemberAccess]
+
+
+    ### 3. Prepare prior knowledge gene program (GP) mask
+    # Download pre-prepared reference gene program from nichecompass github repo
+    data_dir_exist = params.nichecompass_data_dir.exists()  # pyright: ignore[reportOptionalMemberAccess]
+    if data_dir_exist:
+        logging.info(f"NicheCompass data already exists at {params.nichecompass_data_dir} — reusing.")
+    else:
+        download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version) # pyright: ignore[reportArgumentType]
+
+    logging.info(f"Creating prior gene program mask...")
+    combined_gp_dict = create_prior_gp_mask(
+        nichecompass_data_dir=params.nichecompass_data_dir, # pyright: ignore[reportArgumentType]
+        data_dir_exist=data_dir_exist,
+        species=params.species,
+        figure_folder_path=params.figure_folder_path, # pyright: ignore[reportArgumentType]
+    )
+    logging.info(f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}")
+
 
     adata_batch_list: list[ad.AnnData] = []
     counts_key_effective = params.counts_key
@@ -496,6 +568,7 @@ def main(argv: list[str] | None = None) -> None:
         lambda_edge_recon=params.lambda_edge_recon,
         lambda_gene_expr_recon=params.lambda_gene_expr_recon,
         lambda_l1_masked=params.lambda_l1_masked,
+        lambda_l1_addon=params.lambda_l1_addon,
         edge_batch_size=params.edge_batch_size,
         n_sampled_neighbors=params.n_sampled_neighbors,
         use_cuda_if_available=params.use_cuda_if_available,
