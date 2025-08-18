@@ -16,16 +16,15 @@
 //               list (`[]`) instead of a file can be used to work around this issue.
 
 process NICHECOMPASS_ANALYSIS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
-        'biocontainers/YOUR-TOOL-HERE' }"
+    container "quay.io/cellgeni/nichecompass:0.3.0"
 
-    input:// TODO nf-core: Where applicable all sample-specific information e.g. "id", "single_end", "read_group"
+    input:
+    // TODO nf-core: Where applicable all sample-specific information e.g. "id", "single_end", "read_group"
     //               MUST be provided as an input via a Groovy Map called "meta".
     //               This information may not be required in some instances e.g. indexing reference genome files:
     //               https://github.com/nf-core/modules/blob/master/modules/nf-core/bwa/index/main.nf
@@ -37,7 +36,7 @@ process NICHECOMPASS_ANALYSIS {
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
     tuple val(meta), path("*.bam"), emit: bam
     // TODO nf-core: List additional required output channels/values here
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -56,10 +55,10 @@ process NICHECOMPASS_ANALYSIS {
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
     nichecompass \\
-        $args \\
-        -@ $task.cpus \\
+        ${args} \\
+        -@ ${task.cpus} \\
         -o ${prefix}.bam \\
-        $bam
+        ${bam}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -78,7 +77,7 @@ process NICHECOMPASS_ANALYSIS {
     //               - The definition of args `def args = task.ext.args ?: ''` above.
     //               - The use of the variable in the script `echo $args ` below.
     """
-    echo $args
+    echo ${args}
     
     touch ${prefix}.bam
 
