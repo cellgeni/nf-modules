@@ -33,10 +33,6 @@ import scanpy as sc
 import squidpy as sq
 import scipy.sparse as sp
 
-try:
-    import torch
-except Exception:  # pragma: no cover
-    torch = None
 
 from nichecompass.models import NicheCompass
 from nichecompass.utils import (
@@ -73,13 +69,10 @@ def setup_logging(run_root: Path, debug: bool) -> None:
 def fixed_seeds(seed: int = 0) -> None:
     random.seed(seed)
     np.random.seed(seed)
-    if torch is not None:
-        try:
-            torch.manual_seed(seed)
-            if getattr(torch, "cuda", None) and torch.cuda.is_available():
-                torch.cuda.manual_seed_all(seed)
-        except Exception as e:  # pragma: no cover
-            logging.warning("Could not set torch seeds: %s", e)
+    torch.manual_seed(seed)
+    if getattr(torch, "cuda", None) and torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
 
 
 def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
