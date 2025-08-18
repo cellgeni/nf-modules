@@ -27,12 +27,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import anndata as ad
+import numpy as np
 import scanpy as sc
 import squidpy as sq
 import scipy.sparse as sp
-
 
 from nichecompass.models import NicheCompass
 from nichecompass.utils import (
@@ -207,6 +206,9 @@ def normalize_list_arg(val: list[Any] | None, *, expected_len: int, default_item
 
 
 def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
+    """
+    Argument parser
+    """
     pre = argparse.ArgumentParser(add_help=False)
     pre.add_argument("--config", type=Path, default=None, help="Path to JSON config file (snake_case keys).")
 
@@ -229,7 +231,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
                         help="GitHub tag (Lotfollahi-lab/nichecompass) to fetch 'data/'.")
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 
-    g_dataset = parser.add_argument_group("DATASET / GRAPH (Section 2)")
+    g_dataset = parser.add_argument_group("DATASET / GRAPH")
     g_dataset.add_argument("--spatial_key", type=str, default="spatial", help="obsm key for spatial coordinates.")
     g_dataset.add_argument("--n_neighbors", type=int, default=4, help="Number of spatial neighbors per node.")
     g_dataset.add_argument("--sample_key", type=str, default="batch", help="obs key for sample/batch.")
@@ -247,7 +249,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_ad.add_argument("--gp_sources_categories_mask_key", type=str, default="nichecompass_gp_sources_categories")
     g_ad.add_argument("--latent_key", type=str, default="nichecompass_latent")
 
-    g_model = parser.add_argument_group("MODEL / ARCHITECTURE (Sections 2–3 init)")
+    g_model = parser.add_argument_group("MODEL / ARCHITECTURE")
     g_model.add_argument("--cat_covariates_keys", nargs="+", type=str, default=None,
                          help="Categorical covariate keys injected into the model (default: [sample_key]).")
     g_model.add_argument("--cat_covariates_embeds_injection", nargs="+", type=str,
@@ -260,7 +262,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_model.add_argument("--active_gp_thresh_ratio", type=float, default=0.01,
                          help="Threshold ratio for active GP selection.")
 
-    g_tr = parser.add_argument_group("TRAINER (Section 3)")
+    g_tr = parser.add_argument_group("TRAINER")
     g_tr.add_argument("--n_epochs", type=int, default=400, help="Total training epochs.")
     g_tr.add_argument("--n_epochs_all_gps", type=int, default=25, help="Warmup epochs training all GPs.")
     g_tr.add_argument("--lr", type=float, default=1e-3, help="Learning rate.")
@@ -314,7 +316,11 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 
 
 def main(argv: list[str] | None = None) -> None:
+    # Parse parameters
+    logging.info("=== NicheCompass Parsing Parameters ===")
     parser, pre = build_parser()
+
+
     pre_args, remaining = pre.parse_known_args(argv)
     cfg: dict[str, Any] = {}
     if pre_args.config:
