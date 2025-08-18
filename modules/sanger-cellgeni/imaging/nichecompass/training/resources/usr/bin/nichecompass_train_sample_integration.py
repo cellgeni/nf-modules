@@ -62,7 +62,7 @@ def setup_logging(run_root: Path, debug: bool) -> None:
     fmt = "%(asctime)s | %(levelname)s | %(message)s"
     handlers = [
         logging.FileHandler(log_path, encoding="utf-8"),
-        logging.Stream.StreamHandler(sys.stdout),
+        logging.StreamHandler(sys.stdout),
     ]
     logging.basicConfig(level=level, format=fmt, handlers=handlers)
 
@@ -73,7 +73,6 @@ def fixed_seeds(seed: int = 0) -> None:
     torch.manual_seed(seed)
     if getattr(torch, "cuda", None) and torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
-
 
 
 def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
