@@ -45,17 +45,6 @@ from nichecompass.utils import ( # pyright: ignore[reportMissingImports]
 )
 
 
-def str2bool(v: str) -> bool:
-    if isinstance(v, bool):
-        return v
-    val = v.strip().lower()
-    if val in {"true", "t", "1", "yes", "y"}:
-        return True
-    if val in {"false", "f", "0", "no", "n"}:
-        return False
-    raise argparse.ArgumentTypeError(f"Invalid bool: {v!r}")
-
-
 def setup_logging(run_root: Path, debug: bool) -> None:
     log_path = run_root / "train.log"
     level = logging.DEBUG if debug else logging.INFO
@@ -67,6 +56,19 @@ def setup_logging(run_root: Path, debug: bool) -> None:
     logging.basicConfig(level=level, format=fmt, handlers=handlers)
 
 
+#TODO: Check how the function is used
+def str2bool(v: str) -> bool:
+    if isinstance(v, bool):
+        return v
+    val = v.strip().lower()
+    if val in {"true", "t", "1", "yes", "y"}:
+        return True
+    if val in {"false", "f", "0", "no", "n"}:
+        return False
+    raise argparse.ArgumentTypeError(f"Invalid bool: {v!r}")
+
+
+#TODO: Check if all training steps fixes the seed
 def fixed_seeds(seed: int = 0) -> None:
     random.seed(seed)
     np.random.seed(seed)
@@ -318,7 +320,7 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 
     return rp
 
-
+#TODO: Modularise into fuction based on subsections (e.g. create dirs, preparation, training)
 def main(argv: list[str] | None = None) -> None:
     # Parse parameters
     logging.info("=== NicheCompass Parsing Parameters ===")
