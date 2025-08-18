@@ -33,10 +33,6 @@ import scanpy as sc
 import squidpy as sq
 import scipy.sparse as sp
 
-try:
-    import torch
-except Exception:  # pragma: no cover
-    torch = None
 
 from nichecompass.models import NicheCompass
 from nichecompass.utils import (
