@@ -119,7 +119,7 @@ class RunParams:
     outdir: Path
     prefix: str = "nichecompass"
     species: str = "human"
-    nichecompass_data_tag: str = "0.3.0"
+    nichecompass_version: str = "0.3.0"
     debug: bool = False
 
     # DATASET / GRAPH
@@ -227,7 +227,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_main.add_argument("--outdir", type=Path, default=Path.cwd(), help="Base output directory.")
     g_main.add_argument("--prefix", type=str, default="nichecompass", help="Run prefix used in folder names.")
     g_main.add_argument("--species", type=str, default="human", help="Species tag for prior knowledge lookup.")
-    g_main.add_argument("--nichecompass_data_tag", type=str, default="0.3.0",
+    g_main.add_argument("--nichecompass_version", type=str, default="0.3.0",
                         help="GitHub tag (Lotfollahi-lab/nichecompass) to fetch 'data/'.")
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 
@@ -305,7 +305,7 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
     merged["outdir"] = Path(merged.get("outdir", Path.cwd()))
     merged.setdefault("prefix", "nichecompass")
     merged.setdefault("species", "human")
-    merged.setdefault("nichecompass_data_tag", "0.3.0")
+    merged.setdefault("nichecompass_version", "0.3.0")
 
     rp = RunParams(**merged)
 
@@ -345,7 +345,7 @@ def main(argv: list[str] | None = None) -> None:
 
     fixed_seeds(0)
 
-    download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_data_tag)
+    download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
 
     ga_data_folder_path = params.nichecompass_data_dir / "gene_annotations"
     gp_data_folder_path = params.nichecompass_data_dir / "gene_programs"
