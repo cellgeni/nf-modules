@@ -17,7 +17,7 @@
 
 process NICHECOMPASS_ANALYSIS {
     tag "$meta.id"
-    label 'process_gpu'
+    label 'process_medium'
 
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
     conda "${moduleDir}/environment.yml"
