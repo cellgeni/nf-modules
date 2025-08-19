@@ -509,7 +509,11 @@ def load_batches(
 
     for p in batch_paths:
         logging.info(f"Loading batch: {p}")
-        a = sc.read_h5ad(p)
+        try:
+            a = sc.read_h5ad(p)
+        except Exception as e:
+            raise RuntimeError(f"Failed to read H5AD: {p}") from e
+
 
         if counts_key not in a.layers.keys():
             logging.warning(f"Layer '{counts_key}' not found in {p}; falling back to X for all batches.")
