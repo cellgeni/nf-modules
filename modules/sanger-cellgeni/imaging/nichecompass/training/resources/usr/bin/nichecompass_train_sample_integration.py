@@ -439,13 +439,235 @@ def create_prior_gp_mask(
         verbose=True,
     )
     logging.info(
-        f"Number of gene programs after filtering and combining: %d",
-        len(combined_gp_dict),
+        f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}",
     )
     return combined_gp_dict
 
+#####################################################
 
-#TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
+#### Functions to prepare training data ####
+def load_batches(
+    batch_paths: list[Path],
+    counts_key: str,
+) -> tuple[list[ad.AnnData], str]:
+    """
+    Load .h5ad batches. 
+    If any batch is missing the requested counts layer, fall back to 'X' for all
+        (graceful, consistent with earlier behavior).
+    Returns the list of AnnData and the effective counts key.
+    """
+    adata_batch_list: list[ad.AnnData] = []
+    use_x = False
+
+    for p in batch_paths:
+        logging.info(f"Loading batch: {p}")
+        try:
+            a = sc.read_h5ad(p)
+        except Exception as e:
+            raise RuntimeError(f"Failed to read H5AD: {p}") from e
+
+
+        if counts_key not in a.layers.keys():
+            logging.warning(f"Layer '{counts_key}' not found in {p}; falling back to X for all batches.")
+            use_x = True
+
+        adata_batch_list.append(a)
+
+    counts_key_effective = "X" if use_x else counts_key
+
+    return adata_batch_list, counts_key_effective
+
+
+def compute_spatial_neighbors_for_batches(
+    adata_batch_list: list[ad.AnnData],
+    *,
+    spatial_key: str,
+    n_neighbors: int,
+    adj_key: str,
+) -> None:
+    """
+    For each batch:
+      - verify spatial coords exist,
+      - compute spatial neighbors with squidpy,
+      - ensure obsp[adj_key] exists,
+      - symmetrize adjacency.
+    Modifies AnnData objects in-place.
+    """
+    for idx, a in enumerate(adata_batch_list):
+        logging.info(f"Computing spatial neighbors for batch {idx} (n_neighbors={n_neighbors})...")
+
+        if spatial_key not in a.obsm_keys():
+            raise KeyError(
+                f"Missing obsm['{spatial_key}'] in batch #{idx}. Provide --spatial_key or precompute spatial coordinates."
+            )
+
+        sq.gr.spatial_neighbors(
+            a,
+            coord_type="generic",
+            spatial_key=spatial_key,
+            n_neighs=n_neighbors,
+        )
+
+        if adj_key not in a.obsp:
+            raise KeyError(
+                f"Expected obsp['{adj_key}'] after spatial_neighbors in batch #{idx}. "
+                f"Check that squidpy writes to this key."
+            )
+
+        # Make adjacency symmetric
+        adj = a.obsp[adj_key]
+        a.obsp[adj_key] = adj.maximum(adj.T)
+
+
+def concat_batches_with_block_adj(
+    adata_batch_list: list[ad.AnnData],
+    *,
+    adj_key: str,
+) -> ad.AnnData:
+    """
+    Concatenate batches (inner join on vars) and set a block-diagonal adjacency in obsp[adj_key].
+    """
+    logging.info(f"Concatenating {len(adata_batch_list)} batches...")
+    adata = ad.concat(adata_batch_list, join="inner")
+
+    logging.info("Assembling block-diagonal adjacency…")
+    blocks = [a.obsp[adj_key] for a in adata_batch_list]
+    # sp.block_diag returns coo by default; ask for csr
+    adata.obsp[adj_key] = sp.block_diag(blocks, format="csr")
+    return adata
+
+
+def add_gp_masks_to_adata(
+    adata: ad.AnnData,
+    combined_gp_dict: dict[str, Any],
+    params: RunParams,
+) -> None:
+    """
+    Add the combined prior GP masks into AnnData in-place.
+    """
+    logging.info("Adding GP masks to AnnData...")
+    add_gps_from_gp_dict_to_adata(
+        gp_dict=combined_gp_dict,
+        adata=adata,
+        gp_targets_mask_key=params.gp_targets_mask_key,
+        gp_targets_categories_mask_key=params.gp_targets_categories_mask_key,
+        gp_sources_mask_key=params.gp_sources_mask_key,
+        gp_sources_categories_mask_key=params.gp_sources_categories_mask_key,
+        gp_names_key=params.gp_names_key,
+        min_genes_per_gp=2,
+        min_source_genes_per_gp=1,
+        min_target_genes_per_gp=1,
+        max_genes_per_gp=None,
+        max_source_genes_per_gp=None,
+        max_target_genes_per_gp=None,
+    )
+    logging.info("GP masks added.")
+
+
+#####################################################
+
+#### Functions to train nichecompass model ####
+def build_model(
+    adata: ad.AnnData,
+    params: RunParams,
+    counts_key_effective: str,
+) -> NicheCompass:
+    """
+    Construct a NicheCompass model from AnnData and run parameters.
+    """
+    logging.info("Initializing NicheCompass model...")
+    cat_keys = params.cat_covariates_keys or [params.sample_key]
+    n_cov = len(cat_keys)
+
+    inj = normalise_list_arg(
+        params.cat_covariates_embeds_injection,
+        expected_len=n_cov,
+        default_item="gene_expr_decoder",
+    )
+    emb_dims = normalise_list_arg(
+        params.cat_covariates_embeds_nums,
+        expected_len=n_cov,
+        default_item=3,
+    )
+    no_edges = normalise_list_arg(
+        params.cat_covariates_no_edges,
+        expected_len=n_cov,
+        default_item=True,
+    )
+
+    model = NicheCompass(
+        adata,
+        counts_key=counts_key_effective,
+        adj_key=params.adj_key,
+        cat_covariates_embeds_injection=inj,
+        cat_covariates_keys=cat_keys,
+        cat_covariates_no_edges=no_edges,
+        cat_covariates_embeds_nums=emb_dims,
+        gp_names_key=params.gp_names_key,
+        active_gp_names_key=params.active_gp_names_key,
+        gp_targets_mask_key=params.gp_targets_mask_key,
+        gp_targets_categories_mask_key=params.gp_targets_categories_mask_key,
+        gp_sources_mask_key=params.gp_sources_mask_key,
+        gp_sources_categories_mask_key=params.gp_sources_categories_mask_key,
+        latent_key=params.latent_key,
+        conv_layer_encoder=params.conv_layer_encoder,
+        active_gp_thresh_ratio=params.active_gp_thresh_ratio,
+    )
+    logging.info("Model initialized.")
+    return model
+
+
+def train_and_embed(
+    model: NicheCompass,
+    params: RunParams,
+) -> None:
+    """
+    Train the model, then compute neighbors and UMAP in latent space.
+    """
+    logging.info("Training model...")
+    model.train(
+        n_epochs=params.n_epochs,
+        n_epochs_all_gps=params.n_epochs_all_gps,
+        lr=params.lr,
+        lambda_edge_recon=params.lambda_edge_recon,
+        lambda_gene_expr_recon=params.lambda_gene_expr_recon,
+        lambda_l1_masked=params.lambda_l1_masked,
+        lambda_l1_addon=params.lambda_l1_addon,
+        edge_batch_size=params.edge_batch_size,
+        n_sampled_neighbors=params.n_sampled_neighbors,
+        use_cuda_if_available=params.use_cuda_if_available,
+        verbose=False,
+    )
+    logging.info("Training done. Computing neighbors and UMAP in latent space...")
+    sc.pp.neighbors(model.adata, use_rep=params.latent_key, key_added=params.latent_key)
+    sc.tl.umap(model.adata, neighbors_key=params.latent_key, random_state=_UMAP_RANDOM_STATE)
+    logging.info("Neighbors/UMAP computed.")
+
+
+def save_model_and_config(
+    model: NicheCompass,
+    params: RunParams,
+    counts_key_effective: str,
+) -> None:
+    """
+    Save trained model and run_config.json.
+    """
+    logging.info(f"Saving trained model to {params.model_folder_path}")
+    model.save(
+        dir_path=str(params.model_folder_path),
+        overwrite=True,
+        save_adata=True,
+        adata_file_name="adata.h5ad",
+    )
+
+    run_config = asdict(params)
+    run_config["counts_key_effective"] = counts_key_effective
+    cfg_path = params.model_folder_path / "run_config.json"
+    with open(cfg_path, "w", encoding="utf-8") as f:
+        json.dump(run_config, f, indent=2, default=str)
+    logging.info(f"Saved run_config.json at {cfg_path}")
+
+
 def main(argv: list[str] | None = None) -> None:
     ### 1. Parse parameters ###
     parser, pre = build_parser()
@@ -505,6 +727,7 @@ def main(argv: list[str] | None = None) -> None:
     logging.info(f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}")
 
 
+    ### 4. Load data batches
     adata_batch_list: list[ad.AnnData] = []
     counts_key_effective = params.counts_key
     for batch in params.batches:
@@ -525,7 +748,16 @@ def main(argv: list[str] | None = None) -> None:
             n_neighs=params.n_neighbors,
         )
 
-        adata_batch.obsp[params.adj_key] = adata_batch.obsp[params.adj_key].maximum(adata_batch.obsp[params.adj_key].T)
+        # Check adj_key
+        if params.adj_key not in adata_batch.obsp:
+            raise KeyError(
+                f"Expected obsp['{params.adj_key}'] after spatial_neighbors in {batch}."
+                f"Check --spatial_key and ensure neighbor graph was computed."
+            )
+
+        # Make adjacency matrix symmetric
+        adj = adata_batch.obsp[params.adj_key]
+        adata_batch.obsp[params.adj_key] = adj.maximum(adj.T)
 
         if params.counts_key not in adata_batch.layers.keys():
             logging.warning("Layer '%s' not found in %s; falling back to X.", params.counts_key, batch)
