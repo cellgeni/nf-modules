@@ -491,7 +491,7 @@ def main(argv: list[str] | None = None) -> None:
     # Download pre-prepared reference gene program from nichecompass github repo
     data_dir_exist = params.nichecompass_data_dir.exists()
     if data_dir_exist:
-        logging.info(f"NicheCompass data already exists at {nichecompass_data_dir} — reusing.")
+        logging.info(f"NicheCompass data already exists at {params.nichecompass_data_dir} — reusing.")
     else:
         download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
 
