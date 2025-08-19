@@ -240,7 +240,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     # Grouping parameters
     g_main = parser.add_argument_group("MAIN (I/O & run identity)")
     g_main.add_argument("--batches", nargs="+", type=Path, default=argparse.SUPPRESS, help="Paths to input .h5ad files (≥1).")
-    g_main.add_argument("--outdir", type=Path, default=Path.cwd(), help="Base output directory (default: current working directory).") #TODO Need to change awkward Path.cwd() parsing in help message
+    g_main.add_argument("--outdir", type=Path, default=argparse.SUPPRESS, help="Base output directory (default: current working directory).") #TODO Need to change awkward Path.cwd() parsing in help message
     g_main.add_argument("--prefix", type=str, default="nichecompass", help="Run prefix used in folder names.")
     g_main.add_argument("--species", type=str, default="human", help="Species tag for prior knowledge lookup.")
     g_main.add_argument("--nichecompass_version", type=str, default="0.3.0",
@@ -340,7 +340,7 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 
     # Normalise to Path types
     merged["batches"] = [Path(p) for p in merged["batches"]]
-    merged["outdir"] = Path(merged.get("outdir", Path.cwd()))
+    merged["outdir"] = Path(merged["outdir"]) if isinstance(merged.get("outdir"), (str, Path)) else Path.cwd()
 
     # Construct typed dataclass
     rp = RunParams(**merged)
