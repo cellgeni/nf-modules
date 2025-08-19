@@ -22,7 +22,7 @@ import logging
 import random
 import sys
 import zipfile
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -54,18 +54,6 @@ def setup_logging(run_root: Path, debug: bool) -> None:
         logging.StreamHandler(sys.stdout),
     ]
     logging.basicConfig(level=level, format=fmt, handlers=handlers)
-
-
-#TODO: Check how the function is used
-def str2bool(v: str) -> bool:
-    if isinstance(v, bool):
-        return v
-    val = v.strip().lower()
-    if val in {"true", "t", "1", "yes", "y"}:
-        return True
-    if val in {"false", "f", "0", "no", "n"}:
-        return False
-    raise argparse.ArgumentTypeError(f"Invalid bool: {v!r}")
 
 
 #TODO: Check if all training steps fixes the seed
@@ -115,8 +103,13 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
     logging.info("Extracted 'data/' to %s", nichecompass_data_dir)
 
 
+#### Dataclass and functions to parse parameters ####
+
 @dataclass
 class RunParams:
+    """
+    dataclass for storing parameters (user-defined & runtime)
+    """
     # MAIN
     batches: list[Path]
     outdir: Path
@@ -178,12 +171,6 @@ class RunParams:
         self.nichecompass_data_dir = self.run_root / "data"
 
 
-def validate_known_keys(config: dict[str, Any], allowed: list[str]) -> None:
-    unknown = sorted(set(config.keys()) - set(allowed))
-    if unknown:
-        raise ValueError(f"Unknown keys in --config: {unknown}")
-
-
 def load_config_json(path: Path) -> dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         cfg = json.load(f)
@@ -192,6 +179,24 @@ def load_config_json(path: Path) -> dict[str, Any]:
     return cfg
 
 
+def validate_known_keys(config: dict[str, Any], allowed: list[str]) -> None:
+    unknown = sorted(set(config.keys()) - set(allowed))
+    if unknown:
+        raise ValueError(f"Unknown keys in --config: {unknown}")
+
+
+def str2bool(v: str) -> bool:
+    if isinstance(v, bool):
+        return v
+    val = v.strip().lower()
+    if val in {"true", "t", "1", "yes", "y"}:
+        return True
+    if val in {"false", "f", "0", "no", "n"}:
+        return False
+    raise argparse.ArgumentTypeError(f"Invalid bool: {v!r}")
+
+
+#TODO: Understand how this function works.
 def normalize_list_arg(val: list[Any] | None, *, expected_len: int, default_item: Any) -> list[Any]:
     if val is None:
         return [default_item] * expected_len
@@ -267,6 +272,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_model.add_argument("--conv_layer_encoder", type=str, default="gcnconv", help="Encoder conv layer type.")
     g_model.add_argument("--active_gp_thresh_ratio", type=float, default=0.01,
                          help="Threshold ratio for active GP selection.")
+
     g_tr = parser.add_argument_group("TRAINER")
     g_tr.add_argument("--n_epochs", type=int, default=400, help="Total training epochs.")
     g_tr.add_argument("--n_epochs_all_gps", type=int, default=25, help="Warmup epochs training all GPs.")
@@ -283,17 +289,36 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
 
 
 def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunParams:
-    allowed = set(RunParams.__dataclass_fields__.keys())
-    derived = {"timestamp", "run_root", "artifacts_folder_path", "model_folder_path",
+    """
+    Merge params from config.json and CLI
+
+    Args:
+        args (argparse.Namespace): params from CLI
+        cfg (dict[str, Any]): params from config
+
+    Raises:
+        ValueError: if required params (batches) is not provided
+
+    Returns:
+        RunParams: dataclass with all params
+    """
+
+    all_params = set(f.name for f in fields(RunParams))
+    runtime_params = {"timestamp", "run_root", "artifacts_folder_path", "model_folder_path",
                "figure_folder_path", "nichecompass_data_dir"}
-    allowed_for_config = sorted(list(allowed - derived))
+    
+    # Extract the user-defined params and validate the params from config
+    allowed_for_config = sorted(list(all_params - runtime_params))
     if cfg:
         validate_known_keys(cfg, allowed_for_config)
 
+    # Merge params from config and CLI
     merged: dict[str, Any] = {}
     merged.update(cfg or {})
 
+    # Overwrite config params with params from CLI 
     for k, v in vars(args).items():
+        # Ignore --config as it's already used
         if k == "config":
             continue
         if v is not None:
@@ -304,41 +329,46 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
             else:
                 merged[k] = v
 
+    # Check required batches params are provided
     if "batches" not in merged or not merged["batches"]:
         raise ValueError("You must provide --batches PATH [PATH ...] or set 'batches' in --config JSON.")
 
+    # Normalise to Path types
     merged["batches"] = [Path(p) for p in merged["batches"]]
     merged["outdir"] = Path(merged.get("outdir", Path.cwd()))
-    merged.setdefault("prefix", "nichecompass")
-    merged.setdefault("species", "human")
-    merged.setdefault("nichecompass_version", "0.3.0")
 
+    # Construct typed dataclass
     rp = RunParams(**merged)
 
+    # Set [sample_key] as default for cat_covariates_keys
     if rp.cat_covariates_keys is None:
         rp.cat_covariates_keys = [rp.sample_key]
 
     return rp
 
-#TODO: Modularise into fuction based on subsections (e.g. create dirs, preparation, training)
+#TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
 def main(argv: list[str] | None = None) -> None:
-    # Parse parameters
+    ### 1. Parse parameters ###
     logging.info("=== NicheCompass Parsing Parameters ===")
     parser, pre = build_parser()
-
-
     pre_args, remaining = pre.parse_known_args(argv)
-    cfg: dict[str, Any] = {}
-    if pre_args.config:
-        cfg = load_config_json(pre_args.config)
 
+    # if --config is provided, load params from json file
+    cfg_params: dict[str, Any] = {}
+    if pre_args.config:
+        cfg_params = load_config_json(pre_args.config)
+
+    # parse the params provided from other options
     args = parser.parse_args(remaining)
 
+    # Merge the params provided from --config and other options
     try:
-        params = merge_config_and_args(args, cfg)
+        params = merge_config_and_args(args, cfg_params)
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(2)
+
+    ###########################
 
     params.finalize_paths()
     params.run_root.mkdir(parents=True, exist_ok=True)
