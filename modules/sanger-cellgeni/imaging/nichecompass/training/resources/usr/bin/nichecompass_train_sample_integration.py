@@ -150,6 +150,7 @@ class RunParams:
     lambda_edge_recon: float = 500000.0
     lambda_gene_expr_recon: float = 300.0
     lambda_l1_masked: float = 0.0
+    lambda_l1_addon: float = 30.0
     edge_batch_size: int = 16384
     n_sampled_neighbors: int = 4
     use_cuda_if_available: bool = True
