@@ -45,6 +45,9 @@ from nichecompass.utils import (
     extract_gp_dict_from_omnipath_lr_interactions,
 )
 
+# Global UMAP seed (kept in sync with fixed_seeds)
+_UMAP_RANDOM_STATE: int = 0
+
 
 def setup_logging(run_root: Path, debug: bool) -> None:
     log_path = run_root / "train.log"
@@ -61,8 +64,13 @@ def setup_logging(run_root: Path, debug: bool) -> None:
     )
 
 
-#TODO: Check if all training steps fixes the seed
 def fixed_seeds(seed: int = 0) -> None:
+    """
+    Use fixed seeds for reproducibility.
+    """
+    global _UMAP_RANDOM_STATE
+    _UMAP_RANDOM_STATE = seed
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -164,8 +172,7 @@ def str2bool(v: str) -> bool:
     raise argparse.ArgumentTypeError(f"Invalid bool: {v!r}")
 
 
-#TODO: Understand how this function works.
-def normalize_list_arg(val: list[Any] | None, *, expected_len: int, default_item: Any) -> list[Any]:
+def normalise_list_arg(val: list[Any] | None, *, expected_len: int, default_item: Any) -> list[Any]:
     if val is None:
         return [default_item] * expected_len
     if expected_len <= 0:
@@ -174,7 +181,7 @@ def normalize_list_arg(val: list[Any] | None, *, expected_len: int, default_item
         return val
     if len(val) == 1:
         return [val[0]] * expected_len
-    logging.warning("List length %d does not match expected %d; adjusting.", len(val), expected_len)
+    logging.warning(f"List length {len(val)} does not match expected {expected_len}; adjusting.")
     out = list(val)[:expected_len]
     while len(out) < expected_len:
         out.append(val[-1])
@@ -753,60 +760,20 @@ def main(argv: list[str] | None = None) -> None:
         params=params,
     )
 
-    logging.info("Initializing NicheCompass model...")
-    cat_keys = params.cat_covariates_keys or [params.sample_key]
-    n_cov = len(cat_keys)
-    inj = normalize_list_arg(params.cat_covariates_embeds_injection, expected_len=n_cov, default_item="gene_expr_decoder")
-    emb_dims = normalize_list_arg(params.cat_covariates_embeds_nums, expected_len=n_cov, default_item=3)
-    no_edges = normalize_list_arg(params.cat_covariates_no_edges, expected_len=n_cov, default_item=True)
-
-    model = NicheCompass(
-        adata,
-        counts_key=counts_key_effective,
-        adj_key=params.adj_key,
-        cat_covariates_embeds_injection=inj,
-        cat_covariates_keys=cat_keys,
-        cat_covariates_no_edges=no_edges,
-        cat_covariates_embeds_nums=emb_dims,
-        gp_names_key=params.gp_names_key,
-        active_gp_names_key=params.active_gp_names_key,
-        gp_targets_mask_key=params.gp_targets_mask_key,
-        gp_targets_categories_mask_key=params.gp_targets_categories_mask_key,
-        gp_sources_mask_key=params.gp_sources_mask_key,
-        gp_sources_categories_mask_key=params.gp_sources_categories_mask_key,
-        latent_key=params.latent_key,
-        conv_layer_encoder=params.conv_layer_encoder,
-        active_gp_thresh_ratio=params.active_gp_thresh_ratio,
+    ### 6. Build, train, and embed model
+    model = build_model(
+        adata=adata,
+        params=params,
+        counts_key_effective=counts_key_effective,
     )
+    train_and_embed(model, params)
 
-    logging.info("Training model...")
-    model.train(
-        n_epochs=params.n_epochs,
-        n_epochs_all_gps=params.n_epochs_all_gps,
-        lr=params.lr,
-        lambda_edge_recon=params.lambda_edge_recon,
-        lambda_gene_expr_recon=params.lambda_gene_expr_recon,
-        lambda_l1_masked=params.lambda_l1_masked,
-        lambda_l1_addon=params.lambda_l1_addon,
-        edge_batch_size=params.edge_batch_size,
-        n_sampled_neighbors=params.n_sampled_neighbors,
-        use_cuda_if_available=params.use_cuda_if_available,
-        verbose=False,
+    # 7. Save outputs
+    save_model_and_config(
+        model=model,
+        params=params,
+        counts_key_effective=counts_key_effective,
     )
-
-    logging.info("Computing neighbors/UMAP in latent space...")
-    sc.pp.neighbors(model.adata, use_rep=params.latent_key, key_added=params.latent_key)
-    sc.tl.umap(model.adata, neighbors_key=params.latent_key)
-
-    logging.info("Saving trained model to %s", params.model_folder_path)
-    model.save(dir_path=str(params.model_folder_path), overwrite=True, save_adata=True, adata_file_name="adata.h5ad")
-
-    run_config = asdict(params)
-    run_config["counts_key_effective"] = counts_key_effective
-    cfg_path = params.model_folder_path / "run_config.json"
-    with open(cfg_path, "w", encoding="utf-8") as f:
-        json.dump(run_config, f, indent=2, default=str)
-    logging.info("Saved run_config.json at %s", cfg_path)
 
     logging.info("=== NicheCompass Sample Integration: DONE ===")
     print(f"TIMESTAMP={params.timestamp}")
