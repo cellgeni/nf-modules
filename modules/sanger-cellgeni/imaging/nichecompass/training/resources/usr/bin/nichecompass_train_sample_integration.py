@@ -27,17 +27,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import anndata as ad # pyright: ignore[reportMissingImports]
-import numpy as np # pyright: ignore[reportMissingImports]
-import scanpy as sc # pyright: ignore[reportMissingImports]
-import squidpy as sq # pyright: ignore[reportMissingImports]
-import scipy.sparse as sp # pyright: ignore[reportMissingImports]
-import requests # pyright: ignore[reportMissingModuleSource]
-import torch # pyright: ignore[reportMissingImports]
+import anndata as ad
+import numpy as np
+import scanpy as sc
+import squidpy as sq
+import scipy.sparse as sp
+import requests
+import torch
 
 #TODO: Need to fix downloading omnipathdb every single run
-from nichecompass.models import NicheCompass # pyright: ignore[reportMissingImports]
-from nichecompass.utils import ( # pyright: ignore[reportMissingImports]
+from nichecompass.models import NicheCompass
+from nichecompass.utils import (
     add_gps_from_gp_dict_to_adata,
     filter_and_combine_gp_dict_gps_v2,
     extract_gp_dict_from_mebocost_ms_interactions,
