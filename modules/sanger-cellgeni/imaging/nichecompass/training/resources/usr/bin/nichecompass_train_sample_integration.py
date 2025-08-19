@@ -70,45 +70,6 @@ def fixed_seeds(seed: int = 0) -> None:
         torch.cuda.manual_seed_all(seed)
 
 
-def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
-    """
-    Download the `data/` folder from Lotfollahi-lab/nichecompass GitHub tag.
-    Skips download if nichecompass_data_dir already exists.
-    """
-    if nichecompass_data_dir.exists():
-        logging.info(f"NicheCompass data already exists at {nichecompass_data_dir} — reusing.")
-        return
-
-    owner = "Lotfollahi-lab"
-    repo = "nichecompass"
-    zip_url = f"https://github.com/{owner}/{repo}/archive/refs/tags/{tag}.zip"
-
-    logging.info(f"Downloading NicheCompass data from: {zip_url}")
-
-    try:
-        resp = requests.get(zip_url, timeout=300)
-        resp.raise_for_status()
-    except Exception as e:
-        logging.error(f"Failed to download NicheCompass data: {e}")
-        raise
-
-    with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
-        prefix = f"{repo}-{tag}/data/"
-        members = [m for m in z.namelist() if m.startswith(prefix)]
-        if not members:
-            raise RuntimeError(f"'data/' folder not found in archive for tag {tag}")
-        for member in members:
-            rel_path = member[len(prefix):]
-            target_path = nichecompass_data_dir / rel_path
-            if member.endswith("/"):
-                target_path.mkdir(parents=True, exist_ok=True)
-            else:
-                target_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(target_path, "wb") as f:
-                    f.write(z.read(member))
-    logging.info(f"Extracted 'data/' to {nichecompass_data_dir}")
-
-
 #### Dataclass and functions to parse parameters ####
 
 @dataclass
@@ -354,6 +315,136 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 
     return rp
 
+
+#####################################################
+
+#### Functions to create Prior Knowledge Gene Program (GP) Mask
+def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
+    """
+    Download the `data/` folder from Lotfollahi-lab/nichecompass GitHub tag.
+    """
+    owner = "Lotfollahi-lab"
+    repo = "nichecompass"
+    zip_url = f"https://github.com/{owner}/{repo}/archive/refs/tags/{tag}.zip"
+
+    logging.info(f"Downloading NicheCompass data from: {zip_url}")
+
+    try:
+        resp = requests.get(zip_url, timeout=300)
+        resp.raise_for_status()
+    except Exception as e:
+        logging.error(f"Failed to download NicheCompass data: {e}")
+        raise
+
+    with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
+        prefix = f"{repo}-{tag}/data/"
+        members = [m for m in z.namelist() if m.startswith(prefix)]
+        if not members:
+            raise RuntimeError(f"'data/' folder not found in archive for tag {tag}")
+        for member in members:
+            rel_path = member[len(prefix):]
+            target_path = nichecompass_data_dir / rel_path
+            if member.endswith("/"):
+                target_path.mkdir(parents=True, exist_ok=True)
+            else:
+                target_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(target_path, "wb") as f:
+                    f.write(z.read(member))
+    logging.info(f"Extracted 'data/' to {nichecompass_data_dir}")
+
+def create_prior_gp_mask(
+    nichecompass_data_dir: Path,
+    data_dir_exist: bool,
+    species: str,
+    figure_folder_path: Path,
+) -> dict[str, Any]:
+    """
+    Create the prior knowledge GP mask (combined) from OmniPath, NicheNet, and MEBOCOST.
+
+    - Always reads reference files from `nichecompass_data_dir` (downloaded earlier).
+    - Disables plotting but still writes the SVG summaries into `figure_folder_path`.
+    - Returns the combined GP dictionary to be passed into `add_gps_from_gp_dict_to_adata`.
+
+    Parameters
+    ----------
+    nichecompass_data_dir : Path
+        Root path containing the 'data/' folder fetched from the NicheCompass repo.
+    species : str
+        Species tag ('human' by default) to select correct reference files.
+    figure_folder_path : Path
+        Where to save *_gp_gene_count_distributions.svg.
+
+    Returns
+    -------
+    dict[str, Any]
+        Combined GP dictionary after filtering/merging.
+    """
+    logging.info(f"Preparing GP reference paths from {nichecompass_data_dir}")
+
+    ga_data_folder_path = nichecompass_data_dir / "gene_annotations"
+    gp_data_folder_path = nichecompass_data_dir / "gene_programs"
+
+    omnipath_lr_network_file_path = gp_data_folder_path / "omnipath_lr_network.csv"
+    nichenet_lr_network_file_path = gp_data_folder_path / f"nichenet_lr_network_v2_{species}.csv"
+    nichenet_ligand_target_matrix_file_path = gp_data_folder_path / f"nichenet_ligand_target_matrix_v2_{species}.csv"
+    mebocost_enzyme_sensor_interactions_folder_path = gp_data_folder_path / "metabolite_enzyme_sensor_gps"
+    gene_orthologs_mapping_file_path = ga_data_folder_path / "human_mouse_gene_orthologs.csv"
+
+    logging.info("Extracting OmniPath GP dict…")
+    omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
+        species=species,
+        load_from_disk=data_dir_exist,
+        save_to_disk=not(data_dir_exist),
+        lr_network_file_path=str(omnipath_lr_network_file_path),
+        gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
+        plot_gp_gene_count_distributions=False,
+        gp_gene_count_distributions_save_path=str(
+            figure_folder_path / "omnipath_gp_gene_count_distributions.svg"
+        ),
+    )
+    logging.info(f"OmniPath GP count: {len(omnipath_gp_dict)}")
+
+    logging.info("Extracting NicheNet GP dict…")
+    nichenet_gp_dict = extract_gp_dict_from_nichenet_lrt_interactions(
+        species=species,
+        version="v2",
+        keep_target_genes_ratio=1.0,
+        max_n_target_genes_per_gp=250,
+        load_from_disk=data_dir_exist,
+        save_to_disk=not(data_dir_exist),
+        lr_network_file_path=str(nichenet_lr_network_file_path),
+        ligand_target_matrix_file_path=str(nichenet_ligand_target_matrix_file_path),
+        gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
+        plot_gp_gene_count_distributions=False,
+        gp_gene_count_distributions_save_path=str(
+            figure_folder_path / "nichenet_gp_gene_count_distributions.svg"
+        ),
+    )
+    logging.info(f"NicheNet GP count: {len(nichenet_gp_dict)}")
+
+    logging.info("Extracting MEBOCOST GP dict…")
+    mebocost_gp_dict = extract_gp_dict_from_mebocost_ms_interactions(
+        dir_path=str(mebocost_enzyme_sensor_interactions_folder_path),
+        species=species,
+        plot_gp_gene_count_distributions=False,
+        gp_gene_count_distributions_save_path=str(
+            figure_folder_path / "mebocost_gp_gene_count_distributions.svg"
+        ),
+    )
+    logging.info(f"MEBOCOST GP count: {len(mebocost_gp_dict)}")
+
+    logging.info("Combining GP dicts…")
+    combined_gp_dict = filter_and_combine_gp_dict_gps_v2(
+        [omnipath_gp_dict, nichenet_gp_dict, mebocost_gp_dict],
+        verbose=True,
+    )
+    logging.info(
+        f"Number of gene programs after filtering and combining: %d",
+        len(combined_gp_dict),
+    )
+    return combined_gp_dict
+
+
 #TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
 def main(argv: list[str] | None = None) -> None:
     ### 1. Parse parameters ###
@@ -377,6 +468,11 @@ def main(argv: list[str] | None = None) -> None:
 
     ###########################
 
+    # Fix seed for reproducibility
+    fixed_seeds(0)
+
+    ###########################
+
     ### 2. Create output directories and set up loggers ###
     # Set output directories paths
     params.finalize_paths()
@@ -390,62 +486,29 @@ def main(argv: list[str] | None = None) -> None:
     params.figure_folder_path.mkdir(parents=True, exist_ok=True)
     params.model_folder_path.mkdir(parents=True, exist_ok=True)
 
-    download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
 
-    ga_data_folder_path = params.nichecompass_data_dir / "gene_annotations"
-    gp_data_folder_path = params.nichecompass_data_dir / "gene_programs"
-    omnipath_lr_network_file_path = gp_data_folder_path / "omnipath_lr_network.csv"
-    collectri_tf_network_file_path = gp_data_folder_path / f"collectri_tf_network_{params.species}.csv"
-    nichenet_lr_network_file_path = gp_data_folder_path / f"nichenet_lr_network_v2_{params.species}.csv"
-    nichenet_ligand_target_matrix_file_path = gp_data_folder_path / f"nichenet_ligand_target_matrix_v2_{params.species}.csv"
-    mebocost_enzyme_sensor_interactions_folder_path = gp_data_folder_path / "metabolite_enzyme_sensor_gps"
-    gene_orthologs_mapping_file_path = ga_data_folder_path / "human_mouse_gene_orthologs.csv"
+    ### 3. Prepare prior knowledge gene program (GP) mask
+    # Download pre-prepared reference gene program from nichecompass github repo
+    data_dir_exist = params.nichecompass_data_dir.exists()
+    if data_dir_exist:
+        logging.info(f"NicheCompass data already exists at {nichecompass_data_dir} — reusing.")
+    else:
+        download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
 
-    fixed_seeds(0)
-
-    logging.info("Extracting OmniPath GP dict...")
-    omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
+    logging.info(f"Creating prior gene program mask...")
+    combined_gp_dict = create_prior_gp_mask(
+        nichecompass_data_dir=params.nichecompass_data_dir,
+        data_dir_exist=data_dir_exist,
         species=params.species,
-        load_from_disk=True,
-        save_to_disk=False,
-        lr_network_file_path=str(omnipath_lr_network_file_path),
-        gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
-        plot_gp_gene_count_distributions=False,
-        gp_gene_count_distributions_save_path=str(params.figure_folder_path / "omnipath_gp_gene_count_distributions.svg"),
+        figure_folder_path=params.figure_folder_path,
     )
+    logging.info(f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}")
 
-    logging.info("Extracting NicheNet GP dict...")
-    nichenet_gp_dict = extract_gp_dict_from_nichenet_lrt_interactions(
-        species=params.species,
-        version="v2",
-        keep_target_genes_ratio=1.0,
-        max_n_target_genes_per_gp=250,
-        load_from_disk=True,
-        save_to_disk=False,
-        lr_network_file_path=str(nichenet_lr_network_file_path),
-        ligand_target_matrix_file_path=str(nichenet_ligand_target_matrix_file_path),
-        gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
-        plot_gp_gene_count_distributions=False,
-        gp_gene_count_distributions_save_path=str(params.figure_folder_path / "nichenet_gp_gene_count_distributions.svg"),
-    )
-
-    logging.info("Extracting MEBOCOST GP dict...")
-    mebocost_gp_dict = extract_gp_dict_from_mebocost_ms_interactions(
-        dir_path=str(mebocost_enzyme_sensor_interactions_folder_path),
-        species=params.species,
-        plot_gp_gene_count_distributions=False,
-        gp_gene_count_distributions_save_path=str(params.figure_folder_path / "mebocost_gp_gene_count_distributions.svg"),
-    )
-
-    logging.info("Combining GP dicts...")
-    gp_dicts = [omnipath_gp_dict, nichenet_gp_dict, mebocost_gp_dict]
-    combined_gp_dict = filter_and_combine_gp_dict_gps_v2(gp_dicts, verbose=True)
-    logging.info("Number of gene programs after filtering and combining: %d", len(combined_gp_dict))
 
     adata_batch_list: list[ad.AnnData] = []
     counts_key_effective = params.counts_key
     for batch in params.batches:
-        logging.info("Loading batch: %s", batch)
+        logging.info(f"Loading batch: {batch}")
         adata_batch = sc.read_h5ad(str(batch))
 
         if params.spatial_key not in adata_batch.obsm_keys():
