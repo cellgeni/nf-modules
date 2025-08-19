@@ -173,6 +173,36 @@ def str2bool(v: str) -> bool:
 
 
 def normalise_list_arg(val: list[Any] | None, *, expected_len: int, default_item: Any) -> list[Any]:
+    """
+    Normalize a possibly missing or length-mismatched list argument to a fixed length.
+
+    This helper is used for options that conceptually take one value per category
+    (e.g., one setting per covariate). It ensures the output list has exactly
+    `expected_len` items using the following rules:
+
+    - If ``val is None``: return ``[default_item] * expected_len``.
+    - If ``expected_len <= 0``: return ``[]``.
+    - If ``val`` is an empty list: warn and return ``[default_item] * expected_len``.
+    - If ``len(val) == expected_len``: return ``val`` unchanged.
+    - If ``len(val) == 1``: repeat the single value to reach ``expected_len``.
+    - Otherwise (length mismatch): log a warning and
+      *truncate* to ``expected_len`` if too long, or *pad* by repeating the last
+      element if too short.
+
+    Parameters
+    ----------
+    val
+        The user-provided list (from CLI/config) or ``None``.
+    expected_len
+        Desired length of the normalized list (e.g., number of covariates).
+    default_item
+        Filler value used when ``val`` is ``None`` or requires padding.
+
+    Returns
+    -------
+    list[Any]
+        A list of length exactly ``expected_len``.
+    """
     if val is None:
         return [default_item] * expected_len
     if expected_len <= 0:
