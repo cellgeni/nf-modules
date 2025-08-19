@@ -439,8 +439,7 @@ def create_prior_gp_mask(
         verbose=True,
     )
     logging.info(
-        f"Number of gene programs after filtering and combining: %d",
-        len(combined_gp_dict),
+        f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}",
     )
     return combined_gp_dict
 
@@ -505,6 +504,7 @@ def main(argv: list[str] | None = None) -> None:
     logging.info(f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}")
 
 
+    ### 4. Load data batches
     adata_batch_list: list[ad.AnnData] = []
     counts_key_effective = params.counts_key
     for batch in params.batches:
@@ -525,7 +525,16 @@ def main(argv: list[str] | None = None) -> None:
             n_neighs=params.n_neighbors,
         )
 
-        adata_batch.obsp[params.adj_key] = adata_batch.obsp[params.adj_key].maximum(adata_batch.obsp[params.adj_key].T)
+        # Check adj_key
+        if params.adj_key not in adata_batch.obsp:
+            raise KeyError(
+                f"Expected obsp['{params.adj_key}'] after spatial_neighbors in {batch}."
+                f"Check --spatial_key and ensure neighbor graph was computed."
+            )
+
+        # Make adjacency matrix symmetric
+        adj = adata_batch.obsp[params.adj_key]
+        adata_batch.obsp[params.adj_key] = adj.maximum(adj.T)
 
         if params.counts_key not in adata_batch.layers.keys():
             logging.warning("Layer '%s' not found in %s; falling back to X.", params.counts_key, batch)
