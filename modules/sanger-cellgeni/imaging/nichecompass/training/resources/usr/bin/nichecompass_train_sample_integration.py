@@ -49,11 +49,15 @@ def setup_logging(run_root: Path, debug: bool) -> None:
     log_path = run_root / "train.log"
     level = logging.DEBUG if debug else logging.INFO
     fmt = "%(asctime)s | %(levelname)s | %(message)s"
-    handlers = [
-        logging.FileHandler(log_path, encoding="utf-8"),
-        logging.StreamHandler(sys.stdout),
-    ]
-    logging.basicConfig(level=level, format=fmt, handlers=handlers)
+    datefmt = "%Y%m%d %H:%M:%S"
+    logging.basicConfig(
+        level=level,
+        format=fmt,
+        datefmt=datefmt,
+        handlers=[logging.FileHandler(log_path, encoding="utf-8"),
+                  logging.StreamHandler(sys.stdout)],
+        force=True,
+    )
 
 
 #TODO: Check if all training steps fixes the seed
@@ -350,7 +354,6 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 #TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
 def main(argv: list[str] | None = None) -> None:
     ### 1. Parse parameters ###
-    logging.info("=== NicheCompass Parsing Parameters ===")
     parser, pre = build_parser()
     pre_args, remaining = pre.parse_known_args(argv)
 
