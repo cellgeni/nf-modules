@@ -78,6 +78,7 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
     if nichecompass_data_dir.exists():
         logging.info(f"NicheCompass data already exists at {nichecompass_data_dir} — reusing.")
         return
+
     owner = "Lotfollahi-lab"
     repo = "nichecompass"
     zip_url = f"https://github.com/{owner}/{repo}/archive/refs/tags/{tag}.zip"
@@ -131,7 +132,7 @@ class RunParams:
 
     # AnnData keys
     counts_key: str = "counts"
-    adj_key: str = "spatial_connectivities"
+    adj_key: str = field(default="spatial_connectivities", init=False)
     gp_names_key: str = "nichecompass_gp_names"
     active_gp_names_key: str = "nichecompass_active_gp_names"
     gp_targets_mask_key: str = "nichecompass_gp_targets"
@@ -257,7 +258,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
 
     g_ad = parser.add_argument_group("AnnData keys")
     g_ad.add_argument("--counts_key", type=str, default="counts", help="layer name for counts (falls back to X).")
-    g_ad.add_argument("--adj_key", type=str, default="spatial_connectivities", help="obsp key for spatial adjacency matrix.")
+    # g_ad.add_argument("--adj_key", type=str, default="spatial_connectivities", help="obsp key for spatial adjacency matrix.")
     g_ad.add_argument("--gp_names_key", type=str, default="nichecompass_gp_names", help="uns key for gene program names.")
     g_ad.add_argument("--active_gp_names_key", type=str, default="nichecompass_active_gp_names", help="uns key for active gene program names.")
     g_ad.add_argument("--gp_targets_mask_key", type=str, default="nichecompass_gp_targets", help="varm key for gene program targets mask.")
@@ -312,9 +313,10 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
     all_params = set(f.name for f in fields(RunParams))
     runtime_params = {"timestamp", "run_root", "artifacts_folder_path", "model_folder_path",
                "figure_folder_path", "nichecompass_data_dir"}
+    sealed_params = {"adj_key"}
     
     # Extract the user-defined params and validate the params from config
-    allowed_for_config = sorted(list(all_params - runtime_params))
+    allowed_for_config = sorted(list(all_params - runtime_params - sealed_params))
     if cfg:
         validate_known_keys(cfg, allowed_for_config)
 
@@ -379,8 +381,12 @@ def main(argv: list[str] | None = None) -> None:
     # Set output directories paths
     params.finalize_paths()
 
-    # Create artifacts directories
     params.run_root.mkdir(parents=True, exist_ok=True)
+    setup_logging(params.run_root, params.debug)
+    logging.info("=== NicheCompass Sample Integration: START ===")
+    logging.info("Resolved parameters: %s", json.dumps(asdict(params), indent=2, default=str))
+
+    # Create artifacts directories
     params.figure_folder_path.mkdir(parents=True, exist_ok=True)
     params.model_folder_path.mkdir(parents=True, exist_ok=True)
 
@@ -395,9 +401,6 @@ def main(argv: list[str] | None = None) -> None:
     mebocost_enzyme_sensor_interactions_folder_path = gp_data_folder_path / "metabolite_enzyme_sensor_gps"
     gene_orthologs_mapping_file_path = ga_data_folder_path / "human_mouse_gene_orthologs.csv"
 
-    setup_logging(params.run_root, params.debug)
-    logging.info("=== NicheCompass Sample Integration: START ===")
-    logging.info("Resolved parameters: %s", json.dumps(asdict(params), indent=2, default=str))
     fixed_seeds(0)
 
     logging.info("Extracting OmniPath GP dict...")
