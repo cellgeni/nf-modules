@@ -318,7 +318,7 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 
 #####################################################
 
-#### Functions to create Prior Knowledge Gene Program (GP) Mask
+#### Functions to create Prior Knowledge Gene Program (GP) Mask ####
 def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
     """
     Download the `data/` folder from Lotfollahi-lab/nichecompass GitHub tag.
@@ -443,6 +443,122 @@ def create_prior_gp_mask(
     )
     return combined_gp_dict
 
+#####################################################
+
+#### Functions to prepare training data ####
+def load_batches(
+    batch_paths: list[Path],
+    counts_key: str,
+) -> tuple[list[ad.AnnData], str]:
+    """
+    Load .h5ad batches. 
+    If any batch is missing the requested counts layer, fall back to 'X' for all
+        (graceful, consistent with earlier behavior).
+    Returns the list of AnnData and the effective counts key.
+    """
+    adata_batch_list: list[ad.AnnData] = []
+    use_x = False
+
+    for p in batch_paths:
+        logging.info(f"Loading batch: {p}")
+        a = sc.read_h5ad(p)
+
+        if counts_key not in a.layers.keys():
+            logging.warning(f"Layer '{counts_key}' not found in {p}; falling back to X for all batches.")
+            use_x = True
+
+        adata_batch_list.append(a)
+
+    counts_key_effective = "X" if use_x else counts_key
+
+    return adata_batch_list, counts_key_effective
+
+
+def compute_spatial_neighbors_for_batches(
+    adata_batch_list: list[ad.AnnData],
+    *,
+    spatial_key: str,
+    n_neighbors: int,
+    adj_key: str,
+) -> None:
+    """
+    For each batch:
+      - verify spatial coords exist,
+      - compute spatial neighbors with squidpy,
+      - ensure obsp[adj_key] exists,
+      - symmetrize adjacency.
+    Modifies AnnData objects in-place.
+    """
+    for idx, a in enumerate(adata_batch_list):
+        logging.info(f"Computing spatial neighbors for batch {idx} (n_neighbors={n_neighbors})...")
+
+        if spatial_key not in a.obsm_keys():
+            raise KeyError(
+                f"Missing obsm['{spatial_key}'] in batch #{idx}. Provide --spatial_key or precompute spatial coordinates."
+            )
+
+        sq.gr.spatial_neighbors(
+            a,
+            coord_type="generic",
+            spatial_key=spatial_key,
+            n_neighs=n_neighbors,
+        )
+
+        if adj_key not in a.obsp:
+            raise KeyError(
+                f"Expected obsp['{adj_key}'] after spatial_neighbors in batch #{idx}. "
+                f"Check that squidpy writes to this key."
+            )
+
+        # Make adjacency symmetric
+        adj = a.obsp[adj_key]
+        a.obsp[adj_key] = adj.maximum(adj.T)
+
+
+def concat_batches_with_block_adj(
+    adata_batch_list: list[ad.AnnData],
+    *,
+    adj_key: str,
+) -> ad.AnnData:
+    """
+    Concatenate batches (inner join on vars) and set a block-diagonal adjacency in obsp[adj_key].
+    """
+    logging.info(f"Concatenating {len(adata_batch_list)} batches...")
+    adata = ad.concat(adata_batch_list, join="inner")
+
+    logging.info("Assembling block-diagonal adjacency…")
+    blocks = [a.obsp[adj_key] for a in adata_batch_list]
+    # sp.block_diag returns coo by default; ask for csr
+    adata.obsp[adj_key] = sp.block_diag(blocks, format="csr")
+    return adata
+
+
+def add_gp_masks_to_adata(
+    adata: ad.AnnData,
+    combined_gp_dict: dict[str, Any],
+    params: RunParams,
+) -> None:
+    """
+    Add the combined prior GP masks into AnnData in-place.
+    """
+    logging.info("Adding GP masks to AnnData...")
+    add_gps_from_gp_dict_to_adata(
+        gp_dict=combined_gp_dict,
+        adata=adata,
+        gp_targets_mask_key=params.gp_targets_mask_key,
+        gp_targets_categories_mask_key=params.gp_targets_categories_mask_key,
+        gp_sources_mask_key=params.gp_sources_mask_key,
+        gp_sources_categories_mask_key=params.gp_sources_categories_mask_key,
+        gp_names_key=params.gp_names_key,
+        min_genes_per_gp=2,
+        min_source_genes_per_gp=1,
+        min_target_genes_per_gp=1,
+        max_genes_per_gp=None,
+        max_source_genes_per_gp=None,
+        max_target_genes_per_gp=None,
+    )
+    logging.info("GP masks added.")
+
 
 #TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
 def main(argv: list[str] | None = None) -> None:
@@ -494,7 +610,7 @@ def main(argv: list[str] | None = None) -> None:
     else:
         download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version) # pyright: ignore[reportArgumentType]
 
-    logging.info(f"Creating prior gene program mask...")
+    logging.info("Creating prior gene program mask...")
     combined_gp_dict = create_prior_gp_mask(
         nichecompass_data_dir=params.nichecompass_data_dir, # pyright: ignore[reportArgumentType]
         data_dir_exists=data_dir_exists,
@@ -504,81 +620,30 @@ def main(argv: list[str] | None = None) -> None:
     logging.info(f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}")
 
 
-    ### 4. Load data batches
-    adata_batch_list: list[ad.AnnData] = []
-    counts_key_effective = params.counts_key
-    for batch in params.batches:
-        logging.info(f"Loading batch: {batch}")
-        adata_batch = sc.read_h5ad(str(batch))
+    ### 4. Load data & build spatial graphs
+    logging.info("Loading data batches...")
+    adata_batch_list, counts_key_effective = load_batches(
+        batch_paths=params.batches,
+        counts_key=params.counts_key,
+    )
 
-        if params.spatial_key not in adata_batch.obsm_keys():
-            raise KeyError(
-                f"Missing obsm['{params.spatial_key}'] in {batch}. "
-                f"Provide the correct --spatial_key or precompute spatial coordinates."
-            )
+    compute_spatial_neighbors_for_batches(
+        adata_batch_list,
+        spatial_key=params.spatial_key,
+        n_neighbors=params.n_neighbors,
+        adj_key=params.adj_key,
+    )
 
-        logging.info("Computing spatial neighbors (n_neighbors=%d)...", params.n_neighbors)
-        sq.gr.spatial_neighbors(
-            adata_batch,
-            coord_type="generic",
-            spatial_key=params.spatial_key,
-            n_neighs=params.n_neighbors,
-        )
+    adata = concat_batches_with_block_adj(
+        adata_batch_list,
+        adj_key=params.adj_key,
+    )
 
-        # Check adj_key
-        if params.adj_key not in adata_batch.obsp:
-            raise KeyError(
-                f"Expected obsp['{params.adj_key}'] after spatial_neighbors in {batch}."
-                f"Check --spatial_key and ensure neighbor graph was computed."
-            )
-
-        # Make adjacency matrix symmetric
-        adj = adata_batch.obsp[params.adj_key]
-        adata_batch.obsp[params.adj_key] = adj.maximum(adj.T)
-
-        if params.counts_key not in adata_batch.layers.keys():
-            logging.warning("Layer '%s' not found in %s; falling back to X.", params.counts_key, batch)
-            counts_key_effective = "X"
-        adata_batch_list.append(adata_batch)
-
-    logging.info("Concatenating %d batches...", len(adata_batch_list))
-    adata = ad.concat(adata_batch_list, join="inner")
-
-    logging.info("Combining adjacency matrices as disconnected components...")
-    batch_connectivities: list[sp.csr_matrix] = []
-    len_before_batch = 0
-    total_n = adata.shape[0]
-    for i, ab in enumerate(adata_batch_list):
-        n_i = ab.shape[0]
-        if i == 0:
-            after = sp.csr_matrix((n_i, total_n - n_i))
-            block = sp.hstack((ab.obsp[params.adj_key], after))
-        elif i == len(adata_batch_list) - 1:
-            before = sp.csr_matrix((n_i, total_n - n_i))
-            block = sp.hstack((before, ab.obsp[params.adj_key]))
-        else:
-            before = sp.csr_matrix((n_i, len_before_batch))
-            after = sp.csr_matrix((n_i, total_n - n_i - len_before_batch))
-            block = sp.hstack((before, ab.obsp[params.adj_key], after))
-        batch_connectivities.append(block)
-        len_before_batch += n_i
-    adata.obsp[params.adj_key] = sp.vstack(batch_connectivities)
-
-    logging.info("Adding GP masks to AnnData...")
-    add_gps_from_gp_dict_to_adata(
-        gp_dict=combined_gp_dict,
+    ### 5. Add GP masks to data
+    add_gp_masks_to_adata(
         adata=adata,
-        gp_targets_mask_key=params.gp_targets_mask_key,
-        gp_targets_categories_mask_key=params.gp_targets_categories_mask_key,
-        gp_sources_mask_key=params.gp_sources_mask_key,
-        gp_sources_categories_mask_key=params.gp_sources_categories_mask_key,
-        gp_names_key=params.gp_names_key,
-        min_genes_per_gp=2,
-        min_source_genes_per_gp=1,
-        min_target_genes_per_gp=1,
-        max_genes_per_gp=None,
-        max_source_genes_per_gp=None,
-        max_target_genes_per_gp=None,
+        combined_gp_dict=combined_gp_dict,
+        params=params,
     )
 
     logging.info("Initializing NicheCompass model...")
