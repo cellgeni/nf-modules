@@ -392,7 +392,7 @@ def create_prior_gp_mask(
 
     logging.info("Extracting OmniPath GP dict…")
     omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
-        species=species,
+        species=species, # pyright: ignore[reportArgumentType]
         load_from_disk=data_dir_exist,
         save_to_disk=not(data_dir_exist),
         lr_network_file_path=str(omnipath_lr_network_file_path),
@@ -477,30 +477,30 @@ def main(argv: list[str] | None = None) -> None:
     # Set output directories paths
     params.finalize_paths()
 
-    params.run_root.mkdir(parents=True, exist_ok=True)
-    setup_logging(params.run_root, params.debug)
+    params.run_root.mkdir(parents=True, exist_ok=True)  # pyright: ignore[reportOptionalMemberAccess]
+    setup_logging(params.run_root, params.debug)  # pyright: ignore[reportArgumentType]
     logging.info("=== NicheCompass Sample Integration: START ===")
     logging.info("Resolved parameters: %s", json.dumps(asdict(params), indent=2, default=str))
 
     # Create artifacts directories
-    params.figure_folder_path.mkdir(parents=True, exist_ok=True)
-    params.model_folder_path.mkdir(parents=True, exist_ok=True)
+    params.figure_folder_path.mkdir(parents=True, exist_ok=True)  # pyright: ignore[reportOptionalMemberAccess]
+    params.model_folder_path.mkdir(parents=True, exist_ok=True)  # pyright: ignore[reportOptionalMemberAccess]
 
 
     ### 3. Prepare prior knowledge gene program (GP) mask
     # Download pre-prepared reference gene program from nichecompass github repo
-    data_dir_exist = params.nichecompass_data_dir.exists()
+    data_dir_exist = params.nichecompass_data_dir.exists()  # pyright: ignore[reportOptionalMemberAccess]
     if data_dir_exist:
         logging.info(f"NicheCompass data already exists at {params.nichecompass_data_dir} — reusing.")
     else:
-        download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
+        download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version) # pyright: ignore[reportArgumentType]
 
     logging.info(f"Creating prior gene program mask...")
     combined_gp_dict = create_prior_gp_mask(
-        nichecompass_data_dir=params.nichecompass_data_dir,
+        nichecompass_data_dir=params.nichecompass_data_dir, # pyright: ignore[reportArgumentType]
         data_dir_exist=data_dir_exist,
         species=params.species,
-        figure_folder_path=params.figure_folder_path,
+        figure_folder_path=params.figure_folder_path, # pyright: ignore[reportArgumentType]
     )
     logging.info(f"Number of gene programs after filtering and combining: {len(combined_gp_dict)}")
 
