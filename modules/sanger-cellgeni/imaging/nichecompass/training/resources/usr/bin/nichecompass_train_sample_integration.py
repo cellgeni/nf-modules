@@ -354,7 +354,7 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
 
 def create_prior_gp_mask(
     nichecompass_data_dir: Path,
-    data_dir_exist: bool,
+    data_dir_exists: bool,
     species: str,
     figure_folder_path: Path,
 ) -> dict[str, Any]:
@@ -392,9 +392,9 @@ def create_prior_gp_mask(
 
     logging.info("Extracting OmniPath GP dict…")
     omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
-        species=species,
-        load_from_disk=data_dir_exist,
-        save_to_disk=not(data_dir_exist),
+        species=species, # pyright: ignore[reportArgumentType]
+        load_from_disk=data_dir_exists,
+        save_to_disk=not(data_dir_exists),
         lr_network_file_path=str(omnipath_lr_network_file_path),
         gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
         plot_gp_gene_count_distributions=False,
@@ -410,8 +410,8 @@ def create_prior_gp_mask(
         version="v2",
         keep_target_genes_ratio=1.0,
         max_n_target_genes_per_gp=250,
-        load_from_disk=data_dir_exist,
-        save_to_disk=not(data_dir_exist),
+        load_from_disk=data_dir_exists,
+        save_to_disk=not(data_dir_exists),
         lr_network_file_path=str(nichenet_lr_network_file_path),
         ligand_target_matrix_file_path=str(nichenet_ligand_target_matrix_file_path),
         gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
@@ -711,16 +711,16 @@ def main(argv: list[str] | None = None) -> None:
 
     ### 3. Prepare prior knowledge gene program (GP) mask
     # Download pre-prepared reference gene program from nichecompass github repo
-    data_dir_exist = params.nichecompass_data_dir.exists()
-    if data_dir_exist:
-        logging.info(f"NicheCompass data already exists at {nichecompass_data_dir} — reusing.")
+    data_dir_exists = params.nichecompass_data_dir.exists()  # pyright: ignore[reportOptionalMemberAccess]
+    if data_dir_exists:
+        logging.info(f"NicheCompass data already exists at {params.nichecompass_data_dir} — reusing.")
     else:
         download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
 
     logging.info(f"Creating prior gene program mask...")
     combined_gp_dict = create_prior_gp_mask(
-        nichecompass_data_dir=params.nichecompass_data_dir,
-        data_dir_exist=data_dir_exist,
+        nichecompass_data_dir=params.nichecompass_data_dir, # pyright: ignore[reportArgumentType]
+        data_dir_exists=data_dir_exists,
         species=params.species,
         figure_folder_path=params.figure_folder_path,
     )
