@@ -32,6 +32,7 @@ import numpy as np # pyright: ignore[reportMissingImports]
 import scanpy as sc # pyright: ignore[reportMissingImports]
 import squidpy as sq # pyright: ignore[reportMissingImports]
 import scipy.sparse as sp # pyright: ignore[reportMissingImports]
+import requests # pyright: ignore[reportMissingModuleSource]
 import torch # pyright: ignore[reportMissingImports]
 
 #TODO: Need to fix downloading omnipathdb every single run
@@ -75,19 +76,19 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
     Skips download if nichecompass_data_dir already exists.
     """
     if nichecompass_data_dir.exists():
-        logging.info("NicheCompass data already exists at %s — reusing.", nichecompass_data_dir)
+        logging.info(f"NicheCompass data already exists at {nichecompass_data_dir} — reusing.")
         return
     owner = "Lotfollahi-lab"
     repo = "nichecompass"
     zip_url = f"https://github.com/{owner}/{repo}/archive/refs/tags/{tag}.zip"
-    logging.info("Downloading NicheCompass data from: %s", zip_url)
-    import requests  # lazy import # pyright: ignore[reportMissingModuleSource, reportMissingImports]
+
+    logging.info(f"Downloading NicheCompass data from: {zip_url}")
 
     try:
         resp = requests.get(zip_url, timeout=300)
         resp.raise_for_status()
     except Exception as e:
-        logging.error("Failed to download NicheCompass data: %s", e)
+        logging.error(f"Failed to download NicheCompass data: {e}")
         raise
 
     with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
@@ -104,7 +105,7 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 with open(target_path, "wb") as f:
                     f.write(z.read(member))
-    logging.info("Extracted 'data/' to %s", nichecompass_data_dir)
+    logging.info(f"Extracted 'data/' to {nichecompass_data_dir}")
 
 
 #### Dataclass and functions to parse parameters ####
@@ -170,10 +171,10 @@ class RunParams:
     def finalize_paths(self) -> None:
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.run_root = self.outdir / f"{self.prefix}_{self.timestamp}"
+        self.nichecompass_data_dir = self.run_root / "data"
         self.artifacts_folder_path = self.run_root / "artifacts"
         self.model_folder_path = self.artifacts_folder_path / "sample_integration" / self.prefix / "model"
         self.figure_folder_path = self.artifacts_folder_path / "sample_integration" / self.prefix / "figures"
-        self.nichecompass_data_dir = self.run_root / "data"
 
 
 def load_config_json(path: Path) -> dict[str, Any]:
@@ -374,16 +375,14 @@ def main(argv: list[str] | None = None) -> None:
 
     ###########################
 
+    ### 2. Create output directories and set up loggers ###
+    # Set output directories paths
     params.finalize_paths()
+
+    # Create artifacts directories
     params.run_root.mkdir(parents=True, exist_ok=True)
     params.figure_folder_path.mkdir(parents=True, exist_ok=True)
     params.model_folder_path.mkdir(parents=True, exist_ok=True)
-
-    setup_logging(params.run_root, params.debug)
-    logging.info("=== NicheCompass Sample Integration: START ===")
-    logging.info("Resolved parameters: %s", json.dumps(asdict(params), indent=2, default=str))
-
-    fixed_seeds(0)
 
     download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
 
@@ -395,6 +394,11 @@ def main(argv: list[str] | None = None) -> None:
     nichenet_ligand_target_matrix_file_path = gp_data_folder_path / f"nichenet_ligand_target_matrix_v2_{params.species}.csv"
     mebocost_enzyme_sensor_interactions_folder_path = gp_data_folder_path / "metabolite_enzyme_sensor_gps"
     gene_orthologs_mapping_file_path = ga_data_folder_path / "human_mouse_gene_orthologs.csv"
+
+    setup_logging(params.run_root, params.debug)
+    logging.info("=== NicheCompass Sample Integration: START ===")
+    logging.info("Resolved parameters: %s", json.dumps(asdict(params), indent=2, default=str))
+    fixed_seeds(0)
 
     logging.info("Extracting OmniPath GP dict...")
     omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
