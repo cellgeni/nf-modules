@@ -354,7 +354,6 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 #TODO: Modularise into function based on subsections (e.g. create dirs, preparation, training)
 def main(argv: list[str] | None = None) -> None:
     ### 1. Parse parameters ###
-    logging.info("=== NicheCompass Parsing Parameters ===")
     parser, pre = build_parser()
     pre_args, remaining = pre.parse_known_args(argv)
 
