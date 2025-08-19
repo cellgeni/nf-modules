@@ -12,7 +12,6 @@ Notes:
   - Seed is hard-fixed to 0.
   - Training script does not display figures, but silently saves GP gene-count
     distribution SVGs to the figures folder.
-  - Python 3.10 typing style (PEP 585/604) and pathlib.Path for paths.
 """
 
 import argparse
@@ -25,7 +24,7 @@ import zipfile
 from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast, Literal, TypeAlias
 
 import anndata as ad
 import numpy as np
@@ -45,8 +44,9 @@ from nichecompass.utils import (
     extract_gp_dict_from_omnipath_lr_interactions,
 )
 
-# Global UMAP seed (kept in sync with fixed_seeds)
 _UMAP_RANDOM_STATE: int = 0
+Species: TypeAlias = Literal["human", "mouse"]
+Touch_geometric: TypeAlias = Literal["gcnconv", "gatv2conv"]
 
 
 def setup_logging(run_root: Path, debug: bool) -> None:
@@ -89,7 +89,7 @@ class RunParams:
     batches: list[Path]
     outdir: Path
     prefix: str = "nichecompass"
-    species: str = "human"
+    species: Species = "human"
     nichecompass_version: str = "0.3.0"
     debug: bool = False
 
@@ -115,7 +115,7 @@ class RunParams:
     cat_covariates_embeds_injection: list[str] = field(default_factory=lambda: ["gene_expr_decoder"])
     cat_covariates_embeds_nums: list[int] = field(default_factory=lambda: [3])
     cat_covariates_no_edges: list[bool] = field(default_factory=lambda: [True])
-    conv_layer_encoder: str = "gcnconv"
+    conv_layer_encoder: Touch_geometric = "gcnconv"
     active_gp_thresh_ratio: float = 0.01
 
     # TRAINER
@@ -159,6 +159,12 @@ def validate_known_keys(config: dict[str, Any], allowed: list[str]) -> None:
     unknown = sorted(set(config.keys()) - set(allowed))
     if unknown:
         raise ValueError(f"Unknown keys in --config: {unknown}")
+
+
+def _validate_and_cast_species(val: str) -> Species:
+    if val not in ("human", "mouse"):
+        raise ValueError(f"Invalid species {val!r}; must be 'human' or 'mouse'.")
+    return cast(Species, val)
 
 
 def str2bool(v: str) -> bool:
@@ -240,9 +246,9 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     # Grouping parameters
     g_main = parser.add_argument_group("MAIN (I/O & run identity)")
     g_main.add_argument("--batches", nargs="+", type=Path, default=argparse.SUPPRESS, help="Paths to input .h5ad files (≥1).")
-    g_main.add_argument("--outdir", type=Path, default=argparse.SUPPRESS, help="Base output directory (default: current working directory).") #TODO Need to change awkward Path.cwd() parsing in help message
+    g_main.add_argument("--outdir", type=Path, default=argparse.SUPPRESS, help="Base output directory (default: current working directory).")
     g_main.add_argument("--prefix", type=str, default="nichecompass", help="Run prefix used in folder names.")
-    g_main.add_argument("--species", type=str, default="human", help="Species tag for prior knowledge lookup.")
+    g_main.add_argument("--species", type=str, choices=["human", "mouse"], default="human", help="Species tag for prior knowledge lookup.")
     g_main.add_argument("--nichecompass_version", type=str, default="0.3.0",
                         help="GitHub tag (Lotfollahi-lab/nichecompass) to fetch 'data/' containing prepared reference.")
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
@@ -274,7 +280,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
                          help="List of number of embedding nodes for all categorical covariates.")
     g_model.add_argument("--cat_covariates_no_edges", nargs="+", type=str, default=["true"],
                          help="List of booleans that indicate whether there can be edges between different categories of the categorical covariates.")
-    g_model.add_argument("--conv_layer_encoder", type=str, default="gcnconv", help="Encoder conv layer type.")
+    g_model.add_argument("--conv_layer_encoder", type=str, choices=["gcnconv", "gatv2conv"], default="gcnconv", help="Encoder conv layer type.")
     g_model.add_argument("--active_gp_thresh_ratio", type=float, default=0.01,
                          help="Threshold ratio for active GP selection.")
 
@@ -343,6 +349,13 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
     merged["batches"] = [Path(p) for p in merged["batches"]]
     merged["outdir"] = Path(merged["outdir"]) if isinstance(merged.get("outdir"), (str, Path)) else Path.cwd()
 
+    # Validate  species
+    species_val = merged.get("species", "human")
+    if isinstance(species_val, str):
+        merged["species"] = _validate_and_cast_species(species_val)
+    else:
+        raise TypeError("species must be a string.")
+
     # Construct typed dataclass
     rp = RunParams(**merged)
 
@@ -392,7 +405,7 @@ def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
 def create_prior_gp_mask(
     nichecompass_data_dir: Path,
     data_dir_exists: bool,
-    species: str,
+    species: Species,
     figure_folder_path: Path,
 ) -> dict[str, Any]:
     """
@@ -406,7 +419,7 @@ def create_prior_gp_mask(
     ----------
     nichecompass_data_dir : Path
         Root path containing the 'data/' folder fetched from the NicheCompass repo.
-    species : str
+    species : Species
         Species tag ('human' by default) to select correct reference files.
     figure_folder_path : Path
         Where to save *_gp_gene_count_distributions.svg.
@@ -429,7 +442,7 @@ def create_prior_gp_mask(
 
     logging.info("Extracting OmniPath GP dict…")
     omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
-        species=species, # pyright: ignore[reportArgumentType]
+        species=species,
         load_from_disk=data_dir_exists,
         save_to_disk=not(data_dir_exists),
         lr_network_file_path=str(omnipath_lr_network_file_path),
@@ -748,7 +761,7 @@ def main(argv: list[str] | None = None) -> None:
 
     ### 3. Prepare prior knowledge gene program (GP) mask
     # Download pre-prepared reference gene program from nichecompass github repo
-    data_dir_exists = params.nichecompass_data_dir.exists()  # pyright: ignore[reportOptionalMemberAccess]
+    data_dir_exists = params.nichecompass_data_dir.exists()
     if data_dir_exists:
         logging.info(f"NicheCompass data already exists at {params.nichecompass_data_dir} — reusing.")
     else:
@@ -756,7 +769,7 @@ def main(argv: list[str] | None = None) -> None:
 
     logging.info("Creating prior gene program mask...")
     combined_gp_dict = create_prior_gp_mask(
-        nichecompass_data_dir=params.nichecompass_data_dir, # pyright: ignore[reportArgumentType]
+        nichecompass_data_dir=params.nichecompass_data_dir,
         data_dir_exists=data_dir_exists,
         species=params.species,
         figure_folder_path=params.figure_folder_path,
