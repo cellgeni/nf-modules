@@ -30,11 +30,12 @@ process NICHECOMPASS_TRAINING {
     //               https://github.com/nf-core/modules/blob/master/modules/nf-core/bwa/index/main.nf
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(bam)
+    tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*.bam"), emit: bam
+    path("nichecompass_*/"), emit: nichecompass_outdir
+    path("nichecompass_*/timestamp.txt"), emit: timestamp
     // TODO nf-core: List additional required output channels/values here
     path "versions.yml", emit: versions
 
@@ -54,21 +55,20 @@ process NICHECOMPASS_TRAINING {
     // TODO nf-core: Please replace the example samtools command below with your module's command
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
-    nichecompass \\
-        ${args} \\
-        -@ ${task.cpus} \\
-        -o ${prefix}.bam \\
-        ${bam}
+    nichecompass_train_sample_integration.py \\
+        --batches "${h5ad}/*" \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nichecompass: \$(nichecompass --version)
+        nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
     END_VERSIONS
     """
 
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def timestamp = new Date().format("yyyyMMdd_HHmmss")
     // TODO nf-core: A stub section should mimic the execution of the original module as best as possible
     //               Have a look at the following examples:
     //               Simple example: https://github.com/nf-core/modules/blob/818474a292b4860ae8ff88e149fbcda68814114d/modules/nf-core/bcftools/annotate/main.nf#L47-L63
@@ -77,13 +77,17 @@ process NICHECOMPASS_TRAINING {
     //               - The definition of args `def args = task.ext.args ?: ''` above.
     //               - The use of the variable in the script `echo $args ` below.
     """
-    echo ${args}
-    
-    touch ${prefix}.bam
+    mkdir -p "nichecompass_${prefix}_${timestamp}"
+    mkdir -p "nichecompass_${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/figures"
+    mkdir -p "nichecompass_${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/models"
+    mkdir -p "nichecompass_${prefix}_${timestamp}/data"
+    touch "nichecompass_${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/models/model.h5ad"
+    touch "nichecompass_${prefix}_${timestamp}/train.log"
+    cat ${timestamp} > "nichecompass_${prefix}_${timestamp}/timestamp.txt"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nichecompass: \$(nichecompass --version)
+        nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
     END_VERSIONS
     """
 }
