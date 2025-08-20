@@ -712,7 +712,7 @@ def save_model_and_config(
 
     run_config = asdict(params)
     run_config["counts_key_effective"] = counts_key_effective
-    cfg_path = params.model_folder_path / "run_config.json"
+    cfg_path = params.run_root / "run_config.json"
     with open(cfg_path, "w", encoding="utf-8") as f:
         json.dump(run_config, f, indent=2, default=str)
     logging.info(f"Saved run_config.json at {cfg_path}")
