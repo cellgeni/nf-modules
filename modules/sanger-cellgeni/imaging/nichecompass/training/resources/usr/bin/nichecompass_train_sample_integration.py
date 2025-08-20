@@ -819,7 +819,9 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     logging.info("=== NicheCompass Sample Integration: DONE ===")
-    print(f"TIMESTAMP={params.timestamp}")
+    with open('timestamp.txt', 'w') as f:
+        f.write(f"TIMESTAMP={params.timestamp}")
+    print(f"TIMESTAMP={params.timestamp}", file=sys.stdout)
     sys.stdout.flush()
 
 
