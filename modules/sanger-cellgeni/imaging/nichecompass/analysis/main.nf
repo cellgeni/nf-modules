@@ -17,10 +17,9 @@
 
 process NICHECOMPASS_ANALYSIS {
     tag "${meta.id}"
-    label 'process_medium'
+    label 'process_high'
 
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
-    conda "${moduleDir}/environment.yml"
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
     input:
@@ -30,11 +29,11 @@ process NICHECOMPASS_ANALYSIS {
     //               https://github.com/nf-core/modules/blob/master/modules/nf-core/bwa/index/main.nf
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(bam)
+    tuple val(timestamp), path(nichecompass_dir)
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*.bam"), emit: bam
+    path "analysis_${prefix}_${timestamp}.ipynb", emit: notebook
     // TODO nf-core: List additional required output channels/values here
     path "versions.yml", emit: versions
 
@@ -43,7 +42,8 @@ process NICHECOMPASS_ANALYSIS {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "nichecompass"  //TODO <- Is specifying default value here OK in nf-core style?
+    def timestamp = task.ext.timestamp ?: ''
     // TODO nf-core: Where possible, a command MUST be provided to obtain the version number of the software e.g. 1.10
     //               If the software is unable to output a version number on the command-line then it can be manually specified
     //               e.g. https://github.com/nf-core/modules/blob/master/modules/nf-core/homer/annotatepeaks/main.nf
@@ -54,21 +54,30 @@ process NICHECOMPASS_ANALYSIS {
     // TODO nf-core: Please replace the example samtools command below with your module's command
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
-    nichecompass \\
+
+    papermill \\
+        "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
+        "analysis_${prefix}_${timestamp}.ipynb" \\
+        -p outdir    "." \\
+        -p prefix    "${prefix}" \\
+        -r timestamp "${timestamp}" \\
         ${args} \\
-        -@ ${task.cpus} \\
-        -o ${prefix}.bam \\
-        ${bam}
+        --kernel python3 \\
+        --request-save-on-cell-execute \\
+        --progress-bar \\
+        --log-level INFO \\
+        --log-output \\
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nichecompass: \$(nichecompass --version)
+        nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
     END_VERSIONS
     """
 
     stub:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "nichecompass"
+    def timestamp = task.ext.timestamp ?: ''
     // TODO nf-core: A stub section should mimic the execution of the original module as best as possible
     //               Have a look at the following examples:
     //               Simple example: https://github.com/nf-core/modules/blob/818474a292b4860ae8ff88e149fbcda68814114d/modules/nf-core/bcftools/annotate/main.nf#L47-L63
@@ -77,13 +86,11 @@ process NICHECOMPASS_ANALYSIS {
     //               - The definition of args `def args = task.ext.args ?: ''` above.
     //               - The use of the variable in the script `echo $args ` below.
     """
-    echo ${args}
-    
-    touch ${prefix}.bam
+    touch "analysis_${prefix}_${timestamp}.ipynb"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nichecompass: \$(nichecompass --version)
+        nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
     END_VERSIONS
     """
 }
