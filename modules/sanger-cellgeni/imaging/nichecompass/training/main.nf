@@ -20,7 +20,6 @@ process NICHECOMPASS_TRAINING {
     label 'process_gpu'
 
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
-    conda "${moduleDir}/environment.yml"
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
     input:
