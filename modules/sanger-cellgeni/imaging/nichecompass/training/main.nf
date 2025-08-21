@@ -8,7 +8,7 @@ process NICHECOMPASS_TRAINING {
     tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
-    path "nichecompass_*/", emit: nichecompass_outdir  // TODO is parsing path with glob fine?
+    path "nichecompass_*", emit: nichecompass_outdir  // TODO is parsing path with glob fine?
     path "nichecompass_*/timestamp.txt", emit: timestamp
     path "versions.yml", emit: versions
 
@@ -39,7 +39,7 @@ process NICHECOMPASS_TRAINING {
     mkdir -p "nichecompass_${prefix}_${timestamp}/data"
     touch "nichecompass_${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/models/model.h5ad"
     touch "nichecompass_${prefix}_${timestamp}/train.log"
-    cat ${timestamp} > "nichecompass_${prefix}_${timestamp}/timestamp.txt"
+    echo "${timestamp}" > "nichecompass_${prefix}_${timestamp}/timestamp.txt"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
