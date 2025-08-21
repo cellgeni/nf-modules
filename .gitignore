@@ -174,3 +174,7 @@ cython_debug/
 .pypirc
 .nf-test*
 .nextflow*
+
+# Macbook cache
+.DS_Store
+.vscode
