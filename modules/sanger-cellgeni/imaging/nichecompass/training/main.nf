@@ -20,7 +20,7 @@ process NICHECOMPASS_TRAINING {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     nichecompass_train_sample_integration.py \\
-        --batches "${h5ad}/*" \\
+        --batches "${h5ad}" \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
