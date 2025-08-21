@@ -115,7 +115,7 @@ class RunParams:
     cat_covariates_embeds_injection: list[str] = field(default_factory=lambda: ["gene_expr_decoder"])
     cat_covariates_embeds_nums: list[int] = field(default_factory=lambda: [3])
     cat_covariates_no_edges: list[bool] = field(default_factory=lambda: [True])
-    conv_layer_encoder: Touch_geometric = "gcnconv"
+    conv_layer_encoder: Touch_geometric = "gatv2conv"
     active_gp_thresh_ratio: float = 0.01
 
     # TRAINER
@@ -280,7 +280,7 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
                          help="List of number of embedding nodes for all categorical covariates.")
     g_model.add_argument("--cat_covariates_no_edges", nargs="+", type=str, default=["true"],
                          help="List of booleans that indicate whether there can be edges between different categories of the categorical covariates.")
-    g_model.add_argument("--conv_layer_encoder", type=str, choices=["gcnconv", "gatv2conv"], default="gcnconv", help="Encoder conv layer type.")
+    g_model.add_argument("--conv_layer_encoder", type=str, choices=["gcnconv", "gatv2conv"], default="gatv2conv", help="Encoder conv layer type.")
     g_model.add_argument("--active_gp_thresh_ratio", type=float, default=0.01,
                          help="Threshold ratio for active GP selection.")
 
