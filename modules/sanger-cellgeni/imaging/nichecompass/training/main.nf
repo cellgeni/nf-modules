@@ -20,7 +20,7 @@ process NICHECOMPASS_TRAINING {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     nichecompass_train_sample_integration.py \\
-        --batches "${h5ad}" \\
+        --batches ${h5ad} \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -39,7 +39,7 @@ process NICHECOMPASS_TRAINING {
     mkdir -p "nichecompass_${prefix}_${timestamp}/data"
     touch "nichecompass_${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/models/model.h5ad"
     touch "nichecompass_${prefix}_${timestamp}/train.log"
-    echo "${timestamp}" > "nichecompass_${prefix}_${timestamp}/timestamp.txt"
+    touch "nichecompass_${prefix}_${timestamp}/timestamp.txt"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
