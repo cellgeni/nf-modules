@@ -15,13 +15,11 @@ Notes:
 """
 
 import argparse
-import io
 import json
 import logging
 import random
 import shutil
 import sys
-import zipfile
 from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
 from pathlib import Path
@@ -32,7 +30,6 @@ import numpy as np
 import scanpy as sc
 import squidpy as sq
 import scipy.sparse as sp
-import requests
 import torch
 
 #TODO: Need to fix downloading omnipathdb every single run
@@ -250,8 +247,6 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_main.add_argument("--outdir", type=Path, default=argparse.SUPPRESS, help="Base output directory (default: current working directory).")
     g_main.add_argument("--prefix", type=str, default="nichecompass", help="Run prefix used in folder names.")
     g_main.add_argument("--species", type=str, choices=["human", "mouse"], default="human", help="Species tag for prior knowledge lookup.")
-    g_main.add_argument("--nichecompass_version", type=str, default="0.3.0",
-                        help="GitHub tag (Lotfollahi-lab/nichecompass) to fetch 'data/' containing prepared reference.")
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 
     g_dataset = parser.add_argument_group("DATASET / GRAPH")
@@ -372,7 +367,6 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 #### Functions to create Prior Knowledge Gene Program (GP) Mask ####
 def create_prior_gp_mask(
     nichecompass_data_dir: Path,
-    data_dir_exists: bool,
     species: Species,
     figure_folder_path: Path,
 ) -> dict[str, Any]:
@@ -735,7 +729,6 @@ def main(argv: list[str] | None = None) -> None:
     logging.info("Creating prior gene program mask...")
     combined_gp_dict = create_prior_gp_mask(
         nichecompass_data_dir=params.nichecompass_data_dir,
-        data_dir_exists=data_dir_exists,
         species=params.species,
         figure_folder_path=params.figure_folder_path,
     )
