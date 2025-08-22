@@ -19,6 +19,7 @@ import io
 import json
 import logging
 import random
+import shutil
 import sys
 import zipfile
 from dataclasses import asdict, dataclass, field, fields
@@ -369,39 +370,6 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> RunP
 #####################################################
 
 #### Functions to create Prior Knowledge Gene Program (GP) Mask ####
-def download_nichecompass_data(nichecompass_data_dir: Path, tag: str) -> None:
-    """
-    Download the `data/` folder from Lotfollahi-lab/nichecompass GitHub tag.
-    """
-    owner = "Lotfollahi-lab"
-    repo = "nichecompass"
-    zip_url = f"https://github.com/{owner}/{repo}/archive/refs/tags/{tag}.zip"
-
-    logging.info(f"Downloading NicheCompass data from: {zip_url}")
-
-    try:
-        resp = requests.get(zip_url, timeout=300)
-        resp.raise_for_status()
-    except Exception as e:
-        logging.error(f"Failed to download NicheCompass data: {e}")
-        raise
-
-    with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
-        prefix = f"{repo}-{tag}/data/"
-        members = [m for m in z.namelist() if m.startswith(prefix)]
-        if not members:
-            raise RuntimeError(f"'data/' folder not found in archive for tag {tag}")
-        for member in members:
-            rel_path = member[len(prefix):]
-            target_path = nichecompass_data_dir / rel_path
-            if member.endswith("/"):
-                target_path.mkdir(parents=True, exist_ok=True)
-            else:
-                target_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(target_path, "wb") as f:
-                    f.write(z.read(member))
-    logging.info(f"Extracted 'data/' to {nichecompass_data_dir}")
-
 def create_prior_gp_mask(
     nichecompass_data_dir: Path,
     data_dir_exists: bool,
@@ -443,8 +411,8 @@ def create_prior_gp_mask(
     logging.info("Extracting OmniPath GP dict…")
     omnipath_gp_dict = extract_gp_dict_from_omnipath_lr_interactions(
         species=species,
-        load_from_disk=data_dir_exists,
-        save_to_disk=not(data_dir_exists),
+        load_from_disk=True,
+        save_to_disk=False,
         lr_network_file_path=str(omnipath_lr_network_file_path),
         gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
         plot_gp_gene_count_distributions=False,
@@ -460,8 +428,8 @@ def create_prior_gp_mask(
         version="v2",
         keep_target_genes_ratio=1.0,
         max_n_target_genes_per_gp=250,
-        load_from_disk=data_dir_exists,
-        save_to_disk=not(data_dir_exists),
+        load_from_disk=False,
+        save_to_disk=True,
         lr_network_file_path=str(nichenet_lr_network_file_path),
         ligand_target_matrix_file_path=str(nichenet_ligand_target_matrix_file_path),
         gene_orthologs_mapping_file_path=str(gene_orthologs_mapping_file_path),
@@ -760,12 +728,9 @@ def main(argv: list[str] | None = None) -> None:
 
 
     ### 3. Prepare prior knowledge gene program (GP) mask
-    # Download pre-prepared reference gene program from nichecompass github repo
-    data_dir_exists = params.nichecompass_data_dir.exists()
-    if data_dir_exists:
-        logging.info(f"NicheCompass data already exists at {params.nichecompass_data_dir} — reusing.")
-    else:
-        download_nichecompass_data(params.nichecompass_data_dir, params.nichecompass_version)
+    # Copy reference data dir from image
+    logging.info("Copy reference data from container image...")
+    shutil.copytree("/app/data", params.nichecompass_data_dir)
 
     logging.info("Creating prior gene program mask...")
     combined_gp_dict = create_prior_gp_mask(
