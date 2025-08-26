@@ -41,7 +41,7 @@ process NICHECOMPASS_ANALYSIS {
 
     stub:
     def prefix = task.ext.prefix ?: "nichecompass"
-    def timestamp = task.ext.timestamp ?: ''
+    timestamp = task.ext.timestamp ?: ''
     """
     touch "analysis_${prefix}_${timestamp}.ipynb"
 
