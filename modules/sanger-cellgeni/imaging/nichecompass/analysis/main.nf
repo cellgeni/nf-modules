@@ -5,9 +5,10 @@ process NICHECOMPASS_ANALYSIS {
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
     input:
-    tuple val(meta), val(timestamp), path(nichecompass_dir)
+    tuple val(meta), path(nichecompass_dir), val(timestamp)
 
     output:
+    path ${nichecompass_dir}, emit: nichecompass_dir
     path "analysis_*.ipynb", emit: notebook
     path "versions.yml", emit: versions
 

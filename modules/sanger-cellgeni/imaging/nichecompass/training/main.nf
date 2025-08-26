@@ -8,8 +8,7 @@ process NICHECOMPASS_TRAINING {
     tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
-    tuple val(meta), path("${prefix}_*"), emit: nichecompass_dir  // TODO is parsing path with glob fine?
-    tuple val(meta), path("${prefix}_*/timestamp.txt"), emit: timestamp
+    tuple val(meta), path("${prefix}_*/"), path("${prefix}_*/timestamp.txt"), emit: nichecompass_model
     path "versions.yml", emit: versions
 
     when:
