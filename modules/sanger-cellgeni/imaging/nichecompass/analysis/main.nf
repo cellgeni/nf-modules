@@ -5,10 +5,10 @@ process NICHECOMPASS_ANALYSIS {
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
     input:
-    tuple val(meta), path(nichecompass_dir), val(timestamp)
+    tuple val(meta), path(nichecompass_dir), path(timestamp)
 
     output:
-    tuple val(meta), path(${nichecompass_dir}), emit: nichecompass_dir
+    tuple val(meta), path("${nichecompass_dir}_analysis/"), emit: nichecompass_dir
     tuple val(meta), path("analysis_*.ipynb"), emit: notebook
     path "versions.yml", emit: versions
 
@@ -16,19 +16,22 @@ process NICHECOMPASS_ANALYSIS {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
+    def args   = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def ts     = file(timestamp).text.trim()
     """
+    rsync -a "${nichecompass_dir}" "${nichecompass_dir}_analysis"
+
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
-        "analysis_${prefix}_${timestamp}.ipynb" \\
-        -p nichecompass_dir  "${nichecompass_dir}" \\
+        "analysis_${prefix}_${ts}.ipynb" \\
+        -p nichecompass_dir  "${nichecompass_dir}_analysis" \\
         ${args} \\
         --kernel python3 \\
         --request-save-on-cell-execute \\
         --progress-bar \\
         --log-level INFO \\
-        --log-output \\
+        --log-output
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
