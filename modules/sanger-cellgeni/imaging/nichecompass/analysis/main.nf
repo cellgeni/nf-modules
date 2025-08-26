@@ -21,9 +21,7 @@ process NICHECOMPASS_ANALYSIS {
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
         "analysis_${prefix}_${timestamp}.ipynb" \\
-        -p outdir    "${nichecompass_dir}" \\
-        -p prefix    "${prefix}" \\
-        -r timestamp "${timestamp}" \\
+        -p nichecompass_dir  "${nichecompass_dir}" \\
         ${args} \\
         --kernel python3 \\
         --request-save-on-cell-execute \\
