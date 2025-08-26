@@ -1,44 +1,35 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "nichecompass"
-## TODO nf-core: Add a description of the subworkflow and list keywords
-description: Sort SAM/BAM/CRAM file
+description: NicheCompass training & analysis
 keywords:
-  - sort
-  - bam
-  - sam
-  - cram
-## TODO nf-core: Add a list of the modules and/or subworkflows used in the subworkflow
+  - spatial_atlas_building
+  - niche_identification
+  - niche_characterisation
+  - cell-cell_communication_inference
+  - spatial_reference_mapping
+  - deep-learning
 components:
-  - samtools/sort
-  - samtools/index
-## TODO nf-core: List all of the channels used as input with a description and their structure
+  - imaging/nichecompass/training
+  - imaging/nichecompass/analysis
 input:
-  - ch_bam:
+  - ch_h5ad:
       type: file
       description: |
-        The input channel containing the BAM/CRAM/SAM files
-        Structure: [ val(meta), path(bam) ]
-      pattern: "*.{bam/cram/sam}"
-## TODO nf-core: List all of the channels used as output with a descriptions and their structure
+        The input channel containing the H5AD files
+        Structure: [ val(meta), path(h5ad) ]
+      pattern: "*.h5ad"
 output:
-  - bam:
+  - nichecompass_dir:
+      type: directory
+      description: |
+        Channel containing NicheCompass output folder
+        Structure: [ val(meta), path(nichecompass_dir) ]
+      pattern: "nichecompass_*"
+  - notebook:
       type: file
       description: |
-        Channel containing BAM files
-        Structure: [ val(meta), path(bam) ]
-      pattern: "*.bam"
-  - bai:
-      type: file
-      description: |
-        Channel containing indexed BAM (BAI) files
-        Structure: [ val(meta), path(bai) ]
-      pattern: "*.bai"
-  - csi:
-      type: file
-      description: |
-        Channel containing CSI files
-        Structure: [ val(meta), path(csi) ]
-      pattern: "*.csi"
+        Channel containing NicheCompass output Jupyter notebook
+        Structure: [ val(meta), path(notebook) ]
+      pattern: "*.ipynb"
   - versions:
       type: file
       description: |
