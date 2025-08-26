@@ -27,8 +27,8 @@ input:
           H5AD file containing the AnnData object
           e.g. `sample1.h5ad`
 output:
-  nichecompass:
-    - - nichecompass_outdir:
+  nichecompass_model:
+    - - nichecompass_dir:
           type: directory
           description: NicheCompass output directory
       - timestamp:
@@ -36,7 +36,7 @@ output:
           description: Timestamp file (YYYYMMDD-HHMMSS)
           pattern: "*.txt"
   versions:
-    - "versions.yml":
+    - versions:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
