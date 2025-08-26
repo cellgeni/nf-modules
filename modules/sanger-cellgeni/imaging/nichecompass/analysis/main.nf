@@ -18,11 +18,10 @@ process NICHECOMPASS_ANALYSIS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "nichecompass"  //TODO <- Is specifying default value here OK in nf-core style?
     """
-
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
         "analysis_${prefix}_${timestamp}.ipynb" \\
-        -p outdir    "." \\
+        -p outdir    "${nichecompass_dir}" \\
         -p prefix    "${prefix}" \\
         -r timestamp "${timestamp}" \\
         ${args} \\
