@@ -1,53 +1,43 @@
 
 process ML_XENIUMHARMONISE {
-    tag "$meta.id"
-    label 'process_medium'
+    tag "$meta"
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        '/lustre/scratch127/cellgen/cellgeni/dn10/xenium_run.sif':
-        'biocontainers/YOUR-TOOL-HERE' }"
+    container '/nfs/cellgeni/singularity/images/palom_tiledb.sif'
 
     input:
     tuple val(meta), path(he_image), path(xenium_bundle)
 
     output:
-    tuple val(meta), path("${output_dir}"), emit: harmonised_output
-    path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
+    tuple val(meta), path(output_dir), emit: harmonised_output
+    path "versions.yml"               , emit: versions
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    output_dir = "${prefix}_output"
+
+    output_dir = "${meta}_harmonised"
  
     """
-    harmonise_xenium.py run \\
-        --he_image ${he_image} \\
-        --xenium_bundle ${xenium_bundle} \\
-        --output_dir ${output_dir} \\
-        ${args}
-        
+    harmonise_xenium.py main\\
+        --hematoxylin_eosin_image_uri ${he_image} \\
+        --xenium_bundle_uri ${xenium_bundle} \\
+        --harmonised_dataset_uri ${output_dir} \\
 
+        
+    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mlxeniumharmonise: \$(harmonise_xenium.py version)
+        mlxeniumharmonise: 1.0.0
     END_VERSIONS
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    output_dir = "${prefix}_output"
+    output_dir = "${meta}_harmonised"
 
     """
-    touch ${prefix}_output
+    touch ${output_dir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mlxeniumharmonise: \$(harmonise_xenium.py version)
+        mlxeniumharmonise: 1.0.0
     END_VERSIONS
     """
 }

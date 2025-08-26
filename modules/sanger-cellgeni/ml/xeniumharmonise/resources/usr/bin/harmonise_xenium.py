@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+
 import pyarrow.lib as _lib
 import uuid
 import tiledb
 import numpy as np
 import os
-from dask.distributed import Client
+#from dask.distributed import Client
 import dask
 import dask.array as da
 import dask.dataframe as dd
@@ -682,4 +684,4 @@ def run_and_write_record(kwargs):
 #     print("processing complete")
 
 if __name__ == '__main__':
-  fire.Fire(main)
+  fire.Fire()
