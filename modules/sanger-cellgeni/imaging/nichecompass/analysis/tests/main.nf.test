@@ -26,8 +26,8 @@ nextflow_process {
                 
                 input[0] = [
                     [ id:'test', single_end:false ], // meta map
-                    val(timestamp),
-                    file(params.modules_testdata_base_path + 'nichecompass_${timestamp}/artifacts/sample_integration/nichecompass/model/model.h5ad', checkIfExists: true),
+                    '20250822_144424',
+                    file(params.modules_testdata_base_path + 'nichecompass_20250822_144424/artifacts/sample_integration/nichecompass/model/model.h5ad', checkIfExists: true),
                 ]
                 """
             }
@@ -56,8 +56,8 @@ nextflow_process {
                 
                 input[0] = [
                     [ id:'test', single_end:false ], // meta map
-                    val(timestamp),
-                    file(params.modules_testdata_base_path + 'nichecompass_${timestamp}/artifacts/sample_integration/nichecompass/model/model.h5ad', checkIfExists: true),
+                    '20250822_144424',
+                    file(params.modules_testdata_base_path + 'nichecompass_20250822_144424/artifacts/sample_integration/nichecompass/model/model.h5ad', checkIfExists: true),
                 ]
                 """
             }

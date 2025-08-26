@@ -5,7 +5,7 @@ process NICHECOMPASS_ANALYSIS {
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
     input:
-    tuple val(timestamp), path(nichecompass_dir)
+    tuple val(meta), val(timestamp), path(nichecompass_dir)
 
     output:
     path "analysis_${prefix}_${timestamp}.ipynb", emit: notebook
@@ -17,7 +17,7 @@ process NICHECOMPASS_ANALYSIS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "nichecompass"  //TODO <- Is specifying default value here OK in nf-core style?
-    def timestamp = task.ext.timestamp ?: ''
+    timestamp = task.ext.timestamp ?: ''
     """
 
     papermill \\
