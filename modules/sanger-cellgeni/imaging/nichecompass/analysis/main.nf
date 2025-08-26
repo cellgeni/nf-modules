@@ -8,7 +8,7 @@ process NICHECOMPASS_ANALYSIS {
     tuple val(meta), val(timestamp), path(nichecompass_dir)
 
     output:
-    path "analysis_${prefix}_${timestamp}.ipynb", emit: notebook
+    path "analysis_*.ipynb", emit: notebook
     path "versions.yml", emit: versions
 
     when:
