@@ -16,7 +16,7 @@ process NICHECOMPASS_ANALYSIS {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "nichecompass"  //TODO <- Is specifying default value here OK in nf-core style?
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
@@ -36,7 +36,7 @@ process NICHECOMPASS_ANALYSIS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "nichecompass"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch "analysis_${prefix}_${timestamp}.ipynb"
 

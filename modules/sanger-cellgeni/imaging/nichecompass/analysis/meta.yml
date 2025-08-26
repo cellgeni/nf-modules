@@ -15,8 +15,12 @@ tools:
       tool_dev_url: "https://github.com/Lotfollahi-lab/nichecompass"
       doi: "https://doi.org/10.1038/s41588-025-02120-6"
       licence: ["BSD-3-Clause license"]
-
 input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
     - timestamp:
         type: value
         description: Timestamp (YYYYMMDD-HHMMSS)
@@ -24,7 +28,6 @@ input:
           type: directory
           description: NicheCompass output directory
           pattern: "nichecompass_*"
-
 output:
   notebook:
     - "notebook":
@@ -38,7 +41,6 @@ output:
         pattern: "versions.yml"
         ontologies:
           - edam: "http://edamontology.org/format_3750" # YAML
-
 authors:
   - "@ASUQ"
 maintainers:
