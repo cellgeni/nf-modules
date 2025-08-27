@@ -86,7 +86,6 @@ class RunParams:
     # MAIN
     batches: list[Path]
     outdir: Path
-    prefix: str = "nichecompass"
     species: Species = "human"
     nichecompass_version: str = "0.3.0"
     debug: bool = False
@@ -138,11 +137,11 @@ class RunParams:
 
     def finalize_paths(self) -> None:
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.run_root = self.outdir / f"{self.prefix}_{self.timestamp}"
+        self.run_root = self.outdir / f"nichecompass_{self.timestamp}"
         self.nichecompass_data_dir = self.run_root / "data"
         self.artifacts_folder_path = self.run_root / "artifacts"
-        self.model_folder_path = self.artifacts_folder_path / "sample_integration" / self.prefix / "model"
-        self.figure_folder_path = self.artifacts_folder_path / "sample_integration" / self.prefix / "figures"
+        self.model_folder_path = self.artifacts_folder_path / "model"
+        self.figure_folder_path = self.artifacts_folder_path / "figures"
 
 
 def load_config_json(path: Path) -> dict[str, Any]:
@@ -245,7 +244,6 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_main = parser.add_argument_group("MAIN (I/O & run identity)")
     g_main.add_argument("--batches", nargs="+", type=Path, default=argparse.SUPPRESS, help="Paths to input .h5ad files (≥1).")
     g_main.add_argument("--outdir", type=Path, default=argparse.SUPPRESS, help="Base output directory (default: current working directory).")
-    g_main.add_argument("--prefix", type=str, default="nichecompass", help="Run prefix used in folder names.")
     g_main.add_argument("--species", type=str, choices=["human", "mouse"], default="human", help="Species tag for prior knowledge lookup.")
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 

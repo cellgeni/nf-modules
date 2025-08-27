@@ -24,7 +24,7 @@ process NICHECOMPASS_ANALYSIS {
 
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
-        "analysis_${prefix}_${ts}.ipynb" \\
+        "analysis_${ts}.ipynb" \\
         -p nichecompass_dir  "${nichecompass_dir}_analysis" \\
         ${args} \\
         --kernel python3 \\
@@ -42,7 +42,8 @@ process NICHECOMPASS_ANALYSIS {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch "analysis_${prefix}_${timestamp}.ipynb"
+    rsync -a "${nichecompass_dir}" "${nichecompass_dir}_analysis"
+    touch "analysis_${timestamp}.ipynb"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

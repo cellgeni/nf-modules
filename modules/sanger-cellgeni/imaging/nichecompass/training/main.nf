@@ -8,7 +8,7 @@ process NICHECOMPASS_TRAINING {
     tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
-    tuple val(meta), path("${prefix}_*/"), path("${prefix}_*/timestamp.txt"), emit: nichecompass_model
+    tuple val(meta), path("nichecompass_*/"), path("nichecompass_*/timestamp.txt"), emit: nichecompass_model
     path "versions.yml", emit: versions
 
     when:
@@ -16,11 +16,10 @@ process NICHECOMPASS_TRAINING {
 
     script:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     nichecompass_train_sample_integration.py \\
         --batches ${h5ad} \\
-        --prefix "${prefix}" \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -30,16 +29,15 @@ process NICHECOMPASS_TRAINING {
     """
 
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}"
     def timestamp = new Date().format("yyyyMMdd_HHmmss")
     """
-    mkdir -p "${prefix}_${timestamp}"
-    mkdir -p "${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/figures"
-    mkdir -p "${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/models"
-    mkdir -p "${prefix}_${timestamp}/data"
-    touch "${prefix}_${timestamp}/artifacts/sample_integration/nichecompass/models/model.h5ad"
-    touch "${prefix}_${timestamp}/train.log"
-    touch "${prefix}_${timestamp}/timestamp.txt"
+    mkdir -p "nichecompass_${timestamp}"
+    mkdir -p "nichecompass_${timestamp}/artifacts/figures"
+    mkdir -p "nichecompass_${timestamp}/artifacts/models"
+    mkdir -p "nichecompass_${timestamp}/data"
+    touch "nichecompass_${timestamp}/artifacts/models/model.h5ad"
+    touch "nichecompass_${timestamp}/train.log"
+    touch "nichecompass_${timestamp}/timestamp.txt"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
