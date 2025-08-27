@@ -8,7 +8,7 @@ process NICHECOMPASS_TRAINING {
     tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
-    tuple val(meta), path("nichecompass_*/"), path("nichecompass_*/timestamp.txt"), emit: nichecompass_model
+    tuple val(meta), path("nichecompass_*"), emit: nichecompass_model
     path "versions.yml", emit: versions
 
     when:
