@@ -40,10 +40,10 @@ process NICHECOMPASS_ANALYSIS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def ts     = file(timestamp).text.trim()
     """
     rsync -a "${nichecompass_dir}" "${nichecompass_dir}_analysis"
-    touch "analysis_${timestamp}.ipynb"
+    touch "analysis_${ts}.ipynb"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
