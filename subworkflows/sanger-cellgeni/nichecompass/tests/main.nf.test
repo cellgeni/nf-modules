@@ -16,7 +16,7 @@ nextflow_workflow {
 
         when {
             params {
-                nichecompass_training_args = '--species mouse'
+                spatial_nichecompasstraining_args = '--species mouse'
             }
             workflow {
                 """

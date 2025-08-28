@@ -1,4 +1,4 @@
-process NICHECOMPASS_TRAINING {
+process SPATIAL_NICHECOMPASSTRAINING {
     tag "${meta.id}"
     label 'process_gpu'
 

@@ -1,4 +1,4 @@
-name: "nichecompass_training"
+name: "spatial_nichecompasstraining"
 description: Train a NicheCompass model on spatial multiomics data.
 keywords:
   - spatial_atlas_building

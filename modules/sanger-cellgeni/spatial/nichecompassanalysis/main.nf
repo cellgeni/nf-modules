@@ -1,26 +1,26 @@
-process NICHECOMPASS_ANALYSIS {
-    tag "${meta.id}"
-    label 'process_high'
+process SPATIAL_NICHECOMPASSANALYSIS {
+  tag "${meta.id}"
+  label 'process_high'
 
-    container "quay.io/cellgeni/nichecompass:0.3.0"
+  container "quay.io/cellgeni/nichecompass:0.3.0"
 
-    stageInMode 'copy'
+  stageInMode 'copy'
 
-    input:
-    tuple val(meta), path(nichecompass_dir)
+  input:
+  tuple val(meta), path(nichecompass_dir)
 
-    output:
-    tuple val(meta), path("${nichecompass_dir}"), emit: nichecompass_dir
-    tuple val(meta), path("analysis_*.ipynb"), emit: notebook
-    path "versions.yml", emit: versions
+  output:
+  tuple val(meta), path("${nichecompass_dir}"), emit: nichecompass_dir
+  tuple val(meta), path("analysis_*.ipynb"), emit: notebook
+  path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+  when:
+  task.ext.when == null || task.ext.when
 
-    script:
-    def args   = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    """
+  script:
+  def args = task.ext.args ?: ''
+  def prefix = task.ext.prefix ?: "${meta.id}"
+  """
     ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
     if [ -z "\$ts" ]; then
       echo "ERROR: Could not parse timestamp" >&2
@@ -44,9 +44,9 @@ process NICHECOMPASS_ANALYSIS {
     END_VERSIONS
     """
 
-    stub:
-    def args = task.ext.args ?: ''
-    """
+  stub:
+  def args = task.ext.args ?: ''
+  """
     ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
     if [ -z "\$ts" ]; then
       echo "ERROR: Could not parse timestamp" >&2
