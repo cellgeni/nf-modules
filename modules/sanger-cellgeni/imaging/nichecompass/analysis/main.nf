@@ -4,11 +4,13 @@ process NICHECOMPASS_ANALYSIS {
 
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
+    stageInMode 'copy'
+
     input:
     tuple val(meta), path(nichecompass_dir)
 
     output:
-    tuple val(meta), path("${nichecompass_dir}_analysis/"), emit: nichecompass_dir
+    tuple val(meta), path("${nichecompass_dir}"), emit: nichecompass_dir
     tuple val(meta), path("analysis_*.ipynb"), emit: notebook
     path "versions.yml", emit: versions
 
@@ -25,12 +27,10 @@ process NICHECOMPASS_ANALYSIS {
       exit 1
     fi
 
-    rsync -a "${nichecompass_dir}" "${nichecompass_dir}_analysis"
-
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
         "analysis_\${ts}.ipynb" \\
-        -p nichecompass_dir  "${nichecompass_dir}_analysis" \\
+        -p nichecompass_dir  "${nichecompass_dir}" \\
         ${args} \\
         --kernel python3 \\
         --request-save-on-cell-execute \\
@@ -45,7 +45,7 @@ process NICHECOMPASS_ANALYSIS {
     """
 
     stub:
-    def args   = task.ext.args ?: ''
+    def args = task.ext.args ?: ''
     """
     ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
     if [ -z "\$ts" ]; then
@@ -53,7 +53,6 @@ process NICHECOMPASS_ANALYSIS {
       exit 1
     fi
 
-    rsync -a "${nichecompass_dir}" "${nichecompass_dir}_analysis"
     touch "analysis_\${ts}.ipynb"
 
     cat <<-END_VERSIONS > versions.yml
