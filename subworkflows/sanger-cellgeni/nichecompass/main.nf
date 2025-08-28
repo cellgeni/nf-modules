@@ -6,7 +6,6 @@ workflow NICHECOMPASS {
     ch_h5ad // channel: [ val(meta), [ h5ad ] ]
 
     main:
-
     ch_versions = Channel.empty()
 
     SPATIAL_NICHECOMPASSTRAINING(ch_h5ad)

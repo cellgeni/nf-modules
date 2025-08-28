@@ -21,43 +21,43 @@ process SPATIAL_NICHECOMPASSANALYSIS {
   def args = task.ext.args ?: ''
   def prefix = task.ext.prefix ?: "${meta.id}"
   """
-    ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
-    if [ -z "\$ts" ]; then
-      echo "ERROR: Could not parse timestamp" >&2
-      exit 1
-    fi
+  ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
+  if [ -z "\$ts" ]; then
+    echo "ERROR: Could not parse timestamp" >&2
+    exit 1
+  fi
 
-    papermill \\
-        "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
-        "analysis_\${ts}.ipynb" \\
-        -p nichecompass_dir  "${nichecompass_dir}" \\
-        ${args} \\
-        --kernel python3 \\
-        --request-save-on-cell-execute \\
-        --progress-bar \\
-        --log-level INFO \\
-        --log-output
+  papermill \\
+      "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
+      "analysis_\${ts}.ipynb" \\
+      -p nichecompass_dir  "${nichecompass_dir}" \\
+      ${args} \\
+      --kernel python3 \\
+      --request-save-on-cell-execute \\
+      --progress-bar \\
+      --log-level INFO \\
+      --log-output
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
-    END_VERSIONS
-    """
+  cat <<-END_VERSIONS > versions.yml
+  "${task.process}":
+      nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
+  END_VERSIONS
+  """
 
   stub:
   def args = task.ext.args ?: ''
   """
-    ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
-    if [ -z "\$ts" ]; then
-      echo "ERROR: Could not parse timestamp" >&2
-      exit 1
-    fi
+  ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
+  if [ -z "\$ts" ]; then
+    echo "ERROR: Could not parse timestamp" >&2
+    exit 1
+  fi
 
-    touch "analysis_\${ts}.ipynb"
+  touch "analysis_\${ts}.ipynb"
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
-    END_VERSIONS
-    """
+  cat <<-END_VERSIONS > versions.yml
+  "${task.process}":
+      nichecompass: \$(pip show nichecompass | grep Version | sed -e "s/Version: //g")
+  END_VERSIONS
+  """
 }
