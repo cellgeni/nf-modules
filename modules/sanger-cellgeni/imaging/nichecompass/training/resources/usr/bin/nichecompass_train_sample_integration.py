@@ -667,7 +667,7 @@ def save_model_and_config(
         dir_path=str(params.model_folder_path),
         overwrite=True,
         save_adata=True,
-        adata_file_name="model.h5ad",
+        adata_file_name="trained.h5ad",
     )
 
     run_config = asdict(params)
