@@ -1,0 +1,135 @@
+{
+    "nichecompass - mouse - 3": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    "batches_latent_physical_space.svg:md5,9c274c2e582275c27406d547f1035368",
+                                    "cell_types_latent_physical_space.svg:md5,534e3c2b06ee311317a6c7966144b8ac",
+                                    "enriched_gps_heatmap.svg:md5,71b0997a67760a9ec919b8f28ca3a594",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal1_feature_space.png:md5,79ceb76eb5c4c93637284ee41adf3647",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal2_feature_space.png:md5,10799c93e27a5d38197cfc06fca84df6",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal3_feature_space.png:md5,a11990ad6b9a8dff5113bd4e40e5a533",
+                                    "log_bayes_factor_2.3_niche_enriched_gps_summary.csv:md5,ba94ded264c60fb22a90de282bc8d391",
+                                    "res_0.2_niche_composition_batches.svg:md5,64b402c02a10cf363b192ff2ee540ff6",
+                                    "res_0.2_niche_composition_cell_types.svg:md5,80b66360a2484ad4c0ae7f8f8544e58d",
+                                    "res_0.2_niches_latent_physical_space.svg:md5,3d96a15859d2e54d9bfc0c1bfbb67842"
+                                ],
+                                [
+                                    "attr.pkl:md5,a34dc620d7d74b18b006c5abc34ece07",
+                                    "model_params.pt:md5,410188d5f76b2e7599b397b6bbcc6caa",
+                                    "trained.h5ad:md5,3aee894c85d69cf246a05fe21111a703",
+                                    "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
+                                ]
+                            ],
+                            [
+                                [
+                                    "gencode.vM25.chr_patch_hapl_scaff.annotation.gtf.gz:md5,c77cbf3cad15af10b6174d4b77c8246f",
+                                    "human_mouse_gene_orthologs.csv:md5,b01557bcc3647653d0b323e17fe1e93c"
+                                ],
+                                [
+                                    [
+                                        "human_metabolite_enzymes.tsv:md5,242269afd818d1ff93f190271065526c",
+                                        "human_metabolite_sensors.tsv:md5,5a02dd9124c603d62e4944526f8b544c",
+                                        "mouse_metabolite_enzymes.tsv:md5,f2a48c14af3f5174ae78cf390cbfbe0e",
+                                        "mouse_metabolite_sensors.tsv:md5,1987eb7777861838ac8b6224732d88b8"
+                                    ],
+                                    "nichenet_ligand_target_matrix_v2_mouse.csv:md5,0c00fc0008112adaa551dbab0ce9a855",
+                                    "nichenet_lr_network_v2_mouse.csv:md5,c42d99ee4976c592f477f58affff1cd1",
+                                    "omnipath_lr_network.csv:md5,03487d78e4fe071fa42832be0bbdbf8d"
+                                ]
+                            ],
+                            "run_config.json:md5,6a8abb0ade9e7412d25dc46747f3c6a1",
+                            "timestamp.txt:md5,28c676055fc59b2f9614f78cdeae031c",
+                            "train.log:md5,af62270507e94ea5aab26e2408e6d139"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "analysis_20250829_133043.ipynb:md5,1c90cb0e7d76ff2fa407b4ddb9c04f5e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,781e4dc74d5447ce054798dfb37e46ce",
+                    "versions.yml:md5,94ac0b2217394474804b9942fafa8d99"
+                ],
+                "nichecompass_dir": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    "batches_latent_physical_space.svg:md5,9c274c2e582275c27406d547f1035368",
+                                    "cell_types_latent_physical_space.svg:md5,534e3c2b06ee311317a6c7966144b8ac",
+                                    "enriched_gps_heatmap.svg:md5,71b0997a67760a9ec919b8f28ca3a594",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal1_feature_space.png:md5,79ceb76eb5c4c93637284ee41adf3647",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal2_feature_space.png:md5,10799c93e27a5d38197cfc06fca84df6",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal3_feature_space.png:md5,a11990ad6b9a8dff5113bd4e40e5a533",
+                                    "log_bayes_factor_2.3_niche_enriched_gps_summary.csv:md5,ba94ded264c60fb22a90de282bc8d391",
+                                    "res_0.2_niche_composition_batches.svg:md5,64b402c02a10cf363b192ff2ee540ff6",
+                                    "res_0.2_niche_composition_cell_types.svg:md5,80b66360a2484ad4c0ae7f8f8544e58d",
+                                    "res_0.2_niches_latent_physical_space.svg:md5,3d96a15859d2e54d9bfc0c1bfbb67842"
+                                ],
+                                [
+                                    "attr.pkl:md5,a34dc620d7d74b18b006c5abc34ece07",
+                                    "model_params.pt:md5,410188d5f76b2e7599b397b6bbcc6caa",
+                                    "trained.h5ad:md5,3aee894c85d69cf246a05fe21111a703",
+                                    "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
+                                ]
+                            ],
+                            [
+                                [
+                                    "gencode.vM25.chr_patch_hapl_scaff.annotation.gtf.gz:md5,c77cbf3cad15af10b6174d4b77c8246f",
+                                    "human_mouse_gene_orthologs.csv:md5,b01557bcc3647653d0b323e17fe1e93c"
+                                ],
+                                [
+                                    [
+                                        "human_metabolite_enzymes.tsv:md5,242269afd818d1ff93f190271065526c",
+                                        "human_metabolite_sensors.tsv:md5,5a02dd9124c603d62e4944526f8b544c",
+                                        "mouse_metabolite_enzymes.tsv:md5,f2a48c14af3f5174ae78cf390cbfbe0e",
+                                        "mouse_metabolite_sensors.tsv:md5,1987eb7777861838ac8b6224732d88b8"
+                                    ],
+                                    "nichenet_ligand_target_matrix_v2_mouse.csv:md5,0c00fc0008112adaa551dbab0ce9a855",
+                                    "nichenet_lr_network_v2_mouse.csv:md5,c42d99ee4976c592f477f58affff1cd1",
+                                    "omnipath_lr_network.csv:md5,03487d78e4fe071fa42832be0bbdbf8d"
+                                ]
+                            ],
+                            "run_config.json:md5,6a8abb0ade9e7412d25dc46747f3c6a1",
+                            "timestamp.txt:md5,28c676055fc59b2f9614f78cdeae031c",
+                            "train.log:md5,af62270507e94ea5aab26e2408e6d139"
+                        ]
+                    ]
+                ],
+                "notebook": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "analysis_20250829_133043.ipynb:md5,1c90cb0e7d76ff2fa407b4ddb9c04f5e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,781e4dc74d5447ce054798dfb37e46ce",
+                    "versions.yml:md5,94ac0b2217394474804b9942fafa8d99"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-08-29T13:39:11.310798153"
+    }
+}
