@@ -13,6 +13,7 @@ process ML_XENIUMHARMONISE {
     path "versions.yml"                        , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     out_dir = "${meta}_harmonised"
  
     """
@@ -20,8 +21,12 @@ process ML_XENIUMHARMONISE {
             --hematoxylin_eosin_image_uri ${he_image} \\
             --xenium_bundle_uri ${xenium_bundle} \\
             --harmonised_dataset_uri ${out_dir} 
+            ${args}
 
-        echo "v1.0.0" > versions.yml
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            mlxeniumharmonise: 1.0.0
+        END_VERSIONS
     """
 
     stub:
@@ -29,6 +34,9 @@ process ML_XENIUMHARMONISE {
 
     """
     touch ${out_dir}
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            mlxeniumharmonise: 1.0.0
+        END_VERSIONS
     """
 }
