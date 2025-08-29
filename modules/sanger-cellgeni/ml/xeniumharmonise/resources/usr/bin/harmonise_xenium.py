@@ -5,7 +5,7 @@ import uuid
 import tiledb
 import numpy as np
 import os
-#from dask.distributed import Client
+# from dask.distributed import Client
 import dask
 import dask.array as da
 import dask.dataframe as dd
@@ -28,6 +28,19 @@ import fire
 DASK_SCHEDULER_ADDRESS='tcp://farm22-head2:40883'
 CONCURRENCY=4
 DATA_ROOT='/lustre/scratch126/cellgen/team361/projects/histology_to_gene_expression/workspace/data'
+
+def easyloader(sample_bundle_uri: str, harmonised_dataset_uri: str):
+    """
+    Automatically identify the xenium_bundle_uri and hematoxylin_eosin_image_uri in the sample_bundle_uri
+    and call the main function with these parameters.
+    """
+    # find the xenium bundle and h&e image
+    lfiles = os.listdir(sample_bundle_uri)
+    xenium_bundle_uri = os.path.join(sample_bundle_uri, [i for i in lfiles if 'output-X' in i][0])
+    hematoxylin_eosin_image_uri = os.path.join(sample_bundle_uri, [i for i in lfiles if '.ndpi' in i][0])
+
+    # call the main function
+    main(xenium_bundle_uri, hematoxylin_eosin_image_uri, harmonised_dataset_uri)
 
 
 def main(xenium_bundle_uri: str, hematoxylin_eosin_image_uri: str, harmonised_dataset_uri: str):
@@ -545,10 +558,10 @@ def main(xenium_bundle_uri: str, hematoxylin_eosin_image_uri: str, harmonised_da
 
     schema = tiledb.ArraySchema(
         domain=tiledb.Domain(
-            tiledb.Dim(name="z", domain=(0, 10000), tile=256, dtype=np.float32),
+            tiledb.Dim(name="z", domain=(-10000, 10000), tile=256, dtype=np.float32),
             tiledb.Dim(name="y", domain=y_domain, tile=256, dtype=np.float32),
             tiledb.Dim(name="x", domain=x_domain, tile=256, dtype=np.float32),
-            tiledb.Dim(name="gene_index", domain=(0, 5000), tile=1, dtype=np.int32),
+            tiledb.Dim(name="gene_index", domain=(0, len(gene_codewords)-1), tile=1, dtype=np.int32),
         ),
         attrs=[
             tiledb.Attr(name="transcript_id", dtype=np.uint64, filters=[tiledb.ZstdFilter()]),

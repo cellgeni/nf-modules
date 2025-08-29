@@ -3,16 +3,850 @@
         "content": [
             {
                 "0": [
-                    
+                    [
+                        "xeniumharmonise_test",
+                        [
+                            [
+                                "__1756463098558_1756463098558_2dcccf0d1676e1f77c8f837ed8185394_2:md5,5878df16be11f2810631b8ba95c8034e"
+                            ],
+                            [
+                                
+                            ],
+                            "__tiledb_group.tdb:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            [
+                                [
+                                    "__1756463019572_1756463019572_1aed01239d05198166d346f2b7e6665d_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463019601_1756463019601_4fe8632ea23c314fed4e25b6b4f29e42_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463021358_1756463021358_095371f97a0157d5fa6e1d9701019412_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463022180_1756463022180_6b634135dc8a4d69061f2771861c3fce_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463022974_1756463022974_6fa4c603b5cdc0f16cf638ef5cb377d4_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,ac4a70c2823f30132833a1be97200bd5",
+                                        "a0.tdb:md5,5a4572165a283c0cc71e1c47ba4dc888",
+                                        "d0.tdb:md5,3e7f0cde0abc12d2434153728f6a147c",
+                                        "d1.tdb:md5,889d1506dfbbae363ec59869f9f06859"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,b52e46d8d2c5a5be4a7f10b48a671f79",
+                                        "a0.tdb:md5,66f3b18c04e9189e965d619b928213c7",
+                                        "d0.tdb:md5,73aeaccfef7072718ff698d1c0e301a3",
+                                        "d1.tdb:md5,c932b3b653bc1531b0081c30d8ddf964"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,28a4641f761d039aa960932d3c34cb60",
+                                        "a0.tdb:md5,368cc4f14f63693cc380c7c36df169f2",
+                                        "d0.tdb:md5,99524580c81016466eca9daab8fbe271",
+                                        "d1.tdb:md5,6e76a1f32cee389571fce7e33867c56a"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,a89eb8d55a4c0126bb6b9c73bb1a356b",
+                                        "a0.tdb:md5,a97dbd94a89ff19e9216b60a7c42653e",
+                                        "d0.tdb:md5,92ad0291c67c0779d059e8c98a1c584e",
+                                        "d1.tdb:md5,5fb5aa6a0904009c6fb34bfc58ee4c9f"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,679c2a0592d127c4d724dec61d7e5ada",
+                                        "a0.tdb:md5,0259e2ad4a200c0cdc758f3102a42b2b",
+                                        "d0.tdb:md5,385febb13e0c9ed50eb1a7fc5600b32f",
+                                        "d1.tdb:md5,a7493472d2d324c865e7e9623b42d05c"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463019443_1756463019443_536d4633938b34528631e60823eb6e1b:md5,db59796b4f9c6b132ebbac3f08d49501",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463017834_1756463017834_10ce9ed9e02638f07d1a4dee2b47b2d2_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,e5fc703cd8e5a7ce683e3e01b1276a8e",
+                                        "a0.tdb:md5,33da4da5a51498aa5c3ae781621371d2",
+                                        "d0.tdb:md5,97162cf8b3e8299f8b99b70e8cd3dc5e",
+                                        "d0_var.tdb:md5,786fe02d5516feb4dda3acad89b62f8a"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463017594_1756463017594_23c0f4b8e482965464bff7cc204644a9:md5,fcaeb1a794d03759c8ff47eb1e2af1cd",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463011944_1756463011944_045585c9e1fb229ff5e38e04add0921f_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,5b6964a80b818d09ff9669f80b4500f6",
+                                        "a0.tdb:md5,8c05453f3c9548241467da6c4faad7ba"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463010830_1756463010830_2e25da733e3db6338644546f369f7ad2:md5,6e73ee7af5f02aa8578613ae0228b2b8",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463018816_1756463018816_0cd42a9f85ef312e086624d9ca22770c_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,74ef084f668d07cf6ef6da88339a53c7",
+                                        "a0.tdb:md5,8e932e8f706541f052df561d8532bbfd",
+                                        "a1.tdb:md5,44fb177f909b1cbdcd4841da44cfc439",
+                                        "a10.tdb:md5,3ab23119078792f30e4d3bab8772504b",
+                                        "a10_var.tdb:md5,17a8b6fc4e1f6adcfcf98ae0cf7242b9",
+                                        "a2.tdb:md5,f3d044994b44cea27dcd02bbaa0364e8",
+                                        "a3.tdb:md5,ce9bda82cba728d58f98fcf89bcbd092",
+                                        "a4.tdb:md5,9f573d7482edb589355467a1a017f059",
+                                        "a5.tdb:md5,89b749fe681fa2ee676f3f4f6f72c62a",
+                                        "a6.tdb:md5,6407b22dbad0260e5544b2047af607cc",
+                                        "a7.tdb:md5,d15df1113bc28bbf0cc65c8b321cd003",
+                                        "a8.tdb:md5,a48b56d37fafb5be0cd772b770a513f5",
+                                        "a9.tdb:md5,21c534fd775495ef82c36432eb5dde40",
+                                        "d0.tdb:md5,7d9008175547ed973abb4523d27c64c3",
+                                        "d1.tdb:md5,97162cf8b3e8299f8b99b70e8cd3dc5e",
+                                        "d1_var.tdb:md5,e0e426ba2f7ed670ac789fdf17bc5a09",
+                                        "d2.tdb:md5,6ef0d7c6e0e7a6109bd115703c49ba75",
+                                        "d3.tdb:md5,f0f5f3261273a886a13a21a5160dcef9"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463018745_1756463018745_3acc4c5524715c8ed576ba3a3bf322f4:md5,3ecfb1c269b3a8a3715cc5eb2c018313",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463027255_1756463027255_2ae00d68142118b6bd6fc3aa59d5c624_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,15c5157239ba7798d066d12ab74cef54",
+                                        "a0.tdb:md5,5e4d4be8606819ed9f213f84aaa14a6a"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463024240_1756463024240_15abfdeb18dc5924b4c28fdc5d2f3960:md5,8a0bf1ff879c514e4a2c11906c4b6f31",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463074658_1756463074658_0ca92412df0b6b05e0615b11298a58df_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,40909376c824a99768fddac837895b86",
+                                        "a0.tdb:md5,93827b2ef8cc8bd20a1c67275a29af8e"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463067779_1756463067779_1449e2f8434f327cfd08bd704a2168ce:md5,1d3167267cf03a136bf347325bafac7b",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756462845108_1756462845108_4c8f70722d3b4ba18d106bd74729a668_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462849123_1756462849123_38e22736bfd42bf9642ca3da44a6dc35_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462874349_1756462874349_5ba8665c086c2266c46fccd1c608c51c_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462874431_1756462874431_582c16b3f0e010019edd1cd14f2aa4d8_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462894905_1756462894905_4672678aef1c5ee0f66e581176e63f57_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462895062_1756462895062_5ad7efb40607bc283310a46cf81e3776_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462914791_1756462914791_101f9e9dbddf2d9a1a0ff7d24cd0086c_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462916858_1756462916858_2e24627aa3da918f3cb96acf2dc1969e_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462930394_1756462930394_1554b22a9210841665d6bd47c54aeb77_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462936622_1756462936622_2fa234dd36f4ae48b0889865a7f62c2e_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462941591_1756462941591_2ae3aabc4cf83b0df505e451e6aa7c79_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,802f840dba04abc4c9093e5039cae30e",
+                                        "a0.tdb:md5,5f9fbfdc3faf007c4d002cc8ef21af4e"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,dcfb607314a97fb3ce2d080c5bde2b65",
+                                        "a0.tdb:md5,344c7c22182be12dfe77ebe2e79f6877"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,3ff4528c3943b4563de60348aeb6520c",
+                                        "a0.tdb:md5,25fa4eb68e1d6c0df5c3760023c8a367"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,7c63a8b5eafc7ded38a076ae6574f6cd",
+                                        "a0.tdb:md5,a085dd67f39a799dfba0ae7c4bfb3ceb"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,bef203e571fd0f8bec44c7c90cd80eb3",
+                                        "a0.tdb:md5,5174b0b5a4addf67544825136c58f62b"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,fc4ca7eae525a87da4e19a2b91347842",
+                                        "a0.tdb:md5,1579a85be92bb17e6c32f3a5dad5a9a6"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,abfc468ff5b6a257472b2a22fb006da6",
+                                        "a0.tdb:md5,b000b5f3092a2e1fae064856304e646b"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,a9ce0018859e41163208704528c84b0a",
+                                        "a0.tdb:md5,8b3bea5f085f303ee6ae70b855e836ea"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,fad7ce4b41a3c1e032c5a861c99e101c",
+                                        "a0.tdb:md5,90374d10ee696ae792299fba487d0cc8"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,523a7cdbc984e6c2cc7c428fb6d1ce84",
+                                        "a0.tdb:md5,2db3a67a51ee14d756f8448850653510"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,10fb1db90d8b15122fd6f4bea38e8ca1",
+                                        "a0.tdb:md5,1131fd17bedfefd7a43c527d05529c6b"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756461112879_1756461112879_0f7a45c6ed9497b153a4c05448334d0f:md5,70c43da515f48343abba09f9fd304359",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756462962227_1756462962227_34e02e447ce07869c5ae2d4b012f46ee_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462972539_1756462972539_0d94a9b2acf1bdcdafff0a823a419724_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462999947_1756462999947_14fba934dc057211624ddc801f8f2669_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463006624_1756463006624_05ce0d82ce839760732eac60b3b1de79_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,de6e2b5c916a919e6474a29fc4d2b477",
+                                        "a0.tdb:md5,edcbe14575c75155cca5410767961754"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,d4fada6ca92bc607db15fe28c3322155",
+                                        "a0.tdb:md5,4b226246c549d34e0ca62b1d656b1c06"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,78f25e698e8bf270b1d6ee82286ca983",
+                                        "a0.tdb:md5,f2b905a5744df9cbb3cd543fc180f61e"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,113bbe188c59103ae3de7185e8a838b5",
+                                        "a0.tdb:md5,998279301773062013a1da3a217360b4"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756462944534_1756462944534_2911b057e365d21e49189e4c99977605:md5,d5f503ef5c32e384b2e419ca5f060d76",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463014937_1756463014937_59e202cf4a6549d1a4e47c183036e33f_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,cd9fa232c0dbde8a4c225bccdfc48b2a",
+                                        "a0.tdb:md5,db83705573668c2e4b3b1926ece92f87"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463010847_1756463010847_1f2af44cf362ed0c997e68c2c42f5c16:md5,6e73ee7af5f02aa8578613ae0228b2b8",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463018442_1756463018442_1871163e79724bd72543770c39b6455a_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,f914609be904d1dfa4bed32c7b32e0c6",
+                                        "a0.tdb:md5,0bc71a06fbeb071b936fadb3dda1fa61",
+                                        "d0.tdb:md5,1eebc96e0a189b755a16163aba43508d",
+                                        "d0_var.tdb:md5,08912e9f9a8111bc04b948dee200c031"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463017613_1756463017613_52b74350c009ec492a79e647a59e4889:md5,e0f055c0451441049a3e250cbf46a892",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463085242_1756463085242_39651019d1f7de53b0c07b32d5c7e3b7_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,3b6848c77c464b6641f242c7d163685a",
+                                        "a0.tdb:md5,fa15dbb212d16c4476278230a9320f28",
+                                        "a1.tdb:md5,a43179da5e8305e8c763994dabb07b75",
+                                        "d0.tdb:md5,9fa20506bd9bc0f8b12deeea0ea2cc6b",
+                                        "d1.tdb:md5,df50700091b1db3d2c52e55e1816793e",
+                                        "d2.tdb:md5,501dc697347b0ec5caf19ff60006a6c3",
+                                        "d3.tdb:md5,2c5fe8824245c57e0b3d854a3152e038"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463079514_1756463079514_72cbabf1bc0641f59e4652aba6bf5770:md5,a37e3e3acc9bbdbf2baeabf388ce75ab",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 "1": [
-                    
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
                 ],
                 "harmonised_output": [
-                    
+                    [
+                        "xeniumharmonise_test",
+                        [
+                            [
+                                "__1756463098558_1756463098558_2dcccf0d1676e1f77c8f837ed8185394_2:md5,5878df16be11f2810631b8ba95c8034e"
+                            ],
+                            [
+                                
+                            ],
+                            "__tiledb_group.tdb:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            [
+                                [
+                                    "__1756463019572_1756463019572_1aed01239d05198166d346f2b7e6665d_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463019601_1756463019601_4fe8632ea23c314fed4e25b6b4f29e42_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463021358_1756463021358_095371f97a0157d5fa6e1d9701019412_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463022180_1756463022180_6b634135dc8a4d69061f2771861c3fce_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463022974_1756463022974_6fa4c603b5cdc0f16cf638ef5cb377d4_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,ac4a70c2823f30132833a1be97200bd5",
+                                        "a0.tdb:md5,5a4572165a283c0cc71e1c47ba4dc888",
+                                        "d0.tdb:md5,3e7f0cde0abc12d2434153728f6a147c",
+                                        "d1.tdb:md5,889d1506dfbbae363ec59869f9f06859"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,b52e46d8d2c5a5be4a7f10b48a671f79",
+                                        "a0.tdb:md5,66f3b18c04e9189e965d619b928213c7",
+                                        "d0.tdb:md5,73aeaccfef7072718ff698d1c0e301a3",
+                                        "d1.tdb:md5,c932b3b653bc1531b0081c30d8ddf964"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,28a4641f761d039aa960932d3c34cb60",
+                                        "a0.tdb:md5,368cc4f14f63693cc380c7c36df169f2",
+                                        "d0.tdb:md5,99524580c81016466eca9daab8fbe271",
+                                        "d1.tdb:md5,6e76a1f32cee389571fce7e33867c56a"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,a89eb8d55a4c0126bb6b9c73bb1a356b",
+                                        "a0.tdb:md5,a97dbd94a89ff19e9216b60a7c42653e",
+                                        "d0.tdb:md5,92ad0291c67c0779d059e8c98a1c584e",
+                                        "d1.tdb:md5,5fb5aa6a0904009c6fb34bfc58ee4c9f"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,679c2a0592d127c4d724dec61d7e5ada",
+                                        "a0.tdb:md5,0259e2ad4a200c0cdc758f3102a42b2b",
+                                        "d0.tdb:md5,385febb13e0c9ed50eb1a7fc5600b32f",
+                                        "d1.tdb:md5,a7493472d2d324c865e7e9623b42d05c"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463019443_1756463019443_536d4633938b34528631e60823eb6e1b:md5,db59796b4f9c6b132ebbac3f08d49501",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463017834_1756463017834_10ce9ed9e02638f07d1a4dee2b47b2d2_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,e5fc703cd8e5a7ce683e3e01b1276a8e",
+                                        "a0.tdb:md5,33da4da5a51498aa5c3ae781621371d2",
+                                        "d0.tdb:md5,97162cf8b3e8299f8b99b70e8cd3dc5e",
+                                        "d0_var.tdb:md5,786fe02d5516feb4dda3acad89b62f8a"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463017594_1756463017594_23c0f4b8e482965464bff7cc204644a9:md5,fcaeb1a794d03759c8ff47eb1e2af1cd",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463011944_1756463011944_045585c9e1fb229ff5e38e04add0921f_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,5b6964a80b818d09ff9669f80b4500f6",
+                                        "a0.tdb:md5,8c05453f3c9548241467da6c4faad7ba"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463010830_1756463010830_2e25da733e3db6338644546f369f7ad2:md5,6e73ee7af5f02aa8578613ae0228b2b8",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463018816_1756463018816_0cd42a9f85ef312e086624d9ca22770c_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,74ef084f668d07cf6ef6da88339a53c7",
+                                        "a0.tdb:md5,8e932e8f706541f052df561d8532bbfd",
+                                        "a1.tdb:md5,44fb177f909b1cbdcd4841da44cfc439",
+                                        "a10.tdb:md5,3ab23119078792f30e4d3bab8772504b",
+                                        "a10_var.tdb:md5,17a8b6fc4e1f6adcfcf98ae0cf7242b9",
+                                        "a2.tdb:md5,f3d044994b44cea27dcd02bbaa0364e8",
+                                        "a3.tdb:md5,ce9bda82cba728d58f98fcf89bcbd092",
+                                        "a4.tdb:md5,9f573d7482edb589355467a1a017f059",
+                                        "a5.tdb:md5,89b749fe681fa2ee676f3f4f6f72c62a",
+                                        "a6.tdb:md5,6407b22dbad0260e5544b2047af607cc",
+                                        "a7.tdb:md5,d15df1113bc28bbf0cc65c8b321cd003",
+                                        "a8.tdb:md5,a48b56d37fafb5be0cd772b770a513f5",
+                                        "a9.tdb:md5,21c534fd775495ef82c36432eb5dde40",
+                                        "d0.tdb:md5,7d9008175547ed973abb4523d27c64c3",
+                                        "d1.tdb:md5,97162cf8b3e8299f8b99b70e8cd3dc5e",
+                                        "d1_var.tdb:md5,e0e426ba2f7ed670ac789fdf17bc5a09",
+                                        "d2.tdb:md5,6ef0d7c6e0e7a6109bd115703c49ba75",
+                                        "d3.tdb:md5,f0f5f3261273a886a13a21a5160dcef9"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463018745_1756463018745_3acc4c5524715c8ed576ba3a3bf322f4:md5,3ecfb1c269b3a8a3715cc5eb2c018313",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463027255_1756463027255_2ae00d68142118b6bd6fc3aa59d5c624_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,15c5157239ba7798d066d12ab74cef54",
+                                        "a0.tdb:md5,5e4d4be8606819ed9f213f84aaa14a6a"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463024240_1756463024240_15abfdeb18dc5924b4c28fdc5d2f3960:md5,8a0bf1ff879c514e4a2c11906c4b6f31",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463074658_1756463074658_0ca92412df0b6b05e0615b11298a58df_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,40909376c824a99768fddac837895b86",
+                                        "a0.tdb:md5,93827b2ef8cc8bd20a1c67275a29af8e"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463067779_1756463067779_1449e2f8434f327cfd08bd704a2168ce:md5,1d3167267cf03a136bf347325bafac7b",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756462845108_1756462845108_4c8f70722d3b4ba18d106bd74729a668_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462849123_1756462849123_38e22736bfd42bf9642ca3da44a6dc35_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462874349_1756462874349_5ba8665c086c2266c46fccd1c608c51c_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462874431_1756462874431_582c16b3f0e010019edd1cd14f2aa4d8_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462894905_1756462894905_4672678aef1c5ee0f66e581176e63f57_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462895062_1756462895062_5ad7efb40607bc283310a46cf81e3776_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462914791_1756462914791_101f9e9dbddf2d9a1a0ff7d24cd0086c_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462916858_1756462916858_2e24627aa3da918f3cb96acf2dc1969e_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462930394_1756462930394_1554b22a9210841665d6bd47c54aeb77_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462936622_1756462936622_2fa234dd36f4ae48b0889865a7f62c2e_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462941591_1756462941591_2ae3aabc4cf83b0df505e451e6aa7c79_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,802f840dba04abc4c9093e5039cae30e",
+                                        "a0.tdb:md5,5f9fbfdc3faf007c4d002cc8ef21af4e"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,dcfb607314a97fb3ce2d080c5bde2b65",
+                                        "a0.tdb:md5,344c7c22182be12dfe77ebe2e79f6877"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,3ff4528c3943b4563de60348aeb6520c",
+                                        "a0.tdb:md5,25fa4eb68e1d6c0df5c3760023c8a367"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,7c63a8b5eafc7ded38a076ae6574f6cd",
+                                        "a0.tdb:md5,a085dd67f39a799dfba0ae7c4bfb3ceb"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,bef203e571fd0f8bec44c7c90cd80eb3",
+                                        "a0.tdb:md5,5174b0b5a4addf67544825136c58f62b"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,fc4ca7eae525a87da4e19a2b91347842",
+                                        "a0.tdb:md5,1579a85be92bb17e6c32f3a5dad5a9a6"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,abfc468ff5b6a257472b2a22fb006da6",
+                                        "a0.tdb:md5,b000b5f3092a2e1fae064856304e646b"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,a9ce0018859e41163208704528c84b0a",
+                                        "a0.tdb:md5,8b3bea5f085f303ee6ae70b855e836ea"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,fad7ce4b41a3c1e032c5a861c99e101c",
+                                        "a0.tdb:md5,90374d10ee696ae792299fba487d0cc8"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,523a7cdbc984e6c2cc7c428fb6d1ce84",
+                                        "a0.tdb:md5,2db3a67a51ee14d756f8448850653510"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,10fb1db90d8b15122fd6f4bea38e8ca1",
+                                        "a0.tdb:md5,1131fd17bedfefd7a43c527d05529c6b"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756461112879_1756461112879_0f7a45c6ed9497b153a4c05448334d0f:md5,70c43da515f48343abba09f9fd304359",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756462962227_1756462962227_34e02e447ce07869c5ae2d4b012f46ee_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462972539_1756462972539_0d94a9b2acf1bdcdafff0a823a419724_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756462999947_1756462999947_14fba934dc057211624ddc801f8f2669_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "__1756463006624_1756463006624_05ce0d82ce839760732eac60b3b1de79_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,de6e2b5c916a919e6474a29fc4d2b477",
+                                        "a0.tdb:md5,edcbe14575c75155cca5410767961754"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,d4fada6ca92bc607db15fe28c3322155",
+                                        "a0.tdb:md5,4b226246c549d34e0ca62b1d656b1c06"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,78f25e698e8bf270b1d6ee82286ca983",
+                                        "a0.tdb:md5,f2b905a5744df9cbb3cd543fc180f61e"
+                                    ],
+                                    [
+                                        "__fragment_metadata.tdb:md5,113bbe188c59103ae3de7185e8a838b5",
+                                        "a0.tdb:md5,998279301773062013a1da3a217360b4"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756462944534_1756462944534_2911b057e365d21e49189e4c99977605:md5,d5f503ef5c32e384b2e419ca5f060d76",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463014937_1756463014937_59e202cf4a6549d1a4e47c183036e33f_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,cd9fa232c0dbde8a4c225bccdfc48b2a",
+                                        "a0.tdb:md5,db83705573668c2e4b3b1926ece92f87"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463010847_1756463010847_1f2af44cf362ed0c997e68c2c42f5c16:md5,6e73ee7af5f02aa8578613ae0228b2b8",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463018442_1756463018442_1871163e79724bd72543770c39b6455a_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,f914609be904d1dfa4bed32c7b32e0c6",
+                                        "a0.tdb:md5,0bc71a06fbeb071b936fadb3dda1fa61",
+                                        "d0.tdb:md5,1eebc96e0a189b755a16163aba43508d",
+                                        "d0_var.tdb:md5,08912e9f9a8111bc04b948dee200c031"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463017613_1756463017613_52b74350c009ec492a79e647a59e4889:md5,e0f055c0451441049a3e250cbf46a892",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ],
+                            [
+                                [
+                                    "__1756463085242_1756463085242_39651019d1f7de53b0c07b32d5c7e3b7_22.wrt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    [
+                                        "__fragment_metadata.tdb:md5,3b6848c77c464b6641f242c7d163685a",
+                                        "a0.tdb:md5,fa15dbb212d16c4476278230a9320f28",
+                                        "a1.tdb:md5,a43179da5e8305e8c763994dabb07b75",
+                                        "d0.tdb:md5,9fa20506bd9bc0f8b12deeea0ea2cc6b",
+                                        "d1.tdb:md5,df50700091b1db3d2c52e55e1816793e",
+                                        "d2.tdb:md5,501dc697347b0ec5caf19ff60006a6c3",
+                                        "d3.tdb:md5,2c5fe8824245c57e0b3d854a3152e038"
+                                    ]
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    
+                                ],
+                                [
+                                    "__1756463079514_1756463079514_72cbabf1bc0641f59e4652aba6bf5770:md5,a37e3e3acc9bbdbf2baeabf388ce75ab",
+                                    [
+                                        
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 "versions": [
-                    
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
                 ]
             }
         ],
@@ -20,22 +854,28 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-08-15T16:39:09.52666679"
+        "timestamp": "2025-08-29T11:25:08.099249335"
     },
     "xeniumharmonise - run - stub": {
         "content": [
             {
                 "0": [
-                    
+                    [
+                        "xeniumharmonise_test",
+                        "xeniumharmonise_test_harmonised:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "1": [
-                    
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "harmonised_output": [
-                    
+                    [
+                        "xeniumharmonise_test",
+                        "xeniumharmonise_test_harmonised:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "versions": [
-                    
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
@@ -43,6 +883,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-08-15T16:36:38.982993374"
+        "timestamp": "2025-08-29T11:26:38.696987897"
     }
 }
