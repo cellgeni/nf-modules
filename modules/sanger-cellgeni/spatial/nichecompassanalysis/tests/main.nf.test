@@ -9,16 +9,16 @@ nextflow_process {
     tag "spatial"
     tag "spatial/nichecompassanalysis"
 
-    test("mouse - 3") {
+    test("analysis - 3 samples") {
 
         when {
             process {
                 """
-                // TODO nf-core: define inputs of the process here. Example:
-                
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    file(params.modules_testdata_base_path, checkIfExists: true),
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/artifacts/model/", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/run_config.json", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/data/", checkIfExists: true),
                 ]
                 """
             }
@@ -33,18 +33,18 @@ nextflow_process {
 
     }
 
-    test("mouse - 3 - stub") {
+    test("analysis - 3 samples - stub") {
 
         options "-stub"
 
         when {
             process {
                 """
-                // TODO nf-core: define inputs of the process here. Example:
-                
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    file(params.modules_testdata_base_path, checkIfExists: true),
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/artifacts/model/", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/run_config.json", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/data/", checkIfExists: true),
                 ]
                 """
             }

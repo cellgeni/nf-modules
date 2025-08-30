@@ -8,8 +8,8 @@ keywords:
   - spatial_reference_mapping
   - deep-learning
 components:
-  - imaging/nichecompass/training
-  - imaging/nichecompass/analysis
+  - spatial/nichecompasstraining
+  - spatial/nichecompassanalysis
 input:
   - ch_h5ad:
       type: file

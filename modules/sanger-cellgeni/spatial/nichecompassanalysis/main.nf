@@ -1,42 +1,41 @@
 process SPATIAL_NICHECOMPASSANALYSIS {
-  tag "${meta.id}"
-  label 'process_high'
+    tag "${meta.id}"
+    label 'process_high'
 
-  container "quay.io/cellgeni/nichecompass:0.3.0"
+    container "quay.io/cellgeni/nichecompass:0.3.0"
 
-  stageInMode 'copy'
+    stageInMode 'copy'
 
-  input:
-  tuple val(meta), path(nichecompass_dir)
+    input:
+    tuple val(meta), path(nichecompass_model), path(nichecompass_run_config), path(nichecompass_data)
 
-  output:
-  tuple val(meta), path("${nichecompass_dir}"), emit: nichecompass_dir
-  tuple val(meta), path("analysis_*.ipynb"), emit: notebook
-  path "versions.yml", emit: versions
+    output:
+    tuple val(meta), path("${out_dir}"), emit: nichecompass_dir
+    tuple val(meta), path("${out_dir}_analysis.ipynb"), emit: notebook
+    path "versions.yml", emit: versions
 
-  when:
-  task.ext.when == null || task.ext.when
+    when:
+    task.ext.when == null || task.ext.when
 
-  script:
-  def args = task.ext.args ?: ''
-  def prefix = task.ext.prefix ?: "${meta.id}"
-  """
-  ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
-  if [ -z "\$ts" ]; then
-    echo "ERROR: Could not parse timestamp" >&2
-    exit 1
-  fi
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    out_dir = "${prefix}_nichecompass"
+    """
+    mkdir ${out_dir}
+    papermill \\
+        "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
+        "${out_dir}_analysis.ipynb" \\
+        -p run_root "${out_dir}" \\
+        -p cfg_path "${nichecompass_run_config}" \\
+        -p model_folder_path "${nichecompass_model}" \\
+        ${args} \\
+        --kernel python3 \\
+        --request-save-on-cell-execute \\
+        --progress-bar \\
+        --log-level INFO \\
+        --log-output
 
-  papermill \\
-      "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
-      "analysis_\${ts}.ipynb" \\
-      -p nichecompass_dir  "${nichecompass_dir}" \\
-      ${args} \\
-      --kernel python3 \\
-      --request-save-on-cell-execute \\
-      --progress-bar \\
-      --log-level INFO \\
-      --log-output
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":
@@ -44,16 +43,13 @@ process SPATIAL_NICHECOMPASSANALYSIS {
   END_VERSIONS
   """
 
-  stub:
-  def args = task.ext.args ?: ''
-  """
-  ts="\$(grep -oE '[0-9]{8}_[0-9]{6}' "${nichecompass_dir}/timestamp.txt" | head -n 1)"
-  if [ -z "\$ts" ]; then
-    echo "ERROR: Could not parse timestamp" >&2
-    exit 1
-  fi
-
-  touch "analysis_\${ts}.ipynb"
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    out_dir = "${prefix}_nichecompass"
+    """
+    mkdir -p "${out_dir}/figures"
+    touch "${out_dir}_analysis.ipynb"
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":

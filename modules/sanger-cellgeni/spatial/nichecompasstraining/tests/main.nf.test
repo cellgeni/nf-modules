@@ -9,16 +9,14 @@ nextflow_process {
     tag "spatial"
     tag "spatial/nichecompasstraining"
 
-    test("mouse - 3") {
+    test("nichecompass_train - 3 samples") {
 
         when {
             process {
                 """
-                // TODO nf-core: define inputs of the process here. Example:
-                
                 input[0] = [
-                    [ id:'test' ], // meta map
-                    file(params.modules_testdata_base_path + '*.h5ad', checkIfExists: true),
+                    [ id:'test_20250829' ], // meta map
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
                 ]
                 """
             }
@@ -33,18 +31,16 @@ nextflow_process {
 
     }
 
-    test("mouse - 3 - stub") {
+    test("nichecompass_train - 3 samples - stub") {
 
         options "-stub"
 
         when {
             process {
                 """
-                // TODO nf-core: define inputs of the process here. Example:
-                
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    file(params.modules_testdata_base_path + '*.h5ad', checkIfExists: true),
+                    [ id:'test_20250829' ], // meta map
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
                 ]
                 """
             }

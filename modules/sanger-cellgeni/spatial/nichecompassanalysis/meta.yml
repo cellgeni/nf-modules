@@ -21,24 +21,27 @@ input:
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1' ]`
-    - nichecompass_dir:
-          type: directory
-          description: NicheCompass output directory
-    - timestamp:
-        type: value
-        description: Timestamp (YYYYMMDD-HHMMSS)
-        pattern: "*.txt"
+    - nichecompass_model:
+        type: directory
+        description: NicheCompass model directory.
+    - run_config:
+        type: file
+        description: NicheCompass model directory.
+    - data:
+        type: directory
+        description: NicheCompass data directory.
+
 output:
   nichecompass_dir:
     - nichecompass_dir:
         type: directory
         description: NicheCompass output directory
-        Structure: [ val(meta), path(nichecompass_dir) ]
+        Structure: [val(meta), path(nichecompass_dir)]
   notebook:
     - notebook:
-          type: file
-          description: NicheCompass output jupyter notebook from papermill
-          Structure: [ val(meta), path(notebook) ]
+        type: file
+        description: NicheCompass output jupyter notebook from papermill
+        Structure: [val(meta), path(notebook)]
   versions:
     - versions:
         type: file

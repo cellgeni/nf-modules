@@ -27,21 +27,27 @@ input:
           H5AD file containing the AnnData object
           e.g. `sample1.h5ad`
 output:
-  nichecompass_model:
-    - - nichecompass_dir:
-          type: directory
-          description: NicheCompass output directory
-      - timestamp:
-          type: file
-          description: Timestamp file (YYYYMMDD-HHMMSS)
-          pattern: "*.txt"
-  versions:
-    - versions:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - nichecompass_model:
+        type: directory
+        description: NicheCompass model directory.
+    - run_config:
         type: file
-        description: File containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: "http://edamontology.org/format_3750" # YAML
+        description: NicheCompass model directory.
+    - data:
+        type: directory
+        description: NicheCompass data directory.
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+        - edam: "http://edamontology.org/format_3750" # YAML
 authors:
   - "@ASUQ"
 maintainers:
