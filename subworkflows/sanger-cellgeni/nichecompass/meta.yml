@@ -1,0 +1,42 @@
+name: "nichecompass"
+description: NicheCompass training & analysis
+keywords:
+  - spatial_atlas_building
+  - niche_identification
+  - niche_characterisation
+  - cell-cell_communication_inference
+  - spatial_reference_mapping
+  - deep-learning
+components:
+  - spatial/nichecompasstraining
+  - spatial/nichecompassanalysis
+input:
+  - ch_h5ad:
+      type: file
+      description: |
+        The input channel containing the H5AD files
+        Structure: [ val(meta), path(h5ad) ]
+      pattern: "*.h5ad"
+output:
+  - nichecompass_dir:
+      type: directory
+      description: |
+        Channel containing NicheCompass output folder
+        Structure: [ val(meta), path(nichecompass_dir) ]
+      pattern: "nichecompass_*"
+  - notebook:
+      type: file
+      description: |
+        Channel containing NicheCompass output Jupyter notebook
+        Structure: [ val(meta), path(notebook) ]
+      pattern: "*.ipynb"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@ASUQ"
+maintainers:
+  - "@ASUQ"

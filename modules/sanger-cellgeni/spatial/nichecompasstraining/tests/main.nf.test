@@ -1,0 +1,58 @@
+nextflow_process {
+
+    name "Test Process SPATIAL_NICHECOMPASSTRAINING"
+    script "../main.nf"
+    process "SPATIAL_NICHECOMPASSTRAINING"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "spatial"
+    tag "spatial/nichecompasstraining"
+
+    test("nichecompass_train - 3 samples") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_20250829' ], // meta map
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("nichecompass_train - 3 samples - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_20250829' ], // meta map
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}
