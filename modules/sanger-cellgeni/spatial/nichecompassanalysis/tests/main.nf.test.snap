@@ -139,16 +139,20 @@
                             "id": "test"
                         },
                         [
-                            "batches_latent_physical_space.svg:md5,e255fa3e0ce41ea9071326b799dd9a9d",
-                            "cell_types_latent_physical_space.svg:md5,51276e25baaeae1a93e119a07c08a03a",
-                            "enriched_gps_heatmap.svg:md5,6e1b5d7b229402b5e6d291bf39b79f3e",
-                            "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal1_feature_space.png:md5,0bb3de9e244870b495c7a4e859068c95",
-                            "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal2_feature_space.png:md5,278b20743d8bff14d5c61ee5b605dd5a",
-                            "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal3_feature_space.png:md5,9522b0026c83fd301c2f1434084d4c14",
-                            "log_bayes_factor_2.3_niche_enriched_gps_summary.csv:md5,9c91cd8d1c09ef7d0f11b75b2b8cadb3",
-                            "res_0.2_niche_composition_batches.svg:md5,d4cbb58d87ec194486b16d6678a15acb",
-                            "res_0.2_niche_composition_cell_types.svg:md5,8fc8e2f86b68a2a506de2d29dca3b03b",
-                            "res_0.2_niches_latent_physical_space.svg:md5,d5769aceb2b58b3c158c36c69fbce608"
+                            [
+                                [
+                                    "batches_latent_physical_space.svg:md5,77398a23f298b2231b473f9e918e1e2e",
+                                    "cell_types_latent_physical_space.svg:md5,b9ed6db0b488007dcdf0343120eb9905",
+                                    "enriched_gps_heatmap.svg:md5,736339ff0b5e0cadf924cf5ba8cbc6c7",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal1_feature_space.png:md5,0bb3de9e244870b495c7a4e859068c95",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal2_feature_space.png:md5,278b20743d8bff14d5c61ee5b605dd5a",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal3_feature_space.png:md5,9522b0026c83fd301c2f1434084d4c14",
+                                    "log_bayes_factor_2.3_niche_enriched_gps_summary.csv:md5,9c91cd8d1c09ef7d0f11b75b2b8cadb3",
+                                    "res_0.2_niche_composition_batches.svg:md5,911acbb0487c1337a0623530a1a2adb6",
+                                    "res_0.2_niche_composition_cell_types.svg:md5,dc29651f7afd0a1912bc322b113a9d55",
+                                    "res_0.2_niches_latent_physical_space.svg:md5,04794dfdd3a037b952d82ba27227ef4d"
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -157,28 +161,32 @@
                         {
                             "id": "test"
                         },
-                        "analysis.ipynb:md5,7bf765e5c0e48d04586b25062c3e13a9"
+                        "test_nichecompass_analysis.ipynb:md5,71255b50c9aa6cdfa0a5120afb7bab14"
                     ]
                 ],
                 "2": [
                     "versions.yml:md5,8a85556b3ab439938f8dc3b6f42b9b7f"
                 ],
-                "nichecompass_figures": [
+                "nichecompass_dir": [
                     [
                         {
                             "id": "test"
                         },
                         [
-                            "batches_latent_physical_space.svg:md5,e255fa3e0ce41ea9071326b799dd9a9d",
-                            "cell_types_latent_physical_space.svg:md5,51276e25baaeae1a93e119a07c08a03a",
-                            "enriched_gps_heatmap.svg:md5,6e1b5d7b229402b5e6d291bf39b79f3e",
-                            "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal1_feature_space.png:md5,0bb3de9e244870b495c7a4e859068c95",
-                            "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal2_feature_space.png:md5,278b20743d8bff14d5c61ee5b605dd5a",
-                            "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal3_feature_space.png:md5,9522b0026c83fd301c2f1434084d4c14",
-                            "log_bayes_factor_2.3_niche_enriched_gps_summary.csv:md5,9c91cd8d1c09ef7d0f11b75b2b8cadb3",
-                            "res_0.2_niche_composition_batches.svg:md5,d4cbb58d87ec194486b16d6678a15acb",
-                            "res_0.2_niche_composition_cell_types.svg:md5,8fc8e2f86b68a2a506de2d29dca3b03b",
-                            "res_0.2_niches_latent_physical_space.svg:md5,d5769aceb2b58b3c158c36c69fbce608"
+                            [
+                                [
+                                    "batches_latent_physical_space.svg:md5,77398a23f298b2231b473f9e918e1e2e",
+                                    "cell_types_latent_physical_space.svg:md5,b9ed6db0b488007dcdf0343120eb9905",
+                                    "enriched_gps_heatmap.svg:md5,736339ff0b5e0cadf924cf5ba8cbc6c7",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal1_feature_space.png:md5,0bb3de9e244870b495c7a4e859068c95",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal2_feature_space.png:md5,278b20743d8bff14d5c61ee5b605dd5a",
+                                    "log_bayes_factor_2.3_cluster_None_vs_rest_top_20-30_enriched_gps_gp_scores_omics_feature_counts_in_sagittal3_feature_space.png:md5,9522b0026c83fd301c2f1434084d4c14",
+                                    "log_bayes_factor_2.3_niche_enriched_gps_summary.csv:md5,9c91cd8d1c09ef7d0f11b75b2b8cadb3",
+                                    "res_0.2_niche_composition_batches.svg:md5,911acbb0487c1337a0623530a1a2adb6",
+                                    "res_0.2_niche_composition_cell_types.svg:md5,dc29651f7afd0a1912bc322b113a9d55",
+                                    "res_0.2_niches_latent_physical_space.svg:md5,04794dfdd3a037b952d82ba27227ef4d"
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -187,7 +195,7 @@
                         {
                             "id": "test"
                         },
-                        "analysis.ipynb:md5,7bf765e5c0e48d04586b25062c3e13a9"
+                        "test_nichecompass_analysis.ipynb:md5,71255b50c9aa6cdfa0a5120afb7bab14"
                     ]
                 ],
                 "versions": [
@@ -199,7 +207,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-08-30T15:51:58.842646793"
+        "timestamp": "2025-09-02T09:40:42.011117845"
     },
     "mouse - 3 - stub": {
         "content": [
@@ -327,7 +335,9 @@
                             "id": "test"
                         },
                         [
-                            
+                            [
+                                
+                            ]
                         ]
                     ]
                 ],
@@ -336,19 +346,21 @@
                         {
                             "id": "test"
                         },
-                        "analysis.ipynb:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_nichecompass_analysis.ipynb:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
                     "versions.yml:md5,8a85556b3ab439938f8dc3b6f42b9b7f"
                 ],
-                "nichecompass_figures": [
+                "nichecompass_dir": [
                     [
                         {
                             "id": "test"
                         },
                         [
-                            
+                            [
+                                
+                            ]
                         ]
                     ]
                 ],
@@ -357,7 +369,7 @@
                         {
                             "id": "test"
                         },
-                        "analysis.ipynb:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_nichecompass_analysis.ipynb:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -369,7 +381,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-08-30T15:52:09.533313099"
+        "timestamp": "2025-09-02T09:40:53.152300376"
     },
     "mouse - 3": {
         "content": [
