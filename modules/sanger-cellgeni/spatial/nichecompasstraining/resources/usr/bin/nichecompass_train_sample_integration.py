@@ -658,7 +658,10 @@ def load_batches(
     for p in batch_paths:
         logging.info(f"Loading batch: {p}")
         try:
-            a = sc.read_h5ad(p)
+            if p.endswith("zarr"):
+                a = sc.read_zarr(p)
+            else:
+                a = sc.read_h5ad(p)
         except Exception as e:
             raise RuntimeError(f"Failed to read H5AD: {p}") from e
 
