@@ -658,8 +658,8 @@ def load_batches(
     for p in batch_paths:
         logging.info(f"Loading batch: {p}")
         try:
-            if p.endswith("zarr"):
-                a = sc.read_zarr(p)
+            if p.suffix == ".zarr":
+                a = ad.read_zarr(p)
             else:
                 a = sc.read_h5ad(p)
         except Exception as e:

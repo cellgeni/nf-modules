@@ -5,7 +5,7 @@ process SPATIAL_NICHECOMPASSTRAINING {
     container "quay.io/cellgeni/nichecompass:0.3.0"
 
     input:
-    tuple val(meta), path(h5ad, stageAs: "inputs/*"), val(suffix)
+    tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
     tuple val(meta), path("${out_name}/artifacts/model"), path("${out_name}/run_config.json"), path("${out_name}/data"), emit: nichecompass_model
