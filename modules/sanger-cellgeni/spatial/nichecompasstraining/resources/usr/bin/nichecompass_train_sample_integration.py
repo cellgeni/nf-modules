@@ -725,12 +725,13 @@ def concat_batches_with_block_adj(
     adata_batch_list: list[ad.AnnData],
     *,
     adj_key: str,
+    batch_key: str,
 ) -> ad.AnnData:
     """
     Concatenate batches (inner join on vars) and set a block-diagonal adjacency in obsp[adj_key].
     """
     logging.info(f"Concatenating {len(adata_batch_list)} batches...")
-    adata = ad.concat(adata_batch_list, join="inner")
+    adata = ad.concat(adata_batch_list, join="inner", label=batch_key)
 
     logging.info("Assembling block-diagonal adjacency…")
     blocks = [a.obsp[adj_key] for a in adata_batch_list]
@@ -951,6 +952,7 @@ def main(argv: list[str] | None = None) -> None:
     adata = concat_batches_with_block_adj(
         adata_batch_list,
         adj_key=params.adj_key,
+        batch_key=params.sample_key,
     )
 
     ### 5. Add GP masks to data
