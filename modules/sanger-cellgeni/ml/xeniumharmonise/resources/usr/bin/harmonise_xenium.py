@@ -29,18 +29,18 @@ DASK_SCHEDULER_ADDRESS='tcp://farm22-head2:40883'
 CONCURRENCY=4
 DATA_ROOT='/lustre/scratch126/cellgen/team361/projects/histology_to_gene_expression/workspace/data'
 
-#def easyloader(sample_bundle_uri: str, harmonised_dataset_uri: str):
-    #"""
-    ###Automatically identify the xenium_bundle_uri and hematoxylin_eosin_image_uri in the sample_bundle_uri
-    ##and call the main function with these parameters.
-    #"""
+def easyloader(sample_bundle_uri: str, harmonised_dataset_uri: str):
+    """
+    Automatically identify the xenium_bundle_uri and hematoxylin_eosin_image_uri in the sample_bundle_uri
+    and call the main function with these parameters.
+    """
     # find the xenium bundle and h&e image
-    #lfiles = os.listdir(sample_bundle_uri)
-    #xenium_bundle_uri = os.path.join(sample_bundle_uri, [i for i in lfiles if 'output-X' in i][0])
-    #hematoxylin_eosin_image_uri = os.path.join(sample_bundle_uri, [i for i in lfiles if '.ndpi' in i][0])
+    lfiles = os.listdir(sample_bundle_uri)
+    xenium_bundle_uri = os.path.join(sample_bundle_uri, [i for i in lfiles if 'output-X' in i][0])
+    hematoxylin_eosin_image_uri = os.path.join(sample_bundle_uri, [i for i in lfiles if '.ndpi' in i][0])
 
     # call the main function
-    #main(xenium_bundle_uri, hematoxylin_eosin_image_uri, harmonised_dataset_uri)
+    main(xenium_bundle_uri, hematoxylin_eosin_image_uri, harmonised_dataset_uri)
 
 
 def main(xenium_bundle_uri: str, hematoxylin_eosin_image_uri: str, harmonised_dataset_uri: str):

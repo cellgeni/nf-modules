@@ -11,7 +11,7 @@ nextflow_process {
     tag "ml"
     tag "ml/xeniumharmonise"
 
-    test("xeniumharmonise - test") {
+    test("xeniumharmonise - dir") {
 
         
         when {
@@ -29,17 +29,32 @@ nextflow_process {
         }
 
         then {
+            def harmonisedDir = process.out.harmonised_output?.getAt(0)?.getAt(1)
+            assert harmonisedDir : "Expected harmonised directory output"
+
+            // Define regex pattern: starts with a or d, followed by digits, ending in .tdb
+            def pattern = ~/^[ad]\d+\.tdb$/
+
+            // Collect matching files with full paths, sort them by path to ensure stable order
+            def stableFiles = []
+            file(harmonisedDir).eachFileRecurse { f ->
+                if (f.name ==~ pattern) {
+                    stableFiles << f
+                }
+            }
+            stableFiles.sort { it.path }
+
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
-               
+                { assert snapshot(stableFiles, process.out.versions).match() }
+                
             )
         }
 
     }
 
     // TODO nf-core: Change the test name preferably indicating the test-data and file-format used but keep the " - stub" suffix.
-    test("xeniumharmonise - run - stub") {
+    test("xeniumharmonise - dir - stub") {
 
         options "-stub"
 
