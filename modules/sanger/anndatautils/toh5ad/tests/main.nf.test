@@ -1,0 +1,114 @@
+nextflow_process {
+
+    name "Test Process ANNDATAUTILS_TOH5AD"
+    script "../main.nf"
+    process "ANNDATAUTILS_TOH5AD"
+
+    tag "modules"
+    tag "modules_sanger"
+    tag "anndatautils" 
+    tag "anndatautils/toh5ad"
+
+    test("Conversion of .h5 file to .h5ad") {
+        when {
+            process {
+                """
+                input[0] = ['pbmc_1k_h5', file(params.test_data_base + "anndatautils/pbmc_1k.h5")]
+                input[1] = "___"
+                """
+            }
+        }
+
+        then {
+            // basec run health
+            assert process.success
+            assert process.exitStatus == 0
+
+            // h5ad files
+            assert process.out.h5ad
+            assert process.out.h5ad.get(0).get(0) ==~ "pbmc_1k_h5"
+            assert process.out.h5ad.get(0).get(1) ==~ ".*/pbmc_1k_h5.h5ad"
+
+            // versions.yml
+            assert process.out.versions
+            assert process.out.versions.get(0) ==~ ".*/versions.yml"
+
+            // Snapshot all output channels of a process
+            assert snapshot(process.out).match()
+
+        }
+        
+    }
+
+    test("Conversion of 10x .mtx file to .h5ad") {
+        when {
+            process {
+                """
+                input[0] = ['pbmc_1k_mtx', file(params.test_data_base + "anndatautils/raw_feature_bc_matrix")]
+                input[1] = "___"
+                """
+            }
+        }
+
+        then {
+            // basec run health
+            assert process.success
+            assert process.exitStatus == 0
+
+            // h5ad files
+            assert process.out.h5ad
+            assert process.out.h5ad.get(0).get(0) ==~ "pbmc_1k_mtx"
+            assert process.out.h5ad.get(0).get(1) ==~ ".*/pbmc_1k_mtx.h5ad"
+
+            // versions.yml
+            assert process.out.versions
+            assert process.out.versions.get(0) ==~ ".*/versions.yml"
+
+            // Snapshot all output channels of a process
+            assert snapshot(process.out).match()
+
+        }
+        
+    }
+
+    test("Run -stub for .mtx and .h5 files") {
+
+        options "-stub"
+        when {
+            process {
+                """
+                input[0] = Channel.fromList([
+                    ['pbmc_1k_h5', file(params.test_data_base + "anndatautils/pbmc_1k.h5")],
+                    ['pbmc_1k_mtx', file(params.test_data_base + "anndatautils/raw_feature_bc_matrix")]
+                ])
+                input[1] = Channel.fromList(["___", "___"])
+                """
+            }
+        }
+
+        then {
+            // basec run health
+            assert process.success
+            assert process.exitStatus == 0
+            assert process.trace.succeeded().size() == 2
+
+            // h5ad files
+            assert process.out.h5ad
+            assert process.out.h5ad.size() == 2
+
+            // versions.yml
+            assert process.out.versions
+            with(process.out.versions) {
+                assert size() == 2
+                assert get(0) ==~ ".*/versions.yml"
+                assert get(1) ==~ ".*/versions.yml"
+            }
+
+            // Snapshot all output channels of a process
+            assert snapshot(process.out).match()
+
+        }
+        
+    }
+
+}
