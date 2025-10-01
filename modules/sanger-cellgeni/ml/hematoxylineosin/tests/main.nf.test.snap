@@ -1,0 +1,156 @@
+{
+    "hematoxylineosin - dir": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "hematoxylineosin_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,7702566ce4788fd9af4ea1c41c89b451",
+                                        "1:md5,e7259ac2017e8e33667bb6ea5a02dad0",
+                                        "2:md5,64e456d7c76498451e75c31b56cc1d70",
+                                        "3:md5,65408628adea210370e08505e7756663",
+                                        "4:md5,3de1ccf43e87693f784e34cba267b2ff"
+                                    ],
+                                    [
+                                        "0:md5,f3b524b1459ac7719cabed7bd3e9751b",
+                                        "1:md5,9a0b4e092d19f84caa9a0503b327d2a9",
+                                        "2:md5,7977686da6c0e0e1bfe4a5a1af0d81f7",
+                                        "3:md5,bd7a5fc6ca9a88319f09df7980b82bd4",
+                                        "4:md5,6f78e62c1eaac3fb3fef12d5d4b58a69"
+                                    ],
+                                    [
+                                        "0:md5,5f4452718d90e6367094ebfba31cc069",
+                                        "1:md5,5de321aa3358f7e66c3aaf9ae0cc0dc9",
+                                        "2:md5,42023f258ba8f0e17241a47e5adb7732",
+                                        "3:md5,0c386c59214859d5b5a40093995641b4",
+                                        "4:md5,fddc820f821158e1267037ccaeac8ea0"
+                                    ],
+                                    [
+                                        "0:md5,69dfdaa093dd72eb3c3de8a0b8b842ea",
+                                        "1:md5,502f6eb23ac28d1e94e2f6b344dac47c",
+                                        "2:md5,6c8f064328a5878464ff989642a25e38",
+                                        "3:md5,4318770f7d01b7242ae1b16ddf93a5b2",
+                                        "4:md5,5b0b3d0743d074341f84c1e24b28aee6"
+                                    ],
+                                    [
+                                        "0:md5,dff804d5468b8150dbdb6e15c2745960",
+                                        "1:md5,3d3e1a05f65e022a2d9f5c5023d4df04",
+                                        "2:md5,2168f2864a3bc948f5c8af2a09d2846e",
+                                        "3:md5,05b290f59ccc7d72be8d894dd229f1ab",
+                                        "4:md5,aa5af06a70d03b470ed58b27535a0c9b"
+                                    ],
+                                    [
+                                        "0:md5,19fca337162eadc16de4d3028482b6ad",
+                                        "1:md5,b3104f0cb2f97793835ae57a90dcee28",
+                                        "2:md5,6d5e5c01669315c32e7d20f650c691e4",
+                                        "3:md5,0d1af9ab167de3933dba6d3dab1e0d11",
+                                        "4:md5,3032a690635316d41c8abd5704bf0948"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,03b209063d16456c22562753ea23b5a4"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ],
+                "data_array": [
+                    [
+                        "hematoxylineosin_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,7702566ce4788fd9af4ea1c41c89b451",
+                                        "1:md5,e7259ac2017e8e33667bb6ea5a02dad0",
+                                        "2:md5,64e456d7c76498451e75c31b56cc1d70",
+                                        "3:md5,65408628adea210370e08505e7756663",
+                                        "4:md5,3de1ccf43e87693f784e34cba267b2ff"
+                                    ],
+                                    [
+                                        "0:md5,f3b524b1459ac7719cabed7bd3e9751b",
+                                        "1:md5,9a0b4e092d19f84caa9a0503b327d2a9",
+                                        "2:md5,7977686da6c0e0e1bfe4a5a1af0d81f7",
+                                        "3:md5,bd7a5fc6ca9a88319f09df7980b82bd4",
+                                        "4:md5,6f78e62c1eaac3fb3fef12d5d4b58a69"
+                                    ],
+                                    [
+                                        "0:md5,5f4452718d90e6367094ebfba31cc069",
+                                        "1:md5,5de321aa3358f7e66c3aaf9ae0cc0dc9",
+                                        "2:md5,42023f258ba8f0e17241a47e5adb7732",
+                                        "3:md5,0c386c59214859d5b5a40093995641b4",
+                                        "4:md5,fddc820f821158e1267037ccaeac8ea0"
+                                    ],
+                                    [
+                                        "0:md5,69dfdaa093dd72eb3c3de8a0b8b842ea",
+                                        "1:md5,502f6eb23ac28d1e94e2f6b344dac47c",
+                                        "2:md5,6c8f064328a5878464ff989642a25e38",
+                                        "3:md5,4318770f7d01b7242ae1b16ddf93a5b2",
+                                        "4:md5,5b0b3d0743d074341f84c1e24b28aee6"
+                                    ],
+                                    [
+                                        "0:md5,dff804d5468b8150dbdb6e15c2745960",
+                                        "1:md5,3d3e1a05f65e022a2d9f5c5023d4df04",
+                                        "2:md5,2168f2864a3bc948f5c8af2a09d2846e",
+                                        "3:md5,05b290f59ccc7d72be8d894dd229f1ab",
+                                        "4:md5,aa5af06a70d03b470ed58b27535a0c9b"
+                                    ],
+                                    [
+                                        "0:md5,19fca337162eadc16de4d3028482b6ad",
+                                        "1:md5,b3104f0cb2f97793835ae57a90dcee28",
+                                        "2:md5,6d5e5c01669315c32e7d20f650c691e4",
+                                        "3:md5,0d1af9ab167de3933dba6d3dab1e0d11",
+                                        "4:md5,3032a690635316d41c8abd5704bf0948"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,03b209063d16456c22562753ea23b5a4"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-09-29T11:42:39.213334307"
+    },
+    "hematoxylineosin - dir - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "hematoxylineosin_test",
+                        "hematoxylineosin_test_hematoxylin_eosin.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "data_array": [
+                    [
+                        "hematoxylineosin_test",
+                        "hematoxylineosin_test_hematoxylin_eosin.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-09-29T10:21:17.447539563"
+    }
+}
