@@ -4,8 +4,8 @@ process IMAGING_CELLPOSE {
     label "medium_mem"
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? "quay.io/cellgeni/tiled_cellpose:0.1.3"
-        : "quay.io/cellgeni/tiled_cellpose:0.1.3"}"
+        ? "quay.io/cellgeni/tiled_cellpose:0.1.5"
+        : "quay.io/cellgeni/tiled_cellpose:0.1.5"}"
 
     publishDir params.out_dir + "/naive_cellpose_segmentation"
 

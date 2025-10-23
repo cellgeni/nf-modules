@@ -17,7 +17,7 @@
                     
                 ],
                 "3": [
-                    "versions.yml:md5,788c0df84369a53972b9b700e85517db"
+                    "versions.yml:md5,7e501af94badbe37fdb91cc45a6a2965"
                 ],
                 "cp_plots": [
                     
@@ -26,7 +26,7 @@
                     
                 ],
                 "versions": [
-                    "versions.yml:md5,788c0df84369a53972b9b700e85517db"
+                    "versions.yml:md5,7e501af94badbe37fdb91cc45a6a2965"
                 ],
                 "wkts": [
                     [
@@ -40,9 +40,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.04.4"
+            "nextflow": "24.10.5"
         },
-        "timestamp": "2025-03-14T13:59:33.790387511"
+        "timestamp": "2025-10-23T15:17:42.636206013"
     },
     "mouse_heart - tiff - 500": {
         "content": [
@@ -75,7 +75,7 @@
                     ]
                 ],
                 "3": [
-                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                    "versions.yml:md5,2ae21bb29e6f754233afadc14a8b8fd6"
                 ],
                 "cp_plots": [
                     [
@@ -97,7 +97,7 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                    "versions.yml:md5,2ae21bb29e6f754233afadc14a8b8fd6"
                 ],
                 "wkts": [
                     [
@@ -111,9 +111,9 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.04.4"
+            "nextflow": "24.10.5"
         },
-        "timestamp": "2025-03-14T13:58:27.28570216"
+        "timestamp": "2025-10-23T15:16:46.604313621"
     },
     "mouse_heart - tiff - 200": {
         "content": [
@@ -123,7 +123,7 @@
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_20_cp_outlines.txt:md5,c5b8d1848233c7636be9fd1ed6b00010"
+                        "test-0_0_200_200-diam_20_cp_outlines.txt:md5,84905a3565d5e31df584c35cd42fc120"
                     ]
                 ],
                 "1": [
@@ -131,7 +131,7 @@
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_20_cp_outlines.wkt:md5,78ad1ddefc488c798b46ad3c18025912"
+                        "test-0_0_200_200-diam_20_cp_outlines.wkt:md5,b5d958738a1e7f30115b2ca3937755e4"
                     ]
                 ],
                 "2": [
@@ -140,13 +140,13 @@
                             "id": "test"
                         },
                         [
-                            "test-0_0_200_200-diam_20_cp_masks.png:md5,96c74f7dc06a1ffb1143ad03c4796029",
-                            "test-0_0_200_200-diam_20_outlines.png:md5,b3bdb19c06bf039f6c6bfaf051ff32fa"
+                            "test-0_0_200_200-diam_20_cp_masks.png:md5,2438cd29e8c392d7dd896c4abe763d50",
+                            "test-0_0_200_200-diam_20_outlines.png:md5,ae0e50c7f2ae8af015e989f8eb8d2ff8"
                         ]
                     ]
                 ],
                 "3": [
-                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                    "versions.yml:md5,2ae21bb29e6f754233afadc14a8b8fd6"
                 ],
                 "cp_plots": [
                     [
@@ -154,8 +154,8 @@
                             "id": "test"
                         },
                         [
-                            "test-0_0_200_200-diam_20_cp_masks.png:md5,96c74f7dc06a1ffb1143ad03c4796029",
-                            "test-0_0_200_200-diam_20_outlines.png:md5,b3bdb19c06bf039f6c6bfaf051ff32fa"
+                            "test-0_0_200_200-diam_20_cp_masks.png:md5,2438cd29e8c392d7dd896c4abe763d50",
+                            "test-0_0_200_200-diam_20_outlines.png:md5,ae0e50c7f2ae8af015e989f8eb8d2ff8"
                         ]
                     ]
                 ],
@@ -164,27 +164,27 @@
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_20_cp_outlines.txt:md5,c5b8d1848233c7636be9fd1ed6b00010"
+                        "test-0_0_200_200-diam_20_cp_outlines.txt:md5,84905a3565d5e31df584c35cd42fc120"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                    "versions.yml:md5,2ae21bb29e6f754233afadc14a8b8fd6"
                 ],
                 "wkts": [
                     [
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_20_cp_outlines.wkt:md5,78ad1ddefc488c798b46ad3c18025912"
+                        "test-0_0_200_200-diam_20_cp_outlines.wkt:md5,b5d958738a1e7f30115b2ca3937755e4"
                     ]
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.04.4"
+            "nextflow": "24.10.5"
         },
-        "timestamp": "2025-03-14T13:58:53.169774973"
+        "timestamp": "2025-10-23T15:17:08.126863979"
     },
     "mouse_heart - tiff - 200 - large cell diameter": {
         "content": [
@@ -194,7 +194,7 @@
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_50_cp_outlines.txt:md5,ddc6f3da007fb90b5c9ea30c9a3ae807"
+                        "test-0_0_200_200-diam_50_cp_outlines.txt:md5,1c4328b60eec087cdfe59c5392c228c5"
                     ]
                 ],
                 "1": [
@@ -202,7 +202,7 @@
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_50_cp_outlines.wkt:md5,bf5ce6d27e28f6985c4dbdfbf5d3f0ab"
+                        "test-0_0_200_200-diam_50_cp_outlines.wkt:md5,794454b80771bfb41532a6eb5ebf2dff"
                     ]
                 ],
                 "2": [
@@ -211,13 +211,13 @@
                             "id": "test"
                         },
                         [
-                            "test-0_0_200_200-diam_50_cp_masks.png:md5,2385b7e1d3a3432166029074d43b15dd",
-                            "test-0_0_200_200-diam_50_outlines.png:md5,129fd998c787dc5a62575a3c8a7f2bb2"
+                            "test-0_0_200_200-diam_50_cp_masks.png:md5,eb0c89bce655669134a7c08108a9fbe4",
+                            "test-0_0_200_200-diam_50_outlines.png:md5,23c766ec26a1a6f5ec107c855ec9dbbf"
                         ]
                     ]
                 ],
                 "3": [
-                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                    "versions.yml:md5,2ae21bb29e6f754233afadc14a8b8fd6"
                 ],
                 "cp_plots": [
                     [
@@ -225,8 +225,8 @@
                             "id": "test"
                         },
                         [
-                            "test-0_0_200_200-diam_50_cp_masks.png:md5,2385b7e1d3a3432166029074d43b15dd",
-                            "test-0_0_200_200-diam_50_outlines.png:md5,129fd998c787dc5a62575a3c8a7f2bb2"
+                            "test-0_0_200_200-diam_50_cp_masks.png:md5,eb0c89bce655669134a7c08108a9fbe4",
+                            "test-0_0_200_200-diam_50_outlines.png:md5,23c766ec26a1a6f5ec107c855ec9dbbf"
                         ]
                     ]
                 ],
@@ -235,26 +235,26 @@
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_50_cp_outlines.txt:md5,ddc6f3da007fb90b5c9ea30c9a3ae807"
+                        "test-0_0_200_200-diam_50_cp_outlines.txt:md5,1c4328b60eec087cdfe59c5392c228c5"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,25ff5b4eb40138ddc13aaa0efd50b4ef"
+                    "versions.yml:md5,2ae21bb29e6f754233afadc14a8b8fd6"
                 ],
                 "wkts": [
                     [
                         {
                             "id": "test"
                         },
-                        "test-0_0_200_200-diam_50_cp_outlines.wkt:md5,bf5ce6d27e28f6985c4dbdfbf5d3f0ab"
+                        "test-0_0_200_200-diam_50_cp_outlines.wkt:md5,794454b80771bfb41532a6eb5ebf2dff"
                     ]
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.04.4"
+            "nextflow": "24.10.5"
         },
-        "timestamp": "2025-03-14T13:59:19.215323688"
+        "timestamp": "2025-10-23T15:17:29.924919321"
     }
 }
