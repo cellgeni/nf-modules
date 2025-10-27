@@ -20,7 +20,7 @@ nextflow_process {
  
                 input[0] = [
                     'hematoxylineosin_test', // meta map
-                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1/hematoxylin_eosin_image_aligned'
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1'
                 ]
                 """
             }
@@ -45,7 +45,7 @@ nextflow_process {
                 
                 input[0] = [
                     'hematoxylineosin_test', // meta map
-                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1/hematoxylin_eosin_image_aligned'
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1'
                   
                 ]
                 """

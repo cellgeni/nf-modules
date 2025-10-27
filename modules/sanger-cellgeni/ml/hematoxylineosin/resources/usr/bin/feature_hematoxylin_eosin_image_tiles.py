@@ -36,12 +36,8 @@ def generate_data_array(harmonised_dataset_absolute_path, data_array_absolute_pa
     generation includes image rescaling and re-chunking.  We assume the h&e image is of the same resolution as the
     morphology image, 0.2125 um / px as described in the 10x documentation, as would be the case with an aligned image.
     """
-    resolution_um_per_px = float(resolution_um_per_px)
-
-    he_image_uri = harmonised_dataset_absolute_path 
-
+    he_image_uri = os.path.join(harmonised_dataset_absolute_path, 'hematoxylin_eosin_image')
     image_array = da.from_tiledb(he_image_uri, attribute='px_value', chunks=(1, 16384, 16384))
-
     # rescale the image
 
     scale_factor = 0.2125 / resolution_um_per_px

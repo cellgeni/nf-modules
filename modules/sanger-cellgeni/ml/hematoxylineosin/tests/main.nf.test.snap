@@ -9,50 +9,64 @@
                             [
                                 [
                                     [
-                                        "0:md5,7702566ce4788fd9af4ea1c41c89b451",
-                                        "1:md5,e7259ac2017e8e33667bb6ea5a02dad0",
-                                        "2:md5,64e456d7c76498451e75c31b56cc1d70",
-                                        "3:md5,65408628adea210370e08505e7756663",
-                                        "4:md5,3de1ccf43e87693f784e34cba267b2ff"
+                                        "0:md5,491878e7eed0c87d4eef5306d14be0b1",
+                                        "1:md5,84941cc4d9e086fa50bfd424e0277510",
+                                        "2:md5,9f51c50eaab5267efbd04ceff9b971e1",
+                                        "3:md5,05ac93c93c031406886218e7c69cc558",
+                                        "4:md5,782e16ec56a2f48939402b2b231ea49e",
+                                        "5:md5,26fb8a09f9a7150520c4c66d4c45b632"
                                     ],
                                     [
-                                        "0:md5,f3b524b1459ac7719cabed7bd3e9751b",
-                                        "1:md5,9a0b4e092d19f84caa9a0503b327d2a9",
-                                        "2:md5,7977686da6c0e0e1bfe4a5a1af0d81f7",
-                                        "3:md5,bd7a5fc6ca9a88319f09df7980b82bd4",
-                                        "4:md5,6f78e62c1eaac3fb3fef12d5d4b58a69"
+                                        "0:md5,ff115a3c11918c9f3b5304f39a0017eb",
+                                        "1:md5,f45f9668b08c1c45362d2638d8c2236e",
+                                        "2:md5,0db12635b8dd745dd3c87a6462ef1fc4",
+                                        "3:md5,72f5daa0d40641d33c3f5f233f1a748f",
+                                        "4:md5,27547cceaba3b0763d81621d7228c89c",
+                                        "5:md5,b7042c30f39af99d5f25cccf10733b01"
                                     ],
                                     [
-                                        "0:md5,5f4452718d90e6367094ebfba31cc069",
-                                        "1:md5,5de321aa3358f7e66c3aaf9ae0cc0dc9",
-                                        "2:md5,42023f258ba8f0e17241a47e5adb7732",
-                                        "3:md5,0c386c59214859d5b5a40093995641b4",
-                                        "4:md5,fddc820f821158e1267037ccaeac8ea0"
+                                        "0:md5,209a7b727d41ccd4e2e14ef2274640f8",
+                                        "1:md5,4d0e335b2daf7a8980fd61e3e126f627",
+                                        "2:md5,f7ab161f4c8967127630c381d1814326",
+                                        "3:md5,7d799bb5be85c224582fc6517c947ace",
+                                        "4:md5,95e235b25def39408c55b83e280a8d77",
+                                        "5:md5,8086dc43e6fb4ebbfbe63e336b611182"
                                     ],
                                     [
-                                        "0:md5,69dfdaa093dd72eb3c3de8a0b8b842ea",
-                                        "1:md5,502f6eb23ac28d1e94e2f6b344dac47c",
-                                        "2:md5,6c8f064328a5878464ff989642a25e38",
-                                        "3:md5,4318770f7d01b7242ae1b16ddf93a5b2",
-                                        "4:md5,5b0b3d0743d074341f84c1e24b28aee6"
+                                        "0:md5,4352e089c5ae4aa8efa7d38f2af4be0b",
+                                        "1:md5,bd0f6be511e78179dcad877b8ab4c820",
+                                        "2:md5,6ad77f57c3254a99dd479073bfddeea5",
+                                        "3:md5,a6725f82a4760a55c3e29295cc2954b9",
+                                        "4:md5,e483f9e7b3f1d0ea9c16bb26407aec64",
+                                        "5:md5,3e73b2b993679d01d298f0e1fcc06157"
                                     ],
                                     [
-                                        "0:md5,dff804d5468b8150dbdb6e15c2745960",
-                                        "1:md5,3d3e1a05f65e022a2d9f5c5023d4df04",
-                                        "2:md5,2168f2864a3bc948f5c8af2a09d2846e",
-                                        "3:md5,05b290f59ccc7d72be8d894dd229f1ab",
-                                        "4:md5,aa5af06a70d03b470ed58b27535a0c9b"
+                                        "0:md5,bceedab2205f2ea68fcd268fdb04ba7e",
+                                        "1:md5,dec0952cb91f435b7c7d53d4e42d3ea3",
+                                        "2:md5,fb2b3402ff714186dad3e306a563db54",
+                                        "3:md5,6d593cb65a2f854111ebf1c714a37487",
+                                        "4:md5,ded5976207d10d114558bd8eebd06913",
+                                        "5:md5,4b3f019615cd2bae2f1e99d5c33c2280"
                                     ],
                                     [
-                                        "0:md5,19fca337162eadc16de4d3028482b6ad",
-                                        "1:md5,b3104f0cb2f97793835ae57a90dcee28",
-                                        "2:md5,6d5e5c01669315c32e7d20f650c691e4",
-                                        "3:md5,0d1af9ab167de3933dba6d3dab1e0d11",
-                                        "4:md5,3032a690635316d41c8abd5704bf0948"
+                                        "0:md5,daf13499c46c71732492e7fa2b010047",
+                                        "1:md5,d7ed2b2af6023fa2e0fcde91f161fd7e",
+                                        "2:md5,b66edd9ef582772cc6ac390f6ae1a8ce",
+                                        "3:md5,3272d7b8591c9e670310f3ee46b572ca",
+                                        "4:md5,c62f34333ab8c4dec0cb016f836a297d",
+                                        "5:md5,e618b8f8b461408304d8895bce21c0ee"
+                                    ],
+                                    [
+                                        "0:md5,8b3cbf5fba7fcc1c3f3b54d68d05b056",
+                                        "1:md5,2accf0432f14d04bc852637323fa67d6",
+                                        "2:md5,ba1c22701f52626346076325d0aaec37",
+                                        "3:md5,64fb12534456af33c91f3280b3b08067",
+                                        "4:md5,8bc685e35c4ca8b02a839d90522b263b",
+                                        "5:md5,17df8c2aae1f2d9175b05f354da1998b"
                                     ]
                                 ]
                             ],
-                            "zarr.json:md5,03b209063d16456c22562753ea23b5a4"
+                            "zarr.json:md5,11cee4267c664c9e0a4a4951d728a075"
                         ]
                     ]
                 ],
@@ -66,50 +80,64 @@
                             [
                                 [
                                     [
-                                        "0:md5,7702566ce4788fd9af4ea1c41c89b451",
-                                        "1:md5,e7259ac2017e8e33667bb6ea5a02dad0",
-                                        "2:md5,64e456d7c76498451e75c31b56cc1d70",
-                                        "3:md5,65408628adea210370e08505e7756663",
-                                        "4:md5,3de1ccf43e87693f784e34cba267b2ff"
+                                        "0:md5,491878e7eed0c87d4eef5306d14be0b1",
+                                        "1:md5,84941cc4d9e086fa50bfd424e0277510",
+                                        "2:md5,9f51c50eaab5267efbd04ceff9b971e1",
+                                        "3:md5,05ac93c93c031406886218e7c69cc558",
+                                        "4:md5,782e16ec56a2f48939402b2b231ea49e",
+                                        "5:md5,26fb8a09f9a7150520c4c66d4c45b632"
                                     ],
                                     [
-                                        "0:md5,f3b524b1459ac7719cabed7bd3e9751b",
-                                        "1:md5,9a0b4e092d19f84caa9a0503b327d2a9",
-                                        "2:md5,7977686da6c0e0e1bfe4a5a1af0d81f7",
-                                        "3:md5,bd7a5fc6ca9a88319f09df7980b82bd4",
-                                        "4:md5,6f78e62c1eaac3fb3fef12d5d4b58a69"
+                                        "0:md5,ff115a3c11918c9f3b5304f39a0017eb",
+                                        "1:md5,f45f9668b08c1c45362d2638d8c2236e",
+                                        "2:md5,0db12635b8dd745dd3c87a6462ef1fc4",
+                                        "3:md5,72f5daa0d40641d33c3f5f233f1a748f",
+                                        "4:md5,27547cceaba3b0763d81621d7228c89c",
+                                        "5:md5,b7042c30f39af99d5f25cccf10733b01"
                                     ],
                                     [
-                                        "0:md5,5f4452718d90e6367094ebfba31cc069",
-                                        "1:md5,5de321aa3358f7e66c3aaf9ae0cc0dc9",
-                                        "2:md5,42023f258ba8f0e17241a47e5adb7732",
-                                        "3:md5,0c386c59214859d5b5a40093995641b4",
-                                        "4:md5,fddc820f821158e1267037ccaeac8ea0"
+                                        "0:md5,209a7b727d41ccd4e2e14ef2274640f8",
+                                        "1:md5,4d0e335b2daf7a8980fd61e3e126f627",
+                                        "2:md5,f7ab161f4c8967127630c381d1814326",
+                                        "3:md5,7d799bb5be85c224582fc6517c947ace",
+                                        "4:md5,95e235b25def39408c55b83e280a8d77",
+                                        "5:md5,8086dc43e6fb4ebbfbe63e336b611182"
                                     ],
                                     [
-                                        "0:md5,69dfdaa093dd72eb3c3de8a0b8b842ea",
-                                        "1:md5,502f6eb23ac28d1e94e2f6b344dac47c",
-                                        "2:md5,6c8f064328a5878464ff989642a25e38",
-                                        "3:md5,4318770f7d01b7242ae1b16ddf93a5b2",
-                                        "4:md5,5b0b3d0743d074341f84c1e24b28aee6"
+                                        "0:md5,4352e089c5ae4aa8efa7d38f2af4be0b",
+                                        "1:md5,bd0f6be511e78179dcad877b8ab4c820",
+                                        "2:md5,6ad77f57c3254a99dd479073bfddeea5",
+                                        "3:md5,a6725f82a4760a55c3e29295cc2954b9",
+                                        "4:md5,e483f9e7b3f1d0ea9c16bb26407aec64",
+                                        "5:md5,3e73b2b993679d01d298f0e1fcc06157"
                                     ],
                                     [
-                                        "0:md5,dff804d5468b8150dbdb6e15c2745960",
-                                        "1:md5,3d3e1a05f65e022a2d9f5c5023d4df04",
-                                        "2:md5,2168f2864a3bc948f5c8af2a09d2846e",
-                                        "3:md5,05b290f59ccc7d72be8d894dd229f1ab",
-                                        "4:md5,aa5af06a70d03b470ed58b27535a0c9b"
+                                        "0:md5,bceedab2205f2ea68fcd268fdb04ba7e",
+                                        "1:md5,dec0952cb91f435b7c7d53d4e42d3ea3",
+                                        "2:md5,fb2b3402ff714186dad3e306a563db54",
+                                        "3:md5,6d593cb65a2f854111ebf1c714a37487",
+                                        "4:md5,ded5976207d10d114558bd8eebd06913",
+                                        "5:md5,4b3f019615cd2bae2f1e99d5c33c2280"
                                     ],
                                     [
-                                        "0:md5,19fca337162eadc16de4d3028482b6ad",
-                                        "1:md5,b3104f0cb2f97793835ae57a90dcee28",
-                                        "2:md5,6d5e5c01669315c32e7d20f650c691e4",
-                                        "3:md5,0d1af9ab167de3933dba6d3dab1e0d11",
-                                        "4:md5,3032a690635316d41c8abd5704bf0948"
+                                        "0:md5,daf13499c46c71732492e7fa2b010047",
+                                        "1:md5,d7ed2b2af6023fa2e0fcde91f161fd7e",
+                                        "2:md5,b66edd9ef582772cc6ac390f6ae1a8ce",
+                                        "3:md5,3272d7b8591c9e670310f3ee46b572ca",
+                                        "4:md5,c62f34333ab8c4dec0cb016f836a297d",
+                                        "5:md5,e618b8f8b461408304d8895bce21c0ee"
+                                    ],
+                                    [
+                                        "0:md5,8b3cbf5fba7fcc1c3f3b54d68d05b056",
+                                        "1:md5,2accf0432f14d04bc852637323fa67d6",
+                                        "2:md5,ba1c22701f52626346076325d0aaec37",
+                                        "3:md5,64fb12534456af33c91f3280b3b08067",
+                                        "4:md5,8bc685e35c4ca8b02a839d90522b263b",
+                                        "5:md5,17df8c2aae1f2d9175b05f354da1998b"
                                     ]
                                 ]
                             ],
-                            "zarr.json:md5,03b209063d16456c22562753ea23b5a4"
+                            "zarr.json:md5,11cee4267c664c9e0a4a4951d728a075"
                         ]
                     ]
                 ],
@@ -122,7 +150,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-09-29T11:42:39.213334307"
+        "timestamp": "2025-10-23T15:23:02.453315849"
     },
     "hematoxylineosin - dir - stub": {
         "content": [
@@ -151,6 +179,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-09-29T10:21:17.447539563"
+        "timestamp": "2025-10-23T15:33:48.478943719"
     }
 }
