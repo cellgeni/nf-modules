@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "irods_storefile"
+description: "Module to upload files to iRODS with MD5 checksum verification and metadata attachment"
+keywords:
+  - irods
+  - upload
+  - storage
+  - checksum
+tools:
+  - irods:
+      description: Integrated Rule-Oriented Data System (iRODS) is open source data management software for a cancer genome analysis workflow.
+      homepage: https://irods.org/
+      documentation: https://irods.org/documentation/
+      doi: 10.1186/s12859-018-2576-5
+      license: BSD-3-Clause
+      identifier: "biotools:iRODS"
+      args_id: "$args"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - file:
+        type: file
+        description: "File to be uploaded to iRODS"
+        pattern: "*"
+        ontologies: []
+    - irodspath:
+        type: string
+        description: "Target iRODS path where the file should be stored"
+        ontologies: []
+
+output:
+  - md5:
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. [ id:'test', single_end:false ]
+        - irodspath:
+            type: string
+            description: "iRODS path where the file was stored"
+            ontologies: []
+        - md5:
+            type: string
+            description: "MD5 checksum of the local file"
+            ontologies: []
+        - irods_md5:
+            type: string
+            description: "MD5 checksum of the file stored in iRODS"
+            ontologies: []
+  - versions:
+      - versions.yml:
+          type: file
+          description: "YAML file containing software versions used"
+          pattern: "versions.yml"
+          ontologies: []
+authors:
+  - "@claptar"
+maintainers:
+  - "@claptar"
