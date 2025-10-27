@@ -1,0 +1,51 @@
+{
+    "Concatenate multiple CSV files": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_concat"
+                        },
+                        "metadata.csv:md5,969e0c9fee0ad4156eb2f6ac2e7ff815"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test_concat"
+                        },
+                        "metadata.json:md5,e9573a3c0f88048e12a5655a4bc80d5a"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,efc3533460e957d1714d02d8dd758890"
+                ],
+                "csv": [
+                    [
+                        {
+                            "id": "test_concat"
+                        },
+                        "metadata.csv:md5,969e0c9fee0ad4156eb2f6ac2e7ff815"
+                    ]
+                ],
+                "json": [
+                    [
+                        {
+                            "id": "test_concat"
+                        },
+                        "metadata.json:md5,e9573a3c0f88048e12a5655a4bc80d5a"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,efc3533460e957d1714d02d8dd758890"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-10-24T17:20:52.724355864"
+    }
+}
