@@ -30,7 +30,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-10-24T12:14:27.465513263"
+        "timestamp": "2025-10-27T13:32:47.27054006"
     },
     "Get linked collection metadata": {
         "content": [
@@ -63,7 +63,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-10-24T12:15:14.030409187"
+        "timestamp": "2025-10-27T13:33:24.914320709"
     },
     "Get empty metadata": {
         "content": [
@@ -96,7 +96,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-10-24T13:12:45.149747057"
+        "timestamp": "2025-10-27T13:33:43.503718805"
     },
     "Get collection metadata": {
         "content": [
@@ -129,6 +129,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-10-24T12:14:48.218053276"
+        "timestamp": "2025-10-27T13:33:06.176407056"
     }
 }
