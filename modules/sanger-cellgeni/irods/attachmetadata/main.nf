@@ -100,11 +100,9 @@ process IRODS_ATTACHMETADATA {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def meta_tsv = metaToTsv(meta)
     """
-    echo ${args}
-    
-    touch ${prefix}.bam
-
+    echo -e "${meta_tsv}" > metadata.tsv
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         irods: \$(ienv | grep version | awk '{ print \$3 }')
