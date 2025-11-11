@@ -23,6 +23,7 @@ DASK_SCHEDULER_ADDRESS='tcp://farm22-head2:40883'
 CONCURRENCY=4
 DATA_ROOT='/lustre/scratch126/cellgen/team361/projects/histology_to_gene_expression/workspace/data'
 
+dask.config.set(scheduler = 'single-threaded')
 
 # feature definition
 
