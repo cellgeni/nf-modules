@@ -1,0 +1,64 @@
+nextflow_process {
+    
+    name "Test Process ML_IMMUNOFLUORESCENCEFOCUS"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "ML_IMMUNOFLUORESCENCEFOCUS"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "ml"
+    tag "ml/immunofluorescencefocus"
+
+    test("immunofluorescencefocus - test") {
+
+        when {
+            process {
+                """
+               
+                
+                input[0] = [
+                    'immunofluorescencefocus_test', // meta map
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("immunofluorescencefocus - test - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                
+                
+                input[0] = [
+                    'immunofluorescencefocus_test', // meta map
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+  
+            )
+        }
+
+    }
+
+}

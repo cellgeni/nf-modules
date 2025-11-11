@@ -1,0 +1,154 @@
+{
+    "immunofluorescencefocus - test - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "immunofluorescencefocus_test",
+                        "immunofluorescencefocus_test_immunofluorescence_focus.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "data_array": [
+                    [
+                        "immunofluorescencefocus_test",
+                        "immunofluorescencefocus_test_immunofluorescence_focus.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-11-11T22:16:07.733501791"
+    },
+    "immunofluorescencefocus - test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "immunofluorescencefocus_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,02cd59e478a84e918189c6877f28d958",
+                                        "1:md5,d32de4ca5262772cbede8081ec9a167b",
+                                        "2:md5,cfd342936d8287d4f8349164339754a4",
+                                        "3:md5,0c13e9da96e252e7e8dfce05df320c62"
+                                    ],
+                                    [
+                                        "0:md5,440f3e958f5d6911781c52fdacec9989",
+                                        "1:md5,425c1d4d1cb7e51a1c2731a16f19e6ca",
+                                        "2:md5,cbcf1126e4df24b992d61a50c742e472",
+                                        "3:md5,7e11cf7f5ba58dd3c21283b1e8eeefee",
+                                        "4:md5,fa05d996005acc523d11a29b33b2726b"
+                                    ],
+                                    [
+                                        "0:md5,af43440b35118edbe35cb823c2fb7bae",
+                                        "1:md5,c0ad1051d3aa8f71aadd8b3c6e4571dc",
+                                        "2:md5,a1415efd09afa7bb5fb03e6d102b31eb",
+                                        "3:md5,68168f334d285e0c42affff965511801",
+                                        "4:md5,51df5d7924128a648deb6e0c3d16980e"
+                                    ],
+                                    [
+                                        "0:md5,948b3987269ebaa1c7003f9770bef41a",
+                                        "1:md5,f78ecdd281a2ab0e1320974adac4e2b5",
+                                        "2:md5,ca0cdce7c68b4645d4c860307da4bf9d",
+                                        "3:md5,2d3163ba4f84ef3c949c6c9cb8a9ceb6",
+                                        "4:md5,3d08209e33a566974136c137c307a52a"
+                                    ],
+                                    [
+                                        "0:md5,5bd707929c1d40969da7aa16dc1612e1",
+                                        "1:md5,c0f7b00f34da181d74fe697a78d64dd2",
+                                        "2:md5,78b6272a421d25bd3bb4852b496909c5",
+                                        "3:md5,958331c40ba876cd3b2d56ac564f5f31",
+                                        "4:md5,e4ac281122a9bff41750fb2d71178233"
+                                    ],
+                                    [
+                                        "0:md5,f9ba044ec202f96339403c665e3895b6",
+                                        "1:md5,77a0152baa6ebea2eddd94b7e0ae02ad",
+                                        "2:md5,b32bd02efeb524fe4e28596053622957",
+                                        "3:md5,aa0ae897b8907b984cde57b1dfc2eef0",
+                                        "4:md5,e3543b268bd3f684d96d38692ea5a8ba"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,28b5e40f313af4d03df5017fbe1d97ea"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ],
+                "data_array": [
+                    [
+                        "immunofluorescencefocus_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,02cd59e478a84e918189c6877f28d958",
+                                        "1:md5,d32de4ca5262772cbede8081ec9a167b",
+                                        "2:md5,cfd342936d8287d4f8349164339754a4",
+                                        "3:md5,0c13e9da96e252e7e8dfce05df320c62"
+                                    ],
+                                    [
+                                        "0:md5,440f3e958f5d6911781c52fdacec9989",
+                                        "1:md5,425c1d4d1cb7e51a1c2731a16f19e6ca",
+                                        "2:md5,cbcf1126e4df24b992d61a50c742e472",
+                                        "3:md5,7e11cf7f5ba58dd3c21283b1e8eeefee",
+                                        "4:md5,fa05d996005acc523d11a29b33b2726b"
+                                    ],
+                                    [
+                                        "0:md5,af43440b35118edbe35cb823c2fb7bae",
+                                        "1:md5,c0ad1051d3aa8f71aadd8b3c6e4571dc",
+                                        "2:md5,a1415efd09afa7bb5fb03e6d102b31eb",
+                                        "3:md5,68168f334d285e0c42affff965511801",
+                                        "4:md5,51df5d7924128a648deb6e0c3d16980e"
+                                    ],
+                                    [
+                                        "0:md5,948b3987269ebaa1c7003f9770bef41a",
+                                        "1:md5,f78ecdd281a2ab0e1320974adac4e2b5",
+                                        "2:md5,ca0cdce7c68b4645d4c860307da4bf9d",
+                                        "3:md5,2d3163ba4f84ef3c949c6c9cb8a9ceb6",
+                                        "4:md5,3d08209e33a566974136c137c307a52a"
+                                    ],
+                                    [
+                                        "0:md5,5bd707929c1d40969da7aa16dc1612e1",
+                                        "1:md5,c0f7b00f34da181d74fe697a78d64dd2",
+                                        "2:md5,78b6272a421d25bd3bb4852b496909c5",
+                                        "3:md5,958331c40ba876cd3b2d56ac564f5f31",
+                                        "4:md5,e4ac281122a9bff41750fb2d71178233"
+                                    ],
+                                    [
+                                        "0:md5,f9ba044ec202f96339403c665e3895b6",
+                                        "1:md5,77a0152baa6ebea2eddd94b7e0ae02ad",
+                                        "2:md5,b32bd02efeb524fe4e28596053622957",
+                                        "3:md5,aa0ae897b8907b984cde57b1dfc2eef0",
+                                        "4:md5,e3543b268bd3f684d96d38692ea5a8ba"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,28b5e40f313af4d03df5017fbe1d97ea"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-11-11T22:15:47.404919869"
+    }
+}
