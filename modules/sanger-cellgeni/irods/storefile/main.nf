@@ -14,9 +14,6 @@ process IRODS_STOREFILE {
     """
     module load cellgen/irods
 
-    # set file permissions
-    chmod 744 "${file}"
-
     # calculate MD5
     md5=\$(md5sum "${file}" | awk '{print \$1}')
 
