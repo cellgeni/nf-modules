@@ -1,0 +1,88 @@
+{
+    "segmentationcellvectorfieldtiles - test - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "segmentationcellvectorfieldtiles_test",
+                        "segmentationcellvectorfieldtiles_test_segmentation_cell_vector_field_tiles.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "data_array": [
+                    [
+                        "segmentationcellvectorfieldtiles_test",
+                        "segmentationcellvectorfieldtiles_test_segmentation_cell_vector_field_tiles.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-11-19T21:16:28.95043183"
+    },
+    "segmentationcellvectorfieldtiles - test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "segmentationcellvectorfieldtiles_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,b6c392cccc67316d1293c9b146cc5c88",
+                                        "1:md5,3fc9d5c7a17d62699e93922f6af3f314"
+                                    ],
+                                    [
+                                        "0:md5,820f6a1f6329ac2075e077701be54e0c",
+                                        "1:md5,bb63c9383e7f0816d07d439125c1a876"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,3dae08fec4e73ed01fc3682943595e66"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ],
+                "data_array": [
+                    [
+                        "segmentationcellvectorfieldtiles_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,b6c392cccc67316d1293c9b146cc5c88",
+                                        "1:md5,3fc9d5c7a17d62699e93922f6af3f314"
+                                    ],
+                                    [
+                                        "0:md5,820f6a1f6329ac2075e077701be54e0c",
+                                        "1:md5,bb63c9383e7f0816d07d439125c1a876"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,3dae08fec4e73ed01fc3682943595e66"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-11-19T21:16:14.356835491"
+    }
+}
