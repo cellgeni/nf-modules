@@ -1,0 +1,170 @@
+{
+    "spatiallybinnedtranscriptcount - test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "spatiallybinnedtranscriptcount_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,28f3c491e2e0372a5291c160810299de",
+                                        "1:md5,3f817710bc82e8709fed323eec66bcc1",
+                                        "2:md5,0ffd4ca350a70d7535fdb0846374a546"
+                                    ],
+                                    [
+                                        "0:md5,47b8fab8c3b052826fb9d1eb6894419e",
+                                        "1:md5,03447f0244cb115cc8848714e8ce4395",
+                                        "2:md5,b99b290a057d59a7df7f64777cc9b523"
+                                    ],
+                                    [
+                                        "0:md5,1f0b75bead322951c4eb8b2749b4baa7",
+                                        "1:md5,b06204db9e35827132163cd30b1052b5",
+                                        "2:md5,24fba95bdf32a90f29f07dd405d31c5e"
+                                    ]
+                                ],
+                                [
+                                    [
+                                        "0:md5,a13036cd6f3b5298ab2f9965ee714736",
+                                        "1:md5,6b30e496857cdea0185c6ff430c909bb",
+                                        "2:md5,17553d015fd2b5fe7c63723cc0a9488d"
+                                    ],
+                                    [
+                                        "0:md5,2e68b8b50ea62a6f6707ab3d3dcc5f29",
+                                        "1:md5,70f8b63fa55194be3d4760decf9c24eb",
+                                        "2:md5,792ea2ac881c9ba599ef89bdd835bacc"
+                                    ],
+                                    [
+                                        "0:md5,d9d3f7b65f0cf41f8a51b93ebd7dd9e7",
+                                        "1:md5,60230a5bbb6b4639ac850dcb1f25e2ee",
+                                        "2:md5,6ab91707f51f932ca6f412ab967f3eb6"
+                                    ]
+                                ],
+                                [
+                                    [
+                                        "0:md5,b4f2a6193aae8487983de56b12c7fd26",
+                                        "1:md5,5c1b27cc5554f84521d0ecad8555ef9a",
+                                        "2:md5,a6d33103f501294f92bf5fed15372833"
+                                    ],
+                                    [
+                                        "0:md5,76e2f5fde430f5d248ff47be3e72ffb2",
+                                        "1:md5,af3a34f45bf2cd884c476c3781f415f3",
+                                        "2:md5,90cebf11898b91952fdb9e00b4e01206"
+                                    ],
+                                    [
+                                        "0:md5,7cf64cd4fba72d730fca66e165368da2",
+                                        "1:md5,2b2f08725226cd5c9184b26ca1187bb7",
+                                        "2:md5,b3061c4183efa8049a6f08b0bf5a0011"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,93338fa9b71d5fdcdbf233c80860714d"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ],
+                "data_array": [
+                    [
+                        "spatiallybinnedtranscriptcount_test",
+                        [
+                            [
+                                [
+                                    [
+                                        "0:md5,28f3c491e2e0372a5291c160810299de",
+                                        "1:md5,3f817710bc82e8709fed323eec66bcc1",
+                                        "2:md5,0ffd4ca350a70d7535fdb0846374a546"
+                                    ],
+                                    [
+                                        "0:md5,47b8fab8c3b052826fb9d1eb6894419e",
+                                        "1:md5,03447f0244cb115cc8848714e8ce4395",
+                                        "2:md5,b99b290a057d59a7df7f64777cc9b523"
+                                    ],
+                                    [
+                                        "0:md5,1f0b75bead322951c4eb8b2749b4baa7",
+                                        "1:md5,b06204db9e35827132163cd30b1052b5",
+                                        "2:md5,24fba95bdf32a90f29f07dd405d31c5e"
+                                    ]
+                                ],
+                                [
+                                    [
+                                        "0:md5,a13036cd6f3b5298ab2f9965ee714736",
+                                        "1:md5,6b30e496857cdea0185c6ff430c909bb",
+                                        "2:md5,17553d015fd2b5fe7c63723cc0a9488d"
+                                    ],
+                                    [
+                                        "0:md5,2e68b8b50ea62a6f6707ab3d3dcc5f29",
+                                        "1:md5,70f8b63fa55194be3d4760decf9c24eb",
+                                        "2:md5,792ea2ac881c9ba599ef89bdd835bacc"
+                                    ],
+                                    [
+                                        "0:md5,d9d3f7b65f0cf41f8a51b93ebd7dd9e7",
+                                        "1:md5,60230a5bbb6b4639ac850dcb1f25e2ee",
+                                        "2:md5,6ab91707f51f932ca6f412ab967f3eb6"
+                                    ]
+                                ],
+                                [
+                                    [
+                                        "0:md5,b4f2a6193aae8487983de56b12c7fd26",
+                                        "1:md5,5c1b27cc5554f84521d0ecad8555ef9a",
+                                        "2:md5,a6d33103f501294f92bf5fed15372833"
+                                    ],
+                                    [
+                                        "0:md5,76e2f5fde430f5d248ff47be3e72ffb2",
+                                        "1:md5,af3a34f45bf2cd884c476c3781f415f3",
+                                        "2:md5,90cebf11898b91952fdb9e00b4e01206"
+                                    ],
+                                    [
+                                        "0:md5,7cf64cd4fba72d730fca66e165368da2",
+                                        "1:md5,2b2f08725226cd5c9184b26ca1187bb7",
+                                        "2:md5,b3061c4183efa8049a6f08b0bf5a0011"
+                                    ]
+                                ]
+                            ],
+                            "zarr.json:md5,93338fa9b71d5fdcdbf233c80860714d"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,35f672d1fb01b542f667952c9dbb26fe"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-11-20T14:54:13.354434783"
+    },
+    "spatiallybinnedtranscriptcount - test - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "spatiallybinnedtranscriptcount_test",
+                        "spatiallybinnedtranscriptcount_test_spatially_binned_transcript_count_tiles:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "data_array": [
+                    [
+                        "spatiallybinnedtranscriptcount_test",
+                        "spatiallybinnedtranscriptcount_test_spatially_binned_transcript_count_tiles:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.4"
+        },
+        "timestamp": "2025-11-20T14:54:34.299034241"
+    }
+}
