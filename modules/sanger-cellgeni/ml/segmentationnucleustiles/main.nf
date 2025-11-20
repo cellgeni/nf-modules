@@ -11,7 +11,7 @@ process ML_SEGMENTATIONNUCLEUSTILES {
 
 
     script:
-    output_dir = "${meta}_segmentation_nucleus_tiles.zarr"
+    output_dir = "${meta}_segmentation_nucleus_tiles"
     
     """
         feature_segmentation_nucleus_tiles.py generate_data_array \\
@@ -22,7 +22,7 @@ process ML_SEGMENTATIONNUCLEUSTILES {
     """
 
     stub:
-    output_dir = "${meta}_segmentation_nucleus_tiles.zarr"
+    output_dir = "${meta}_segmentation_nucleus_tiles"
     """
     touch ${output_dir}
     touch versions.yml
