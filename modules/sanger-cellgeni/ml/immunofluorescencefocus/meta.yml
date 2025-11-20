@@ -1,6 +1,5 @@
 ---
 name: "ml_immunofluorescencefocus"
-## TODO nf-core: Add a description of the module and list keywords
 description: A wrapper module for feature_morphology_immunofluorescencefocus_image_tiles.py script.
 keywords:
   - spatial-transcriptomics(xenium)
@@ -8,7 +7,6 @@ keywords:
   - feature-extraction
 tools:
   - "ml":
-      ## TODO nf-core: Add a description and other details for the software below
       description: ""
       homepage: ""
       documentation: ""
@@ -17,9 +15,7 @@ tools:
       licence: 
       identifier: 
 
-## TODO nf-core: Add a description of all of the variables used as input
 input:
-  # Only when we have meta
   - - meta:
         type: map
         description: |
@@ -27,10 +23,9 @@ input:
           e.g. `[ id:'sample1', single_end:false ]`
     - harmonised_output:
         type: directory
-        description: harmonised xenium output directory
+        description: harmonise_xenium output directory
           
 
-## TODO nf-core: Add a description of all of the variables used as output
 output:
   - meta:
         type: map
