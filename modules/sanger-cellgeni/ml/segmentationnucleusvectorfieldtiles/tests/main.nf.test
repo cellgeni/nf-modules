@@ -1,0 +1,68 @@
+
+nextflow_process {
+
+    name "Test Process ML_SEGMENTATIONNUCLEUSVECTORFIELDTILES"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "ML_SEGMENTATIONNUCLEUSVECTORFIELDTILES"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "ml"
+    tag "ml/segmentationnucleusvectorfieldtiles"
+
+    test("segmentationnucleusvectorfieldtiles - test") {
+
+        
+
+        when {
+            process {
+                """
+               
+                
+                input[0] = [
+                    'segmentationnucleusvectorfieldtiles_test', // meta map
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/nf-modules/modules/sanger-cellgeni/ml/xeniumharmonise/.nf-test/tests/d079905b5f961596112fb2504e837418/results/xeniumharmonise_test_harmonised'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+               
+            )
+        }
+
+    }
+
+    // TODO nf-core: Change the test name preferably indicating the test-data and file-format used but keep the " - stub" suffix.
+    test("segmentationnucleusvectorfieldtiles - test - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                
+                input[0] = [
+                    'segmentationnucleusvectorfieldtiles_test', // meta map
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/nf-modules/modules/sanger-cellgeni/ml/xeniumharmonise/.nf-test/tests/d079905b5f961596112fb2504e837418/results/xeniumharmonise_test_harmonised'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+                
+            )
+        }
+
+    }
+
+}
