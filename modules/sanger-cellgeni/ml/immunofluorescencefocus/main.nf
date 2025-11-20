@@ -11,7 +11,7 @@ process ML_IMMUNOFLUORESCENCEFOCUS {
 
 
     script:
-    out_dir ="${meta}_immunofluorescence_focus.zarr"
+    out_dir ="${meta}_immunofluorescence_focus"
  
     """
         feature_morphology_immunofluorescence_image_tiles.py generate_data_array \\
@@ -23,7 +23,7 @@ process ML_IMMUNOFLUORESCENCEFOCUS {
 
     stub:
 
-    out_dir ="${meta}_immunofluorescence_focus.zarr"
+    out_dir ="${meta}_immunofluorescence_focus"
 
     """
     touch ${out_dir}

@@ -5,7 +5,7 @@
                 "0": [
                     [
                         "immunofluorescencefocus_test",
-                        "immunofluorescencefocus_test_immunofluorescence_focus.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "immunofluorescencefocus_test_immunofluorescence_focus:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -14,7 +14,7 @@
                 "data_array": [
                     [
                         "immunofluorescencefocus_test",
-                        "immunofluorescencefocus_test_immunofluorescence_focus.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "immunofluorescencefocus_test_immunofluorescence_focus:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -26,7 +26,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-11-11T22:16:07.733501791"
+        "timestamp": "2025-11-20T14:03:44.003340129"
     },
     "immunofluorescencefocus - test": {
         "content": [
@@ -149,6 +149,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-11-11T22:15:47.404919869"
+        "timestamp": "2025-11-20T14:03:28.496639309"
     }
 }
