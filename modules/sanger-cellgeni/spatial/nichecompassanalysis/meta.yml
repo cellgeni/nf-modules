@@ -1,0 +1,55 @@
+name: "spatial_nichecompassanalysis"
+description: Analysis based on the NicheCompass model
+keywords:
+  - spatial_atlas_building
+  - niche_identification
+  - niche_characterisation
+  - cell-cell_communication_inference
+  - spatial_reference_mapping
+  - analysis
+  - deep-learning
+tools:
+  - "nichecompass":
+      description: "NicheCompass is a package for end-to-end analysis of spatial multiomics data by the Lotfollahi Lab"
+      documentation: "https://nichecompass.readthedocs.io/en/latest/"
+      tool_dev_url: "https://github.com/Lotfollahi-lab/nichecompass"
+      doi: "https://doi.org/10.1038/s41588-025-02120-6"
+      licence: ["BSD-3-Clause license"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - nichecompass_model:
+        type: directory
+        description: NicheCompass model directory.
+    - run_config:
+        type: file
+        description: NicheCompass model directory.
+    - data:
+        type: directory
+        description: NicheCompass data directory.
+
+output:
+  nichecompass_dir:
+    - nichecompass_dir:
+        type: directory
+        description: NicheCompass output directory
+        Structure: [val(meta), path(nichecompass_dir)]
+  notebook:
+    - notebook:
+        type: file
+        description: NicheCompass output jupyter notebook from papermill
+        Structure: [val(meta), path(notebook)]
+  versions:
+    - versions:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+authors:
+  - "@ASUQ"
+maintainers:
+  - "@ASUQ"

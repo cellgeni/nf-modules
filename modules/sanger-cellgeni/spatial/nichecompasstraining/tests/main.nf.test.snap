@@ -1,0 +1,280 @@
+{
+    "nichecompass_train - 3 samples - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_20250829"
+                        },
+                        [
+                            "model.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ],
+                        "run_config.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        [
+                            
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ],
+                "nichecompass_model": [
+                    [
+                        {
+                            "id": "test_20250829"
+                        },
+                        [
+                            "model.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ],
+                        "run_config.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        [
+                            
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-08-30T14:45:17.063200233"
+    },
+    "nichecompass_train - 3 samples": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_20250829"
+                        },
+                        [
+                            "attr.pkl:md5,af7d4753e0ba2daa048b4c6fe807317d",
+                            "model_params.pt:md5,1edee96da3f1a54254abb9cb6d8bb9b2",
+                            "trained.h5ad:md5,1bbf27705dd25e0ec6025fb11782b379",
+                            "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
+                        ],
+                        "run_config.json:md5,b748e7818cb82f263bbbb6628dc103f4",
+                        [
+                            [
+                                "gencode.vM25.chr_patch_hapl_scaff.annotation.gtf.gz:md5,c77cbf3cad15af10b6174d4b77c8246f",
+                                "human_mouse_gene_orthologs.csv:md5,b01557bcc3647653d0b323e17fe1e93c"
+                            ],
+                            [
+                                [
+                                    "human_metabolite_enzymes.tsv:md5,242269afd818d1ff93f190271065526c",
+                                    "human_metabolite_sensors.tsv:md5,5a02dd9124c603d62e4944526f8b544c",
+                                    "mouse_metabolite_enzymes.tsv:md5,f2a48c14af3f5174ae78cf390cbfbe0e",
+                                    "mouse_metabolite_sensors.tsv:md5,1987eb7777861838ac8b6224732d88b8"
+                                ],
+                                "nichenet_ligand_target_matrix_v2_human.csv:md5,56d65fdb9c0e969a6270aeaabba75637",
+                                "nichenet_lr_network_v2_human.csv:md5,fd95490c94b0261cd92ebb70bda1c17f",
+                                "omnipath_lr_network.csv:md5,03487d78e4fe071fa42832be0bbdbf8d"
+                            ]
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ],
+                "nichecompass_model": [
+                    [
+                        {
+                            "id": "test_20250829"
+                        },
+                        [
+                            "attr.pkl:md5,af7d4753e0ba2daa048b4c6fe807317d",
+                            "model_params.pt:md5,1edee96da3f1a54254abb9cb6d8bb9b2",
+                            "trained.h5ad:md5,1bbf27705dd25e0ec6025fb11782b379",
+                            "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
+                        ],
+                        "run_config.json:md5,b748e7818cb82f263bbbb6628dc103f4",
+                        [
+                            [
+                                "gencode.vM25.chr_patch_hapl_scaff.annotation.gtf.gz:md5,c77cbf3cad15af10b6174d4b77c8246f",
+                                "human_mouse_gene_orthologs.csv:md5,b01557bcc3647653d0b323e17fe1e93c"
+                            ],
+                            [
+                                [
+                                    "human_metabolite_enzymes.tsv:md5,242269afd818d1ff93f190271065526c",
+                                    "human_metabolite_sensors.tsv:md5,5a02dd9124c603d62e4944526f8b544c",
+                                    "mouse_metabolite_enzymes.tsv:md5,f2a48c14af3f5174ae78cf390cbfbe0e",
+                                    "mouse_metabolite_sensors.tsv:md5,1987eb7777861838ac8b6224732d88b8"
+                                ],
+                                "nichenet_ligand_target_matrix_v2_human.csv:md5,56d65fdb9c0e969a6270aeaabba75637",
+                                "nichenet_lr_network_v2_human.csv:md5,fd95490c94b0261cd92ebb70bda1c17f",
+                                "omnipath_lr_network.csv:md5,03487d78e4fe071fa42832be0bbdbf8d"
+                            ]
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-08-30T14:44:43.981003966"
+    },
+    "mouse - 3 - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    
+                                ],
+                                [
+                                    "model.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ]
+                            ],
+                            [
+                                
+                            ],
+                            "train.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ],
+                "nichecompass_model": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    
+                                ],
+                                [
+                                    "model.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ]
+                            ],
+                            [
+                                
+                            ],
+                            "train.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-08-29T20:57:54.044257121"
+    },
+    "mouse - 3": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    
+                                ],
+                                [
+                                    "attr.pkl:md5,b25802bfdcb5b758c9883ec844cbfbdc",
+                                    "model_params.pt:md5,6c2eca222e620c61ac1c1161b27ea0dc",
+                                    "trained.h5ad:md5,39072956c7d56651f1b51fd678dea39f",
+                                    "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
+                                ]
+                            ],
+                            [
+                                [
+                                    "gencode.vM25.chr_patch_hapl_scaff.annotation.gtf.gz:md5,c77cbf3cad15af10b6174d4b77c8246f",
+                                    "human_mouse_gene_orthologs.csv:md5,b01557bcc3647653d0b323e17fe1e93c"
+                                ],
+                                [
+                                    [
+                                        "human_metabolite_enzymes.tsv:md5,242269afd818d1ff93f190271065526c",
+                                        "human_metabolite_sensors.tsv:md5,5a02dd9124c603d62e4944526f8b544c",
+                                        "mouse_metabolite_enzymes.tsv:md5,f2a48c14af3f5174ae78cf390cbfbe0e",
+                                        "mouse_metabolite_sensors.tsv:md5,1987eb7777861838ac8b6224732d88b8"
+                                    ],
+                                    "nichenet_ligand_target_matrix_v2_human.csv:md5,56d65fdb9c0e969a6270aeaabba75637",
+                                    "nichenet_lr_network_v2_human.csv:md5,fd95490c94b0261cd92ebb70bda1c17f",
+                                    "omnipath_lr_network.csv:md5,03487d78e4fe071fa42832be0bbdbf8d"
+                                ]
+                            ],
+                            "run_config.json:md5,124efe6ebf9b1d6ca360bdb51e0c4b88",
+                            "train.log:md5,40891b5c626f11da492c4ae12e3382a9"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ],
+                "nichecompass_model": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    
+                                ],
+                                [
+                                    "attr.pkl:md5,b25802bfdcb5b758c9883ec844cbfbdc",
+                                    "model_params.pt:md5,6c2eca222e620c61ac1c1161b27ea0dc",
+                                    "trained.h5ad:md5,39072956c7d56651f1b51fd678dea39f",
+                                    "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
+                                ]
+                            ],
+                            [
+                                [
+                                    "gencode.vM25.chr_patch_hapl_scaff.annotation.gtf.gz:md5,c77cbf3cad15af10b6174d4b77c8246f",
+                                    "human_mouse_gene_orthologs.csv:md5,b01557bcc3647653d0b323e17fe1e93c"
+                                ],
+                                [
+                                    [
+                                        "human_metabolite_enzymes.tsv:md5,242269afd818d1ff93f190271065526c",
+                                        "human_metabolite_sensors.tsv:md5,5a02dd9124c603d62e4944526f8b544c",
+                                        "mouse_metabolite_enzymes.tsv:md5,f2a48c14af3f5174ae78cf390cbfbe0e",
+                                        "mouse_metabolite_sensors.tsv:md5,1987eb7777861838ac8b6224732d88b8"
+                                    ],
+                                    "nichenet_ligand_target_matrix_v2_human.csv:md5,56d65fdb9c0e969a6270aeaabba75637",
+                                    "nichenet_lr_network_v2_human.csv:md5,fd95490c94b0261cd92ebb70bda1c17f",
+                                    "omnipath_lr_network.csv:md5,03487d78e4fe071fa42832be0bbdbf8d"
+                                ]
+                            ],
+                            "run_config.json:md5,124efe6ebf9b1d6ca360bdb51e0c4b88",
+                            "train.log:md5,40891b5c626f11da492c4ae12e3382a9"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-08-29T20:57:21.467164302"
+    }
+}

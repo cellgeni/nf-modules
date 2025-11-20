@@ -1,0 +1,62 @@
+nextflow_process {
+
+    name "Test Process SPATIAL_NICHECOMPASSANALYSIS"
+    script "../main.nf"
+    process "SPATIAL_NICHECOMPASSANALYSIS"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "spatial"
+    tag "spatial/nichecompassanalysis"
+
+    test("analysis - 3 samples") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/artifacts/model/", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/run_config.json", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/data/", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("analysis - 3 samples - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/artifacts/model/", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/run_config.json", checkIfExists: true),
+                    file(params.modules_testdata_base_path + "nichecompass/analysis/nichecompass_20250828_170240/data/", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}
