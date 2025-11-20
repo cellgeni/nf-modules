@@ -12,7 +12,7 @@ process ML_SEGMENTATIONCELLVECTORFIELDTILES {
     path "versions.yml"              , emit: versions
 
     script:
-    output_dir = "${meta}_segmentation_cell_vector_field_tiles.zarr"
+    output_dir = "${meta}_segmentation_cell_vector_field_tiles"
 
     """
         feature_segmentation_cell_vector_field_tiles.py generate_data_array \\
@@ -23,7 +23,7 @@ process ML_SEGMENTATIONCELLVECTORFIELDTILES {
     """
 
     stub:
-    output_dir = "${meta}_segmentation_cell_vector_field_tiles.zarr"
+    output_dir = "${meta}_segmentation_cell_vector_field_tiles"
     """
     touch ${output_dir}
     touch versions.yml
