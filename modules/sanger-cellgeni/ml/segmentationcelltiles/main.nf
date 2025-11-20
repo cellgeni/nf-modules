@@ -11,7 +11,7 @@ process ML_SEGMENTATIONCELLTILES {
 
 
     script:
-    output_dir = "${meta}_segmentation_cell_tiles.zarr"
+    output_dir = "${meta}_segmentation_cell_tiles"
  
     """
         feature_segmentation_cell_tiles.py generate_data_array \\
@@ -22,7 +22,7 @@ process ML_SEGMENTATIONCELLTILES {
     """
 
     stub:
-    output_dir = "${meta}_segmentation_cell_tiles.zarr"
+    output_dir = "${meta}_segmentation_cell_tiles"
 
  
     """

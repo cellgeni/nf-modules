@@ -5,7 +5,7 @@
                 "0": [
                     [
                         "segmentationcelltiles_test",
-                        "segmentationcelltiles_test_segmentation_cell_tiles.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "segmentationcelltiles_test_segmentation_cell_tiles:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -14,7 +14,7 @@
                 "data_array": [
                     [
                         "segmentationcelltiles_test",
-                        "segmentationcelltiles_test_segmentation_cell_tiles.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "segmentationcelltiles_test_segmentation_cell_tiles:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -26,7 +26,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-11-19T18:56:43.317231252"
+        "timestamp": "2025-11-20T14:00:21.429033702"
     },
     "segmentationcelltiles - test": {
         "content": [
@@ -79,6 +79,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.4"
         },
-        "timestamp": "2025-11-19T18:56:29.422257077"
+        "timestamp": "2025-11-20T14:00:07.005885858"
     }
 }
