@@ -1,6 +1,6 @@
 
 name: "ml_segmentationcelltiles"
-## TODO nf-core: Add a description of the module and list keywords
+
 description: A wrapper module for feature_segmentation_cell_tiles.py script.
 keywords:
   - spatial-transcriptomics(xenium)
@@ -8,7 +8,6 @@ keywords:
   - feature-extraction
 tools:
   - "ml":
-      ## TODO nf-core: Add a description and other details for the software below
       description: ""
       homepage: ""
       documentation: ""
@@ -17,9 +16,7 @@ tools:
       licence: 
       identifier: 
 
-## TODO nf-core: Add a description of all of the variables used as input
 input:
-  # Only when we have meta
   - - meta:
         type: map
         description: |
@@ -28,21 +25,17 @@ input:
   
     - harmonised_output:
         type: directory
-        description: harmonised xenium output directory
+        description: harmonise_xenium output directory
 
-## TODO nf-core: Add a description of all of the variables used as output
 output:
-  - bam:
-  #Only when we have meta
-    - meta:
+  - meta:
         type: map
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1', single_end:false ]`
-  ## TODO nf-core: Delete / customise this example output
-    - "output_dir":
+  - "output_dir":
       type: directory
-      description: Directory containing the segmentation cell tiles in zarr format.
+      description: Directory containing the segmentation_cell_tiles in zarr format.
           
   - versions:
     - "versions.yml":
