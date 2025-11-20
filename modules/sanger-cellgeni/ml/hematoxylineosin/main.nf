@@ -3,7 +3,7 @@ process ML_HEMATOXYLINEOSIN {
     label 'process_medium'
 
     input:
-    tuple val(meta), path(harmonised_output)
+    tuple val(meta), path(harmonisexenium_output)
 
     output:
     tuple val(meta), path(output_dir), emit: data_array
@@ -11,12 +11,12 @@ process ML_HEMATOXYLINEOSIN {
 
 
     script:
-    output_dir = "${meta}_hematoxylin_eosin.zarr"
+    output_dir = "${meta}_hematoxylin_eosin"
  
     """
         
         feature_hematoxylin_eosin_image_tiles.py generate_data_array \\
-            --harmonised_dataset_absolute_path ${harmonised_output} \\
+            --harmonised_dataset_absolute_path ${harmonisexenium_output} \\
             --resolution_um_per_px 0.5 \\
             --data_array_absolute_path ${output_dir} \\
         
@@ -24,7 +24,7 @@ process ML_HEMATOXYLINEOSIN {
     """
 
     stub:
-    output_dir = "${meta}_hematoxylin_eosin.zarr"
+    output_dir = "${meta}_hematoxylin_eosin"
     
     """
     touch ${output_dir}

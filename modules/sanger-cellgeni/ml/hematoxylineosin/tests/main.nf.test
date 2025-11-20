@@ -12,7 +12,7 @@ nextflow_process {
     tag "ml/hematoxylineosin"
 
   
-    test("hematoxylineosin - dir") {
+    test("hematoxylineosin - test") {
 
         when {
             process {
@@ -20,7 +20,7 @@ nextflow_process {
  
                 input[0] = [
                     'hematoxylineosin_test', // meta map
-                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1'
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/nf-modules/modules/sanger-cellgeni/ml/xeniumharmonise/.nf-test/tests/d079905b5f961596112fb2504e837418/results/xeniumharmonise_test_harmonised'
                 ]
                 """
             }
@@ -35,7 +35,7 @@ nextflow_process {
 
     }
 
-    test("hematoxylineosin - dir - stub") {
+    test("hematoxylineosin - test - stub") {
 
         options "-stub"
 
@@ -45,7 +45,7 @@ nextflow_process {
                 
                 input[0] = [
                     'hematoxylineosin_test', // meta map
-                    '/lustre/scratch127/cellgen/cellgeni/dn10/output_file1'
+                    '/lustre/scratch127/cellgen/cellgeni/dn10/nf-modules/modules/sanger-cellgeni/ml/xeniumharmonise/.nf-test/tests/d079905b5f961596112fb2504e837418/results/xeniumharmonise_test_harmonised'
                   
                 ]
                 """
