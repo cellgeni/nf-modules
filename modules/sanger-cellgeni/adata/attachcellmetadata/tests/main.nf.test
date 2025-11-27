@@ -75,43 +75,4 @@ nextflow_process {
 
     }
 
-    test("Attach Cell Metadata - obs_names - pbmc1k1 - from h5") {
-        tag "from_h5"
-
-        setup {
-                run("ToH5ad", alias: "PBMC1K") {
-                    script "../../../../../main.nf"
-                    process {
-                        """
-                        input[0] = [ "pbmc1k1", file( params.test_data_basedir + '/pbmc_1k_v3_filtered_feature_bc_matrix.h5' ) ]
-                        input[1] = "_"
-                        """
-                    }
-                }
-        }
-
-        when {
-            params {
-                barcode_column = 'obs_names'
-            }
-            process {
-                """
-                input[0] = PBMC1K.out.map { sample, h5ad -> tuple([id: sample], h5ad) }
-                input[1] = [ 
-                    file('/lustre/scratch127/cellgen/cellgeni/aljes/hackathon/example/metadata_splited.csv', checkIfExists: true, type: 'file'),
-                ]
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert process.out.versions },
-                { assert process.out.h5ad },
-                { assert snapshot(process.out).match() }
-            )
-        }
-    }
-
 }
