@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "anndata_meta"
+description: This module attaches cell metadata from CSV files to an AnnData object.
+keywords:
+  - anndata
+  - metadata
+tools:
+  - "anndata":
+      description: "An annotated data matrix."
+      homepage: "http://anndata.rtfd.io"
+      documentation: "http://anndata.rtfd.io"
+      tool_dev_url: "https://github.com/theislab/anndata"
+      doi: ""
+      licence: ["BSD-3-clause"]
+      identifier: biotools:anndata
+  - "scanpy":
+      description: "Single-cell analysis in Python. Scales to >100M cells."
+      homepage: "https://scanpy.readthedocs.io/"
+      documentation: "https://scanpy.readthedocs.io/"
+      tool_dev_url: "https://github.com/scverse/scanpy"
+      doi: "10.1186/s13059-017-1382-0"
+      licence: ["BSD-3-clause"]
+      identifier: biotools:scanpy
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - h5ad:
+        type: file
+        description: AnnData file
+        pattern: "*.h5ad"
+        ontologies: []
+  - metadata:
+      type: file
+      description: Cell metadata CSV file
+      pattern: "*.csv"
+      ontologies:
+        - edam: "http://edamontology.org/format_3752" # CSV
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData file
+          pattern: "*.h5ad"
+          ontologies: []
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+authors:
+  - "@claptar"
+maintainers:
+  - "@claptar"
