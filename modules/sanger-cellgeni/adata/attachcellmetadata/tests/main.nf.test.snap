@@ -64,38 +64,5 @@
             "nextflow": "25.04.4"
         },
         "timestamp": "2025-11-27T13:36:20.554673544"
-    },
-    "Attach Cell Metadata - obs_names - pbmc1k1 - from h5": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "pbmc1k1"
-                        },
-                        "pbmc1k1_meta.h5ad:md5,94926696762119abf7b1cb90016bdd8d"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,9cad6822d57b43412bea8af5717bdcca"
-                ],
-                "h5ad": [
-                    [
-                        {
-                            "id": "pbmc1k1"
-                        },
-                        "pbmc1k1_meta.h5ad:md5,94926696762119abf7b1cb90016bdd8d"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,9cad6822d57b43412bea8af5717bdcca"
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.4"
-        },
-        "timestamp": "2025-11-27T13:57:05.616561057"
     }
 }
