@@ -1,0 +1,61 @@
+nextflow_process {
+
+    name "Test Process SPATIAL_SCRAFTPALOM"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "SPATIAL_SCRAFTPALOM"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "spatial"
+    tag "spatial/scraftpalom"
+
+    test("register - tif") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + 'ref_image.ome.tif', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'moving_image.ome.tif', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("register - tif - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + 'ref_image.ome.tif', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'moving_image.ome.tif', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

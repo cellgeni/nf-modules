@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "spatial_scraftpalom"
+description: "Module to perform image registration using Scraft - Palom."
+keywords:
+  - registration
+  - alignment
+  - spatial
+tools:
+  - "spatial":
+      description: ""
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence: null
+      identifier: null
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - ref:
+        type: file
+        description: Reference image file to which the moving image will be aligned
+        pattern: "*.{tif,tiff,ome.tif,ome.tiff}"
+    - moving:
+        type: file
+        description: moving image file
+        pattern: "*.{tif,tiff,ome.tif,ome.tiff}"
+
+output:
+  bam:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.ome.tif":
+          type: file
+          description: "Registered image file in OME-TIFF format."
+          pattern: "*.{ome.tif}"
+
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
