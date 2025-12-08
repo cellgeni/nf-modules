@@ -10,7 +10,7 @@ process SPATIAL_SCRAFTPALOM {
     tuple val(meta), path(ref), path(moving)
 
     output:
-    tuple val(meta), path("*.ome.tif"), emit: registered_image
+    tuple val(meta), path("aligned_${moving_stem}.ome.tif"), emit: aligned_moving_image
     path "versions.yml", emit: versions
 
     when:
@@ -19,14 +19,17 @@ process SPATIAL_SCRAFTPALOM {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    moving_stem = moving.baseName.replaceFirst(/\.ome\.tif$/, '')
     """
     scraft registration palom \\
         ${ref} ${moving} \\
         ${args} \\
 
+    mv palom_aligned.ome.tif ${moving_stem}.ome.tif
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        scraft: \$(scraft --version)
+        scraft: \$(scraft info)
     END_VERSIONS
     """
 
@@ -40,7 +43,7 @@ process SPATIAL_SCRAFTPALOM {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        scraft: \$(scraft --version)
+        scraft: \$(scraft info)
     END_VERSIONS
     """
 }
