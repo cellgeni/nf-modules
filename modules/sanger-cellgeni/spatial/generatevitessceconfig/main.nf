@@ -11,7 +11,7 @@ process SPATIAL_GENERATEVITESSCECONFIG {
     tuple val(meta), path(sdata), val(raw_name), val(label_name), val(table_name), val(http_base_url)
 
     output:
-    tuple val(meta), path("${out_json}"), emit: bam
+    tuple val(meta), path("${out_json}"), emit: vitessce_config
     path "versions.yml", emit: versions
 
     when:
