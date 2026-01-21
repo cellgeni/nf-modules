@@ -5,7 +5,7 @@ process SPATIAL_TERRA {
     conda "${moduleDir}/environment.yml"
     // ? '/nfs/cellgeni/singularity/images/terra.sif'
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? '/home/ubuntu/deleteme/terra.sif'
+        ? '/nfs/cellgeni/singularity/images/terra.sif'
         : '/nfs/cellgeni/singularity/images/terra.sif'}"
 
     input:
