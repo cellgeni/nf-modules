@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "spatial_dot"
+description: write your description here
+keywords:
+  - spatial
+  - cell type transfer
+  - deconvolution
+tools:
+  - "spatial":
+      description: "DOT (Deconvolution of Spatial Transcriptomics) deconvolves spatial transcriptomics data using single-cell references."
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      licence: [""]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - sc_ref:
+        type: file
+        description: Single-cell reference AnnData object used for DOT deconvolution.
+        pattern: "*.h5ad"
+    - sc_spatial:
+        type: file
+        description: Spatial AnnData object with x_centroid and y_centroid in obs.
+        pattern: "*.h5ad"
+
+output:
+  dot_weights:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "DOT_weights/*.csv":
+          type: file
+          description: DOT deconvolution weights per spot
+          pattern: "DOT_weights/*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  dot_plotdata:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "DOT_plotdata/*.csv":
+          type: file
+          description: DOT plot data per spot
+          pattern: "DOT_plotdata/*.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
