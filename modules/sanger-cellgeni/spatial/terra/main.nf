@@ -12,8 +12,8 @@ process SPATIAL_TERRA {
     tuple val(meta), path(anndata)
 
     output:
-    tuple val(meta), path("${out_folder}/*.h5ad"), emit: processed_anndata
-    tuple val(meta), path("${out_folder}/tokenized_data/*"), emit: tokenized_data
+    tuple val(meta), path("${out_folder}/${baseName}_processed.h5ad"), emit: processed_anndata
+    tuple val(meta), path("${out_folder}/${baseName}_tokenized_data/*"), emit: tokenized_data, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -21,14 +21,14 @@ process SPATIAL_TERRA {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    out_folder = "${prefix}"
+    baseName = anndata.baseName
+    out_folder = "${baseName}"
     """
     export NUMBA_CACHE_DIR="/tmp/numba_cache"
     run_terra.py \\
-        --h5ad_path ${anndata} \
-        --tokenized_data_path ${out_folder}/tokenized_data \
-        --output_file ${out_folder}/spatial_data_processed.h5
+        --h5ad_path ${anndata} \\
+        --tokenized_data_path ${out_folder}/${baseName}_tokenized_data \\
+        --output_file ${out_folder}/${baseName}_processed.h5ad \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -39,14 +39,13 @@ process SPATIAL_TERRA {
 
     stub:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    out_folder = "${prefix}"
+    out_folder = "${anndata.baseName}"
     """
     echo ${args}
     export NUMBA_CACHE_DIR="/tmp/numba_cache"
     
-    mkdir -p ${out_folder}/tokenized_data
-    touch ${out_folder}/spatial_data_processed.h5
+    mkdir -p ${out_folder}/${baseName}_tokenized_data
+    touch ${out_folder}/${baseName}_processed.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
