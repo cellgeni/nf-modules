@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "irods_aggregatemetadata"
+description:
+  "Module to aggregate iRODS metadata from CSV files with duplicate attribute
+  handling and output as CSV and JSON"
+keywords:
+  - irods
+  - metadata
+  - csv
+  - json
+  - pandas
+tools:
+  - pandas:
+      description: Powerful data structures for data analysis, time series, and
+        statistics
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3-Clause"]
+      identifier: "biotools:pandas"
+      args_id: "$args"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - irods_metadata:
+        type: file
+        description: "CSV file containing iRODS metadata to be aggregated"
+        pattern: "*.csv"
+        ontologies:
+          - edam: http://edamontology.org/format_3752 # CSV
+output:
+  csv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - metadata.csv:
+          type: file
+          description: "CSV file containing aggregated iRODS metadata"
+          pattern: "metadata.csv"
+          ontologies:
+            - edam: http://edamontology.org/format_3752 # CSV
+  json:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - metadata.json:
+          type: file
+          description: "JSON file containing aggregated iRODS metadata"
+          pattern: "metadata.json"
+          ontologies:
+            - edam: http://edamontology.org/format_3464 # JSON
+  versions:
+    - versions.yml:
+        type: file
+        description: "YAML file containing software versions used"
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@claptar"
+maintainers:
+  - "@claptar"

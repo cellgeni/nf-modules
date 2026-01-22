@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "irods_attachmetadata"
+description:
+  "Module to attach metadata to iRODS collections and data objects with
+  support for duplicate value splitting"
+keywords:
+  - irods
+  - metadata
+  - attach
+  - collections
+  - data objects
+tools:
+  - irods:
+      description: Integrated Rule-Oriented Data System (iRODS) is open source
+        data management software for a cancer genome analysis workflow.
+      homepage: https://irods.org/
+      documentation: https://irods.org/documentation/
+      doi: 10.1186/s12859-018-2576-5
+      license: ["BSD-3-Clause"]
+      identifier: "biotools:iRODS"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information and metadata to attach
+          e.g. [ id:'test', author:'John Doe', study:'cancer_research' ]
+    - irodspath:
+        type: string
+        description: "iRODS collection or data object path to attach metadata to"
+        ontologies: []
+output:
+  versions:
+    - versions.yml:
+        type: file
+        description: "YAML file containing software versions used"
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@claptar"
+maintainers:
+  - "@claptar"

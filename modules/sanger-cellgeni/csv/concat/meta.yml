@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "csv_concat"
+description:
+  "Module to concatenate multiple CSV files into a single CSV and JSON
+  output"
+keywords:
+  - csv
+  - concatenate
+  - merge
+  - pandas
+  - json
+tools:
+  - pandas:
+      description: Powerful data structures for data analysis, time series, and
+        statistics
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3-Clause"]
+      identifier: "biotools:pandas"
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - csv_files:
+        type: file
+        description: "Multiple CSV files to be concatenated"
+        pattern: "*.csv"
+        ontologies:
+          - edam: http://edamontology.org/format_3752 # CSV
+output:
+  csv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.csv":
+          type: file
+          description: "Concatenated CSV file"
+          pattern: "*.csv"
+          ontologies:
+            - edam: http://edamontology.org/format_3752 # CSV
+  json:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.json":
+          type: file
+          description: "Concatenated data in JSON format"
+          pattern: "*.json"
+          ontologies:
+            - edam: http://edamontology.org/format_3464 # JSON
+  versions:
+    - versions.yml:
+        type: file
+        description: "YAML file containing software versions used"
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@claptar"
+maintainers:
+  - "@claptar"

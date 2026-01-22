@@ -1,0 +1,114 @@
+nextflow_process {
+    name "Test Process: IRODS_AGGREGATEMETADATA"
+    script "../main.nf"
+    process "IRODS_AGGREGATEMETADATA"
+
+    tag "modules"
+    tag "irods"
+    tag "irods/aggregatemetadata"
+    tag "modules_sangercellgeni"
+
+    setup {
+        run("IRODS_GETMETADATA", alias: "CRAM") {
+            script "../../getmetadata/main.nf"
+            config "../../getmetadata/module.config"
+            process {
+                """
+                input[0] = [ [id: "cram"], "/seq/illumina/runs/41/41796/lane1/plex1/41796_1#1.cram" ]
+                """
+            }
+        }
+
+        run("IRODS_GETMETADATA", alias: "CELLRANGER_ARC_OUTPUT") {
+            script "../../getmetadata/main.nf"
+            config "../../getmetadata/module.config"
+            process {
+                """
+                input[0] = [ [id: "cellranger_arc"], "/seq/illumina/cellranger-arc/cellranger-arc202_count_43c2d8dd1eaf98b635896165fd98ae3a" ]
+                """
+            }
+        }
+
+        run("IRODS_GETMETADATA", alias: "EMPTY") {
+            script "../../getmetadata/main.nf"
+            config "../../getmetadata/module.config"
+            process {
+                """
+                input[0] = [ [id: "empty"], "/archive/cellgeni/multiome" ]
+                """
+            }
+        }
+    }
+
+    test("Cellranger ARC output metadata aggregation") {
+        tag "cellranger_arc"
+        config "../module.config"
+
+        when {
+            process {
+                """
+                input[0] = CELLRANGER_ARC_OUTPUT.out.csv
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.versions },
+                { assert process.out.csv },
+                { assert process.out.json },
+                { assert path(process.out.csv.get(0).get(1)).csv.rowCount == 1 },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test(".cram file metadata aggregation") {
+        tag "cram"
+        config "../module.config"
+
+        when {
+            process {
+                """
+                input[0] = CRAM.out.csv
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.versions },
+                { assert process.out.csv },
+                { assert process.out.json },
+                { assert path(process.out.csv.get(0).get(1)).csv.rowCount == 1 },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("Empty file output metadata aggregation") {
+        tag "empty"
+        config "../module.config"
+
+        when {
+            process {
+                """
+                input[0] = EMPTY.out.csv
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.versions },
+                { assert process.out.csv },
+                { assert process.out.json },
+                { assert path(process.out.csv.get(0).get(1)).csv.rows[0] == ["irodspath": "empty"] },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

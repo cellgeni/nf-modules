@@ -1,0 +1,45 @@
+nextflow_process {
+    name "Test Process: CSV_CONCAT"
+    script "../main.nf"
+    process "CSV_CONCAT"
+
+    tag "modules"
+    tag "csv"
+    tag "csv/concat"
+    tag "modules_sangercellgeni"
+
+    test("Concatenate multiple CSV files") {
+        tag "basic"
+        config "../module.config"
+
+        when {
+            params {
+                test_data_base = "https://raw.githubusercontent.com/cellgeni/nf-upload2irods/4d31aff47e156c8256f990da525e68bb7bc134af/tests/data/"
+            }
+
+            process {
+                """
+                input[0] = [
+                    [id: "test_concat"],
+                    [
+                        file(params.test_data_base + "csv/concat/file1.csv"),
+                        file(params.test_data_base + "csv/concat/file2.csv"),
+                        file(params.test_data_base + "csv/concat/file3.csv")
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.versions },
+                { assert process.out.csv },
+                { assert process.out.json },
+                { assert path( process.out.csv.get(0).get(1) ).md5 == path( "tests/data/csv/concat/results.csv" ).md5 },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
