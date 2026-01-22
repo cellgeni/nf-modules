@@ -12,7 +12,7 @@ workflow TERRA {
     SPATIAL_TERRA(ch_anndatas)
     ch_versions = ch_versions.mix(SPATIAL_TERRA.out.versions.first())
 
-    SPATIAL_CONCATH5ADS(SPATIAL_TERRA.out.processed_anndata.collect())
+    SPATIAL_CONCATH5ADS(SPATIAL_TERRA.out.processed_anndata.groupTuple(by: 0))
     ch_versions = ch_versions.mix(SPATIAL_CONCATH5ADS.out.versions.first())
 
     emit:
