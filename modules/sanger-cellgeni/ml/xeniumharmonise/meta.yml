@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "ml_xeniumharmonise"
+
+description: A wrapper module for harmonise_xenium.py script
+keywords:
+  - spatial-transcriptomics(xenium)
+  - ml
+  - he-image
+tools:
+  - "ml":
+      description: ""
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence: 
+      identifier: 
+
+## TODO nf-core: Add a description of all of the variables used as input
+input:
+  # Only when we have meta
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+  
+    - he_image:
+        type: file
+        description: H&E image file
+    
+    - xenium_bundle:
+        type: directory
+        description: output from xenium
+        
+
+output:
+  #Only when we have meta
+  - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+  
+  - "output_dir":
+        type: directory
+        description: directory for harmonised_xenium outputs.
+      
+  - versions:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+authors:
+  - "@dn10-sanger"
+maintainers:
+  - "@dn10-sanger"
