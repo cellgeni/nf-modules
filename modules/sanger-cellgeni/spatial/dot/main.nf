@@ -22,7 +22,7 @@ process SPATIAL_DOT {
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    Rscript run_dot.R \\
+    run_dot.R \\
         ${sc_ref} ${sc_spatial} ${prefix} \\
         ${args}
 
