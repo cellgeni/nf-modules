@@ -17,7 +17,7 @@ def concat_h5ads(input_files, output, axis):
     adata_list = [sc.read_h5ad(f) for f in input_files]
     
     click.echo("Concatenating...")
-    adata_concat = sc.concat(adata_list, axis=axis)
+    adata_concat = sc.concat(adata_list, axis=axis, join='outer')
     
     click.echo(f"Writing output to {output}")
     adata_concat.write_h5ad(output)
