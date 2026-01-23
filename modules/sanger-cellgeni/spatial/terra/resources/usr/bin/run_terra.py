@@ -5,6 +5,7 @@ import argparse
 # from pathlib import Path
 # import scanpy as sc
 import anndata as ad
+import numpy as np
 import sys
 
 # NEMO
@@ -66,6 +67,24 @@ def add_terra_features(args):
 
     adata.obsm['nemo_latent'] = output_embed['cell_emb']
     adata.obsm['nemo_neighborhood_latent'] = output_embed['neighborhood_emb']
+
+    # Save embeddings as CSV with high precision.
+    output_dir = os.path.dirname(args.output_file) or "."
+    output_stem = os.path.splitext(os.path.basename(args.output_file))[0]
+    cell_csv_path = os.path.join(output_dir, f"{output_stem}_cell_emb.csv")
+    neighborhood_csv_path = os.path.join(output_dir, f"{output_stem}_neighborhood_emb.csv")
+    np.savetxt(
+        cell_csv_path,
+        np.asarray(output_embed['cell_emb'], dtype=np.float64),
+        delimiter=",",
+        fmt="%.18e",
+    )
+    np.savetxt(
+        neighborhood_csv_path,
+        np.asarray(output_embed['neighborhood_emb'], dtype=np.float64),
+        delimiter=",",
+        fmt="%.18e",
+    )
 
     # === 3. Save anndata ===
     adata.write(args.output_file)
