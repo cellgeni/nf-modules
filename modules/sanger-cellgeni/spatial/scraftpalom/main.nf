@@ -25,7 +25,7 @@ process SPATIAL_SCRAFTPALOM {
         ${ref} ${moving} \\
         ${args} \\
 
-    mv palom_aligned.ome.tif ${output_img_name}
+    mv palom_aligned.ome.tif "${output_img_name}"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
