@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "spatialdata_export"
+description: Export SpatialData-IO supported datasets to a legacy AnnData h5ad file.
+keywords:
+  - spatial
+  - spatial omics
+  - spatialdata
+  - anndata
+  - h5ad
+  - image analysis
+tools:
+  - "spatialdata":
+      description: "SpatialData is an open and interoperable data framework for spatial omics data."
+      homepage: "https://spatialdata.scverse.org"
+      documentation: "https://spatialdata.scverse.org"
+      tool_dev_url: "https://github.com/scverse/spatialdata"
+      doi: ""
+      licence: []
+      identifier: biotools:spatialdata
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - bundle:
+        type: file
+        description: Spatial technology output directory or file supported by SpatialData-IO.
+        pattern: "*"
+
+output:
+  anndata:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - h5ad:
+          type: file
+          description: AnnData h5ad file exported from the SpatialData input.
+          pattern: "*.h5ad"
+
+  images:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - label_image:
+          type: file
+          description: Optional label image exported as a TIFF.
+          pattern: "*_mask.tif"
+      - raw_image:
+          type: file
+          description: Optional raw image exported as a TIFF.
+          pattern: "*_raw.tif"
+
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

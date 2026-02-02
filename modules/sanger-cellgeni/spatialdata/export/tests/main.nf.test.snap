@@ -1,0 +1,90 @@
+{
+    "spatialdata export - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,99e25dd1f203d5049f4fabbe5198ed7b"
+                ],
+                "anndata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "images": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,99e25dd1f203d5049f4fabbe5198ed7b"
+                ]
+            },
+            {
+                "SPATIALDATA_EXPORT": {
+                    "spatialdata_export": null
+                }
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2026-02-02T09:51:53.804772628"
+    },
+    "spatialdata export - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,4b69b4ec73d647023d6608c6ffa3e866"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,99e25dd1f203d5049f4fabbe5198ed7b"
+                ],
+                "anndata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.h5ad:md5,4b69b4ec73d647023d6608c6ffa3e866"
+                    ]
+                ],
+                "images": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,99e25dd1f203d5049f4fabbe5198ed7b"
+                ]
+            },
+            {
+                "SPATIALDATA_EXPORT": {
+                    "spatialdata_export": null
+                }
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2026-02-02T10:58:25.71538301"
+    }
+}
