@@ -303,12 +303,12 @@ def _build_parser(readers: Dict[str, Callable[..., Any]]) -> argparse.ArgumentPa
     )
     parser.add_argument(
         "--table-name",
-        default=None,
+        default='table',
         help="Table name passed to to_legacy_anndata.",
     )
     parser.add_argument(
         "--include-images",
-        action="store_true",
+        action="store_false",
         help="Include downscaled images in the legacy AnnData output.",
     )
     parser.add_argument(
@@ -435,7 +435,9 @@ def main(argv: List[str] | None = None) -> int:
         )
     except Exception as exc:
         LOGGER.error("Failed to convert to legacy AnnData: %s", exc)
-        return 1
+        adata = sdata.tables[args.table_name]
+        # return 1
+    
 
     LOGGER.info("Writing AnnData to %s", output_path)
     try:
