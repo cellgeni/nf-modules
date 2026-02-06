@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "scraft_splith5ad"
+description: "Split an AnnData H5AD file into multiple H5AD files by an obs column using scraft."
+keywords:
+  - h5ad
+  - anndata
+  - single-cell
+  - scRNA
+  - split
+  - scraft
+tools:
+  - "scraft":
+      description: "Command-line toolkit for single-cell and spatial analysis."
+      homepage: "https://github.com/cellgeni/scraft"
+      documentation: "https://github.com/cellgeni/scraft"
+      tool_dev_url: "https://github.com/cellgeni/scraft"
+      doi: ""
+      licence: null
+      identifier: null
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information.
+          `meta.id` is used as the default output prefix.
+          e.g. `[ id:'sample1' ]`
+    - merged_h5ad:
+        type: file
+        description: Merged AnnData H5AD input file to split
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # H5AD
+    - obs_col:
+        type: string
+        description: Name of the obs column used to split the AnnData object
+
+output:
+  h5ad_splits:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information.
+            e.g. `[ id:'sample1' ]`
+      - "*.h5ad":
+          type: file
+          description: AnnData H5AD files split by the provided obs column
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # H5AD
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

@@ -1,0 +1,66 @@
+nextflow_process {
+
+    name "Test Process SCRAFT_SPLITH5AD"
+    script "../main.nf"
+    process "SCRAFT_SPLITH5AD"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "scraft"
+    tag "scraft/splith5ad"
+
+    test("scraft split_h5ad - h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'terra_demo/terra_demo.h5ad', checkIfExists: true),
+                    "sample_id"
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+    test("scraft split_h5ad - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'terra_demo/terra_demo.h5ad', checkIfExists: true),
+                    "sample_id"
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+}
