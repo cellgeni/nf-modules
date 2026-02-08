@@ -12,9 +12,9 @@ workflow POSTCODE_DECODING {
 
     main:
 
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    for_decoding = ch_profile
+    def for_decoding = ch_profile
         .combine(
             ch_tabular_codebook,
             by: 0

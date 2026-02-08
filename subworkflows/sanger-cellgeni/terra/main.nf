@@ -7,7 +7,7 @@ workflow TERRA {
 
     main:
 
-    ch_versions = channel.empty()
+    def ch_versions = channel.empty()
 
     SPATIAL_TERRA(ch_anndatas)
     ch_versions = ch_versions.mix(SPATIAL_TERRA.out.versions.first())
