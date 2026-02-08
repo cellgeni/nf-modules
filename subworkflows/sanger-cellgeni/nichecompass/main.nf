@@ -1,14 +1,18 @@
 include { SPATIAL_NICHECOMPASSTRAINING } from '../../../modules/sanger-cellgeni/spatial/nichecompasstraining/main'
 include { SPATIAL_NICHECOMPASSANALYSIS } from '../../../modules/sanger-cellgeni/spatial/nichecompassanalysis/main'
+include { SCRAFT_SPLITH5AD } from '../../../modules/sanger-cellgeni/scraft/splith5ad/main'
 
 workflow NICHECOMPASS {
     take:
     ch_h5ad // channel: [ val(meta), [ h5ad ] ]
 
     main:
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    SPATIAL_NICHECOMPASSTRAINING(ch_h5ad)
+    SCRAFT_SPLITH5AD(ch_h5ad)
+    ch_versions = ch_versions.mix(SCRAFT_SPLITH5AD.out.versions.first())
+
+    SPATIAL_NICHECOMPASSTRAINING(SCRAFT_SPLITH5AD.out.h5ad_splits)
     ch_versions = ch_versions.mix(SPATIAL_NICHECOMPASSTRAINING.out.versions.first())
 
     SPATIAL_NICHECOMPASSANALYSIS(SPATIAL_NICHECOMPASSTRAINING.out.nichecompass_model)

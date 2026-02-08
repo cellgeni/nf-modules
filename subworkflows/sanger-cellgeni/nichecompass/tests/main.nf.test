@@ -11,8 +11,31 @@ nextflow_workflow {
     tag "spatial/nichecompassanalysis"
 
 
-    // TODO nf-core: Change the test name preferably indicating the test-data and file-format used
-    test("nichecompass - mouse - 3") {
+    // test("nichecompass - mouse - 3") {
+
+    //     when {
+    //         params {
+    //             spatial_nichecompasstraining_args = '--species mouse'
+    //         }
+    //         workflow {
+    //             """
+    //             input[0] = [
+    //                 [ id:'test_20250830' ], // meta map
+    //                 file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+    //             ]
+    //             """
+    //         }
+    //     }
+
+    //     then {
+    //         assertAll(
+    //             { assert workflow.success},
+    //             { assert snapshot(workflow.out).match()}
+    //         )
+    //     }
+    // }
+
+    test("nichecompass concatenated - mouse - 3") {
 
         when {
             params {
@@ -22,7 +45,8 @@ nextflow_workflow {
                 """
                 input[0] = [
                     [ id:'test_20250830' ], // meta map
-                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100_concat/*.h5ad', checkIfExists: true),
+                    'batch'
                 ]
                 """
             }
