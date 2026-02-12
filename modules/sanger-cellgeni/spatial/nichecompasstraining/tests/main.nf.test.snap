@@ -17,7 +17,13 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,a161d0d7348002749044383eb702c113"
+                ],
+                "nichecompass_figure": [
+                    
                 ],
                 "nichecompass_model": [
                     [
@@ -34,7 +40,7 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                    "versions.yml:md5,a161d0d7348002749044383eb702c113"
                 ]
             }
         ],
@@ -42,7 +48,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-08-30T14:45:17.063200233"
+        "timestamp": "2026-02-12T13:56:14.393982965"
     },
     "nichecompass_train - 3 samples": {
         "content": [
@@ -53,9 +59,9 @@
                             "id": "test_20250829"
                         },
                         [
-                            "attr.pkl:md5,af7d4753e0ba2daa048b4c6fe807317d",
-                            "model_params.pt:md5,1edee96da3f1a54254abb9cb6d8bb9b2",
-                            "trained.h5ad:md5,1bbf27705dd25e0ec6025fb11782b379",
+                            "attr.pkl:md5,4d4a7e5aabce11b4821d19b74858cefd",
+                            "model_params.pt:md5,88041cdafbf354028442ccec22b79496",
+                            "trained.h5ad:md5,355cd5f1eb1fe48e700d52425d73c32d",
                             "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
                         ],
                         "run_config.json:md5,b748e7818cb82f263bbbb6628dc103f4",
@@ -79,7 +85,13 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,a161d0d7348002749044383eb702c113"
+                ],
+                "nichecompass_figure": [
+                    
                 ],
                 "nichecompass_model": [
                     [
@@ -87,9 +99,9 @@
                             "id": "test_20250829"
                         },
                         [
-                            "attr.pkl:md5,af7d4753e0ba2daa048b4c6fe807317d",
-                            "model_params.pt:md5,1edee96da3f1a54254abb9cb6d8bb9b2",
-                            "trained.h5ad:md5,1bbf27705dd25e0ec6025fb11782b379",
+                            "attr.pkl:md5,4d4a7e5aabce11b4821d19b74858cefd",
+                            "model_params.pt:md5,88041cdafbf354028442ccec22b79496",
+                            "trained.h5ad:md5,355cd5f1eb1fe48e700d52425d73c32d",
                             "var_names.csv:md5,d6db17b25f7a7847eac85d7b5a3552bc"
                         ],
                         "run_config.json:md5,b748e7818cb82f263bbbb6628dc103f4",
@@ -113,7 +125,7 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,0db64c3d3e9bc7683150a2079488147e"
+                    "versions.yml:md5,a161d0d7348002749044383eb702c113"
                 ]
             }
         ],
@@ -121,7 +133,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.5"
         },
-        "timestamp": "2025-08-30T14:44:43.981003966"
+        "timestamp": "2026-02-12T13:55:39.161310102"
     },
     "mouse - 3 - stub": {
         "content": [
