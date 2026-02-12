@@ -2,7 +2,7 @@ process SPATIAL_NICHECOMPASSANALYSIS {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/nichecompass:0.3.0"
+    container "quay.io/cellgeni/nichecompass:0.3.1"
 
     stageInMode 'copy'
 
