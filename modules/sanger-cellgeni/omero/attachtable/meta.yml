@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "omero_attachtable"
+description: Attach a CSV table to an OMERO image and ROI and emit an annotation-id CSV. Requires secrets `OMERO_USER` and `OMERO_PASSWORD`.
+keywords:
+  - omero
+  - microscopy
+  - annotation
+  - csv
+tools:
+  - "omero2pandas":
+      description: "Python library for interacting with OMERO tables."
+      homepage: ""
+      documentation: ""
+      tool_dev_url: ""
+      doi: ""
+      licence: null
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - csv:
+        type: file
+        description: CSV file to attach to the OMERO image
+        pattern: "*.csv"
+    - image_id:
+        type: integer
+        description: OMERO image id
+    - roi_id:
+        type: integer
+        description: OMERO ROI id
+    - host:
+        type: string
+        description: OMERO host
+    - port:
+        type: integer
+        description: OMERO port
+
+output:
+  ann_csv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.ann.csv":
+          type: file
+          description: CSV file with annotation id, image id, and ROI id
+          pattern: "*.ann.csv"
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: Python version
+      - omero2pandas:
+          type: string
+          description: omero2pandas version
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
