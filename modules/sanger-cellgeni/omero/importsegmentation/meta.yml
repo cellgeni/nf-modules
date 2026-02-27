@@ -26,9 +26,9 @@ input:
         type: file
         description: ROI properties CSV input for ROI_Converter_NGFF
         pattern: "*.csv"
-    - roi_id:
+    - image_id:
         type: integer
-        description: OMERO ROI id
+        description: OMERO image id
     - host:
         type: string
         description: OMERO host

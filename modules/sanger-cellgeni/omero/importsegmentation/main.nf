@@ -9,7 +9,7 @@ process OMERO_IMPORTSEGMENTATION {
         : 'quay.io/cellgeni/roi_convert_ngff:0.6.2'}"
 
     input:
-    tuple val(meta), path(csv), val(roi_id), val(host), val(table_name), val(roi_name), val(out_dir)
+    tuple val(meta), path(csv), val(image_id), val(host), val(table_name), val(roi_name), val(out_dir)
 
     secret 'OMERO_USER'
     secret 'OMERO_PASSWORD'
@@ -28,7 +28,7 @@ process OMERO_IMPORTSEGMENTATION {
     ROI_CONVERTER_LOG=${prefix}.ROI_Converter_NGFF.log
 
     ROI_Converter_NGFF \\
-        -r ${roi_id} \\
+        -r ${image_id} \\
         --server ${host} \\
         --user \$OMERO_USER \\
         --password \$OMERO_PASSWORD \\
