@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "bioformats2rawcompanion"
+description: write your description here
+keywords:
+  - Conversion
+  - ETL
+  - Image
+  - Microscopy
+  - Glencoe software
+  - NGFF Converter
+tools:
+  - "bioformats2raw":
+      description:
+        "Java application to convert image file formats, including .mrxs,
+        to an intermediate Zarr structure compatible with the OME-NGFF specification."
+      homepage: "https://github.com/glencoesoftware/bioformats2raw"
+      documentation: "https://github.com/glencoesoftware/bioformats2raw"
+      tool_dev_url: "https://github.com/glencoesoftware/bioformats2raw"
+      licence:
+        - "GPL-2.0"
+      identifier: biotools:bioformats2raw
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - master:
+        type: file
+        description: An ome.companion file or a single image file
+        pattern: "*.{companion, ome.tiff, ome.tif}"
+
+    - images:
+        type: file
+        description: image files
+        pattern: "*.{tif,png,ndpi}"
+
+output:
+  ome_zarr:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.ome.zarr":
+          type: file
+          description: ome.zarr folder
+          pattern: "*.ome.zarr}"
+
+  versions_bioformats2rawcompanion:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "bioformats2rawcompanion":
+          type: string
+          description: The name of the tool
+      - "bioformats2raw --version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - bioformats2raw:
+          type: string
+          description: The name of the tool
+      - bioformats2raw --version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
