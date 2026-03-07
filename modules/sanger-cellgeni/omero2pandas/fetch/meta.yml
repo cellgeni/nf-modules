@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "omero2pandas_fetch"
+description: Download OMERO table annotations to CSV files using omero2pandas.
+keywords:
+  - omero
+  - microscopy
+  - annotation
+  - table
+  - csv
+tools:
+  - "omero2pandas":
+      description: "Python package for reading and writing OMERO tables and metadata."
+      homepage: "https://github.com/tomlings/omero2pandas"
+      documentation: "https://github.com/tomlings/omero2pandas"
+      tool_dev_url: "https://github.com/tomlings/omero2pandas"
+      doi: ""
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:omero2pandas
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - annotation_id:
+        type: integer
+        description: OMERO table annotation ID to download.
+    - linking_index:
+        type: integer
+        description: |
+          User-provided linkage index for this annotation
+          (for example, channel/time/plane mapping key).
+
+output:
+  annotations:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*/annotation_*.csv":
+          type: file
+          description: Downloaded per-annotation CSV files from OMERO table annotations.
+          pattern: "*/annotation_*.csv"
+  versions_omero2pandas_fetch:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "omero2pandas_fetch":
+          type: string
+          description: The name of the tool
+      - "omero_download_annotations.py --version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - omero2pandas_fetch:
+          type: string
+          description: The name of the tool
+      - omero_download_annotations.py --version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
