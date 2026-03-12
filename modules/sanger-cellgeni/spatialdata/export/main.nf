@@ -23,6 +23,8 @@ process SPATIALDATA_EXPORT {
     prefix = task.ext.prefix ?: "${meta.id}"
     out_h5ad = "${prefix}.h5ad"
     """
+    export NUMBA_DISABLE_JIT=0
+    export NUMBA_CACHE_DIR=/tmp/numba_cache
     spatialdata_export.py \\
         ${bundle} \\
         -o ${out_h5ad} \\
