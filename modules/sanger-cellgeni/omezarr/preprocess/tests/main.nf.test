@@ -1,0 +1,70 @@
+nextflow_process {
+
+    name "Test Process OMEZARR_PREPROCESS"
+    script "../main.nf"
+    process "OMEZARR_PREPROCESS"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "omezarr"
+    tag "omezarr/preprocess"
+
+    test("omezarr preprocess") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file('.'),
+                    'image_0',
+                    'A/1/0',
+                ]
+                input[1] = file('.')
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+    test("omezarr preprocess - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file('.'),
+                    'image_0',
+                    'A/1/0',
+                ]
+                input[1] = file('.')
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+}

@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "omezarr_preprocess"
+description: Preprocess an OME-Zarr image path and export a TIFF image.
+keywords:
+  - ome-zarr
+  - microscopy
+  - image-processing
+  - deconvolution
+  - tiff
+tools:
+  - "omezarr_preprocess":
+      description: "CLI wrapper script for OME-Zarr preprocessing and TIFF export."
+      homepage: "https://github.com/cellgeni/nf-modules"
+      documentation: "https://github.com/cellgeni/nf-modules"
+      tool_dev_url: "https://github.com/cellgeni/nf-modules"
+      doi: ""
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - root_folder:
+        type: file
+        description: Root path of the input OME-Zarr dataset.
+        pattern: "*"
+    - image_id:
+        type: string
+        description: Image identifier from the source metadata.
+    - hcs_path:
+        type: string
+        description: HCS image path key inside the OME-Zarr plate.
+  - - psf_folder:
+        type: file
+        description: Folder containing per-channel PSF TIFF files.
+        pattern: "*"
+
+output:
+  fovs:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.tif":
+          type: file
+          description: Preprocessed TIFF image export.
+          pattern: "*.tif"
+  versions_omezarr_preprocess:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "omezarr_preprocess":
+          type: string
+          description: The name of the tool
+      - "process.py version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - omezarr_preprocess:
+          type: string
+          description: The name of the tool
+      - process.py version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

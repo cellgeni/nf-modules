@@ -1,0 +1,44 @@
+process OMEZARR_PREPROCESS {
+    tag "${meta.id}"
+    label 'process_medium'
+
+    // conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/clij2:0.28'
+        : 'quay.io/cellgeni/clij2:0.28'}"
+
+    input:
+    tuple val(meta), path(root_folder), val(image_id), val(hcs_path)
+    path psf_folder, stageAs: 'psfs'
+
+    output:
+    tuple val(meta), path("${task.ext.prefix ?: meta.id}.tif"), emit: fovs
+    tuple val("${task.process}"), val('omezarr_preprocess'), eval("process.py version"), topic: versions, emit: versions_omezarr_preprocess
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def out_img_name = "${prefix}.tif"
+    """
+    process.py run \\
+        --root_folder ${root_folder} \\
+        --index 0 \\
+        --out_img_name ${out_img_name} \\
+        --hcs_path ${hcs_path} \\
+        --psf_folder ${psf_folder} \\
+        ${args}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def out_img_name = "${prefix}.tif"
+    """
+    echo ${args}
+    
+    touch ${out_img_name}
+    """
+}
