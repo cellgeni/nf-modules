@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "preprocess_ome_zarr_tiles"
+description: Generate companion OME-XML metadata and preprocess OME-Zarr tiles into TIFF FOV images.
+keywords:
+  - ome-zarr
+  - microscopy
+  - image-processing
+  - deconvolution
+  - tiff
+  - companion
+components:
+  - sanger-cellgeni/imaging/generatecompanion
+  - sanger-cellgeni/omezarr/preprocess
+input:
+  - master_file_ch:
+      type: file
+      description: |
+        Channel containing master file metadata required to build tile manifests and companion XML.
+        Structure: [ val(meta), val(round), path(image_root_folder), val(master_file_name) ]
+      pattern: "*"
+  - psf_folder:
+      type: file
+      description: |
+        Folder containing per-channel PSF TIFF files for OME-Zarr deconvolution/preprocessing.
+        Structure: [ path(psf_folder) ]
+      pattern: "*"
+output:
+  - companion_tiles:
+      type: file
+      description: |
+        Channel containing generated companion XML and grouped preprocessed TIFF FOV tiles.
+        Structure: [ val(meta), path(companion), [ path(fov_tifs) ] ]
+      pattern: "*.{ome,tif,tiff}"
+  - versions:
+      type: file
+      description: |
+        Channel containing software version information emitted by included modules.
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
