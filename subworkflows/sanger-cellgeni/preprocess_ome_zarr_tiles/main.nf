@@ -1,7 +1,7 @@
 include { OMEZARR_PREPROCESS } from "../../../modules/sanger-cellgeni/omezarr/preprocess"
 include { IMAGING_GENERATECOMPANION } from "../../../modules/sanger-cellgeni/imaging/generatecompanion"
 
-workflow PREPROCESS_TILES {
+workflow PREPROCESS_OME_ZARR_TILES {
     take:
     master_file_ch // channel: [ val(meta), file(master_file_folder) ]
     psf_folder
