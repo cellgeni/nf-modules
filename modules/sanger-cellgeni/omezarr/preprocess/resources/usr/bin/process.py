@@ -117,12 +117,11 @@ def main(
                 )
                 z_stack = cz_stack[c]
             if z_project:
-                # z_stack = np.max(z_stack, axis=0)
                 z_stack = z_stack.max(axis=0).compute()
             c_stack.append(z_stack)
         processed_hyper_stack.append(c_stack)
+        logger.info(f"Took {time.time() - cursor} seconds to process time point {t}.")
     processed_hyper_stack = np.array(processed_hyper_stack)
-    print(processed_hyper_stack.shape)
     cursor = time.time()
     new_dim_order = "TCYX" if z_project else "TCZYX"
     OmeTiffWriter.save(
