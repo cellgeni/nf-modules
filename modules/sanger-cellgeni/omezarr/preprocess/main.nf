@@ -12,7 +12,7 @@ process OMEZARR_PREPROCESS {
     path psf_folder, stageAs: 'psfs'
 
     output:
-    tuple val(meta), path("${task.ext.prefix ?: meta.id}.tif"), emit: fovs
+    tuple val(meta), path("${image_id}"), emit: fovs
     tuple val("${task.process}"), val('omezarr_preprocess'), eval("process.py version"), topic: versions, emit: versions_omezarr_preprocess
 
     when:
@@ -21,12 +21,10 @@ process OMEZARR_PREPROCESS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def out_img_name = "${prefix}.tif"
     """
     process.py run \\
         --root_folder ${root_folder} \\
-        --index 0 \\
-        --out_img_name ${out_img_name} \\
+        --out_img_name ${image_id} \\
         --hcs_path ${hcs_path} \\
         --psf_folder ${psf_folder} \\
         ${args}
@@ -35,10 +33,9 @@ process OMEZARR_PREPROCESS {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def out_img_name = "${prefix}.tif"
     """
     echo ${args}
     
-    touch ${out_img_name}
+    touch ${image_id}
     """
 }

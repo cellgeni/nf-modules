@@ -16,7 +16,8 @@ from pathlib import Path
 import pyopencl as cl
 import logging
 from ngio import open_ome_zarr_plate
-import os
+
+from bioio import PhysicalPixelSizes
 
 # Set up logging
 logging.basicConfig(
@@ -85,7 +86,8 @@ def main(
     cursor = start_time
 
     plate = open_ome_zarr_plate(root_folder)
-    img = plate.get_images()[hcs_path]
+    row, column, fov = hcs_path.split("/")
+    img = plate.get_image(row=row, column=column, image_path=fov).get_image()
     pixelsize = img.pixel_size
     # img = AICSImage(f"{root_folder}/{master_file}")
     # physical_pixel_sizes = img.physical_pixel_sizes
@@ -99,10 +101,10 @@ def main(
     processed_hyper_stack = []
 
     stack = img.get_as_dask(axes_order=("t", "c", "z", "y", "x"))
-    for t in range(img.shape[0]):
+    for t in range(stack.shape[0]):
         c_stack = []
         cursor = time.time()
-        cz_stack = img[t]
+        cz_stack = stack[t]
         for c, c_name in enumerate(img.channel_labels):
             print(c_name)
             current_psf = f"{psf_folder}/{c_name}.tif"
@@ -136,7 +138,9 @@ def main(
         dim_order=new_dim_order,
         channel_names=img.channel_labels,
         image_names=out_img_name.replace(".ome.tif", ""),
-        physical_pixel_sizes=pixelsize,
+        physical_pixel_sizes=PhysicalPixelSizes(
+            X=pixelsize.x, Y=pixelsize.y, Z=pixelsize.z
+        ),
     )
     print(f"Elapsed time for saving the image: {time.time() - cursor} seconds")
 
