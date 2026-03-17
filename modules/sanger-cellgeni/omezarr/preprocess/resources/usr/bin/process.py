@@ -89,14 +89,7 @@ def main(
     row, column, fov = hcs_path.split("/")
     img = plate.get_image(row=row, column=column, image_path=fov).get_image()
     pixelsize = img.pixel_size
-    # img = AICSImage(f"{root_folder}/{master_file}")
-    # physical_pixel_sizes = img.physical_pixel_sizes
-    # print(f"Physical pixel sizes: {physical_pixel_sizes}")
-    # Print the time taken to load the image
     print(f"Time taken to load the image: {time.time() - cursor} seconds")
-    cursor = time.time()
-    # img.set_scene(img.scenes[index])
-    print(f"Elapsed time for scene setting: {time.time() - cursor} seconds")
     cursor = time.time()
     processed_hyper_stack = []
 
@@ -125,7 +118,7 @@ def main(
                 z_stack = cz_stack[c]
             if z_project:
                 # z_stack = np.max(z_stack, axis=0)
-                z_stack = stack.max(axis=1).compute()
+                z_stack = z_stack.max(axis=0).compute()
             c_stack.append(z_stack)
         processed_hyper_stack.append(c_stack)
     processed_hyper_stack = np.array(processed_hyper_stack)
