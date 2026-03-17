@@ -18,7 +18,7 @@ workflow PREPROCESS_OME_ZARR_TILES {
             [row[0], file(row[1].root_xml), row[1].image_id, row[1].path]
         }
     OMEZARR_PREPROCESS(tiles, psf_folder)
-    ch_versions = ch_versions.mix(OMEZARR_PREPROCESS.out.versions.first())
+    ch_versions = ch_versions.mix(OMEZARR_PREPROCESS.out.versions_omezarr_preprocess.first())
 
     emit:
     companion_tiles = IMAGING_GENERATECOMPANION.out.companion.combine(OMEZARR_PREPROCESS.out.fovs, by: 0).groupTuple(by: [0, 1]) // [ meta, companion, [fovs] ]
