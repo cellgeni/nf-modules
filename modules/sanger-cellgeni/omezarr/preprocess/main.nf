@@ -12,7 +12,7 @@ process OMEZARR_PREPROCESS {
     path psf_folder, stageAs: 'psfs'
 
     output:
-    tuple val(meta), path("${image_id}"), emit: fovs
+    tuple val(meta), path("${image_id}.tif"), emit: fovs
     tuple val("${task.process}"), val('omezarr_preprocess'), eval("process.py version"), topic: versions, emit: versions_omezarr_preprocess
 
     when:
@@ -24,7 +24,7 @@ process OMEZARR_PREPROCESS {
     """
     process.py run \\
         --root_folder ${root_folder} \\
-        --out_img_name ${image_id} \\
+        --out_img_name ${image_id}.tif \\
         --hcs_path ${hcs_path} \\
         --psf_folder ${psf_folder} \\
         ${args}
