@@ -125,7 +125,7 @@ def main(
     cursor = time.time()
     new_dim_order = "TCYX" if z_project else "TCZYX"
     OmeTiffWriter.save(
-        processed_hyper_stack,
+        processed_hyper_stack.astype(np.uint16),
         f"{out_img_name}",
         dim_order=new_dim_order,
         channel_names=img.channel_labels,
