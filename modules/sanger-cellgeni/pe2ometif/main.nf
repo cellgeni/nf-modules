@@ -4,8 +4,8 @@ process PE2OMETIF {
 
     // conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/imagetileprocessor:0.1.17'
-        : 'quay.io/cellgeni/imagetileprocessor:0.1.17'}"
+        ? 'quay.io/cellgeni/imagetileprocessor:0.2.0'
+        : 'quay.io/cellgeni/imagetileprocessor:0.2.0'}"
 
     input:
     tuple val(meta), path(image_dir), val(index_name)
