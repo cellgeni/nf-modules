@@ -1,0 +1,68 @@
+nextflow_process {
+
+    name "Test Process PE2OMETIF"
+    script "../main.nf"
+    process "PE2OMETIF"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "pe2ometif"
+
+    test("pe2ometif - perkinelmer full run") {
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file('s3://spatial_demo_datasets/PerkinElmer/Hoechst__2023-03-07T10_17_54-Measurement 2/Images/', checkIfExists: true),
+                    'Index.idx.xml'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.ome_tif[0][1].size() > 0 },
+                { assert process.out.companion[0][1].toString().endsWith('plate.companion.ome') },
+                { assert process.out.versions_pe2ometif[0][1] == 'pe2ometif' }
+            )
+        }
+    }
+
+    test("pe2ometif - no companion stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                module_args = "--no-companion"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file('.'),
+                    'Index.idx.xml'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.ome_tif[0][1].toString().endsWith('A01_F001_maxproj.ome.tif') },
+                { assert process.out.companion == [] }
+            )
+        }
+
+    }
+
+}

@@ -1,0 +1,60 @@
+{
+    "petoometif - perkinelmer": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "companion": [
+                    
+                ],
+                "ome_tif": [
+                    
+                ],
+                "versions_petoometif": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-04-09T14:42:20.629589272"
+    },
+    "petoometif - no companion - stub": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    
+                ],
+                "companion": [
+                    
+                ],
+                "ome_tif": [
+                    
+                ],
+                "versions_petoometif": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-04-09T14:42:07.885467162"
+    }
+}

@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "pe2ometif"
+description: Convert PerkinElmer Columbus/Harmony plate acquisitions to per-field OME-TIFF with optional Z-projection and plate companion OME XML output.
+keywords:
+  - microscopy
+  - ome-tiff
+  - perkinelmer
+  - harmony
+  - columbus
+  - conversion
+tools:
+  - "pe_to_ome_tif":
+      description: "Python CLI to convert PerkinElmer Columbus/Harmony plate exports to OME-TIFF files and optional plate.companion.ome metadata."
+      homepage: "https://github.com/cellgeni/nf-modules"
+      documentation: "https://github.com/cellgeni/nf-modules"
+      tool_dev_url: "https://github.com/cellgeni/nf-modules"
+      licence:
+        - "MIT"
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - image_dir:
+        type: directory
+        description: Directory containing PerkinElmer image planes and index XML.
+    - index_name:
+        type: string
+        description: File name of the PerkinElmer index XML within image_dir (e.g. Index.idx.xml).
+
+output:
+  ome_tif:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*/*.ome.tif":
+          type: file
+          description: Converted per-well-field OME-TIFF files.
+          pattern: "*.ome.tif"
+
+  companion:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*/plate.companion.ome":
+          type: file
+          description: Optional plate companion OME XML linking all output OME-TIFF files.
+          pattern: "plate.companion.ome"
+
+  versions_pe2ometif:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "pe2ometif":
+          type: string
+          description: The name of the tool
+      - "python --version | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the runtime Python version
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - pe2ometif:
+          type: string
+          description: The name of the tool
+      - python --version | sed 's/Python //':
+          type: eval
+          description: The expression to obtain the runtime Python version
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
