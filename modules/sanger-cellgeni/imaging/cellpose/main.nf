@@ -4,8 +4,8 @@ process IMAGING_CELLPOSE {
     label "medium_mem"
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? "quay.io/cellgeni/tiled_cellpose:latest"
-        : "quay.io/cellgeni/tiled_cellpose:latest"}"
+        ? "quay.io/cellgeni/tiled_cellpose:0.2.0"
+        : "quay.io/cellgeni/tiled_cellpose:0.2.0"}"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(cell_diameter)
