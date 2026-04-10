@@ -1,6 +1,6 @@
 include { SEGGER_SEGMENT      } from '../../../modules/sanger-cellgeni/segger/segment/main'
 include { SEGGER_EXPORT       } from '../../../modules/sanger-cellgeni/segger/export/main'
-include { SEGGER_XENIUMBUNDLE } from '../../../modules/sanger-cellgeni/segger/xeniumBundle/main'
+include { SEGGER_XENIUMBUNDLE } from '../../../modules/sanger-cellgeni/segger/xeniumbundle/main'
 
 workflow SEGGER_PREDICT {
     take:
