@@ -30,7 +30,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].size() > 0 },
-                { assert process.out.companion[0][1].toString().endsWith('plate.companion.ome') },
+                { assert process.out.companion[0][1].toString().endsWith('.companion.ome') },
                 { assert process.out.versions_pe2ometif[0][1] == 'pe2ometif' }
             )
         }

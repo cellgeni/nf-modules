@@ -732,7 +732,8 @@ def parse_well_field(filename: str) -> tuple[int, int, int]:
             break
 
     # Pattern 1: {WELL}_F{field}  e.g. A01_F001, B12_F003
-    m = re.match(r"([A-Za-z]{1,3}\d{1,3})_[Ff](\d+)", stem)
+    # Use re.search so an optional prefix (e.g. "sampleA_A01_F001") still matches.
+    m = re.search(r"([A-Za-z]{1,3}\d{1,3})_[Ff](\d+)", stem)
     if m:
         try:
             row, col = label_to_rowcol(m.group(1))
@@ -741,7 +742,7 @@ def parse_well_field(filename: str) -> tuple[int, int, int]:
             pass
 
     # Pattern 2: r{row}c{col}f{field}  e.g. r01c02f03
-    m = re.match(r"[Rr](\d+)[Cc](\d+)[Ff](\d+)", stem)
+    m = re.search(r"[Rr](\d+)[Cc](\d+)[Ff](\d+)", stem)
     if m:
         return int(m.group(1)), int(m.group(2)), int(m.group(3))
 
@@ -1365,6 +1366,7 @@ def convert(
     wells_filter: Optional[set[tuple[int, int]]],
     apply_correction: bool,
     write_companion: bool,
+    prefix: str = "",
 ) -> None:
     print(f"Parsing {index_path.name} …")
     plate, entries = parse_index(index_path)
@@ -1468,9 +1470,11 @@ def convert(
         sorted(groups.items()), start=1
     ):
         label    = well_label(row, col)
-        out_name = f"{label}_F{fov:03d}.ome.tif"
+        base_name = f"{label}_F{fov:03d}"
         if method:
-            out_name = f"{label}_F{fov:03d}_{method}proj.ome.tif"
+            base_name = f"{label}_F{fov:03d}_{method}proj"
+        out_name = (f"{prefix}_{base_name}.ome.tif" if prefix
+                    else f"{base_name}.ome.tif")
         output_path = output_dir / out_name
 
         n_t = len({e.timepoint   for e in field_entries})
@@ -1499,9 +1503,10 @@ def convert(
         print()  # newline after \r progress
 
     if write_companion:
+        companion_name = f"{prefix}.companion.ome" if prefix else "plate.companion.ome"
         make_companion(
             output_dir=output_dir,
-            companion_path=output_dir / "plate.companion.ome",
+            companion_path=output_dir / companion_name,
             plate=plate,
         )
 
@@ -1577,6 +1582,14 @@ def parse_args(argv=None):
             "Do not write a plate.companion.ome file after conversion."
         ),
     )
+    ap.add_argument(
+        "--prefix",
+        default="",
+        help=(
+            "Optional prefix prepended to every output filename, separated by '_'. "
+            "E.g. --prefix mysample produces mysample_A01_F001_maxproj.ome.tif."
+        ),
+    )
     return ap.parse_args(argv)
 
 
@@ -1614,6 +1627,7 @@ def main(argv=None):
         wells_filter=wells_filter,
         apply_correction=not args.no_correction,
         write_companion=not args.no_companion,
+        prefix=args.prefix,
     )
 
 

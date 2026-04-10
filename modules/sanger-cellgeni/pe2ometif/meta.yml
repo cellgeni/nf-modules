@@ -48,10 +48,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*/plate.companion.ome":
+      - "*/*.companion.ome":
           type: file
-          description: Optional plate companion OME XML linking all output OME-TIFF files.
-          pattern: "plate.companion.ome"
+          description: Optional plate companion OME XML linking all output OME-TIFF files. Named {prefix}.companion.ome when --prefix is supplied, otherwise plate.companion.ome.
+          pattern: "*.companion.ome"
 
   versions_pe2ometif:
     - - "${task.process}":
