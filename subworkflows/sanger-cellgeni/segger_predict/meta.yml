@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "segger_predict"
+description: |
+  Run segger cell segmentation end-to-end: trains and segments a spatial transcriptomics
+  dataset with SEGGER_SEGMENT, then exports the results with SEGGER_EXPORT.
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - merscope
+  - cosmx
+  - graph neural network
+  - export
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1' ]`
+  - input_dir:
+      type: directory
+      description: |
+        Input directory containing the spatial transcriptomics dataset.
+        Supports Xenium (detected_transcripts.parquet, cell_boundaries.parquet),
+        MERSCOPE (detected_transcripts.csv/.parquet), and CosMX formats.
+        Also used as source_dir for the export step.
+
+output:
+  - segmentation:
+      type: file
+      description: |
+        Parquet file with segmentation results produced by SEGGER_SEGMENT.
+        Columns include row_index, segger_similarity, segger_cell_id, and similarity_threshold.
+      pattern: "*_segger/segger_segmentation.parquet"
+  - export_dir:
+      type: directory
+      description: |
+        Output directory containing exported files produced by SEGGER_EXPORT.
+        Content depends on the --format argument passed via ext.args:
+        xenium_explorer produces seg_cells.zarr.zip, seg_analysis.zarr.zip, seg_experiment.xenium;
+        anndata produces .h5ad files; spatialdata produces a .zarr store;
+        merged produces transcripts_segmented.parquet.
+      pattern: "*_segger_export"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
