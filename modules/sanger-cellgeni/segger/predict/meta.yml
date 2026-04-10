@@ -1,0 +1,56 @@
+name: "segger_predict"
+description: Run segger cell segmentation prediction using a pre-trained model checkpoint
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - merscope
+  - cosmx
+  - graph neural network
+  - inference
+tools:
+  - "segger":
+      description: "segger is a graph neural network-based cell segmentation tool for spatial transcriptomics data."
+      homepage: "https://github.com/dpeerlab/segger"
+      documentation: "https://github.com/dpeerlab/segger"
+      tool_dev_url: "https://github.com/dpeerlab/segger"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - checkpoint:
+        type: file
+        description: Pre-trained segger model checkpoint (.ckpt file)
+        pattern: "*.ckpt"
+    - input_dir:
+        type: directory
+        description: |
+          Input directory containing the spatial transcriptomics dataset.
+          Supports Xenium (detected_transcripts.parquet, cell_boundaries.parquet),
+          MERSCOPE (detected_transcripts.csv/.parquet), and CosMX formats.
+
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - segmentation:
+        type: file
+        description: |
+          Parquet file with segmentation results. Columns include row_index,
+          segger_similarity, segger_cell_id, and similarity_threshold.
+        pattern: "*_segger/segger_segmentation.parquet"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

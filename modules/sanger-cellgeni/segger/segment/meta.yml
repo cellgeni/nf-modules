@@ -1,0 +1,51 @@
+name: "segger_segment"
+description: Train a segger model and segment a spatial transcriptomics dataset end-to-end
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - merscope
+  - cosmx
+  - graph neural network
+tools:
+  - "segger":
+      description: "segger is a graph neural network-based cell segmentation tool for spatial transcriptomics data."
+      homepage: "https://github.com/dpeerlab/segger"
+      documentation: "https://github.com/dpeerlab/segger"
+      tool_dev_url: "https://github.com/dpeerlab/segger"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - input_dir:
+        type: directory
+        description: |
+          Input directory containing the spatial transcriptomics dataset.
+          Supports Xenium (detected_transcripts.parquet, cell_boundaries.parquet),
+          MERSCOPE (detected_transcripts.csv/.parquet), and CosMX formats.
+
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - segmentation:
+        type: file
+        description: |
+          Parquet file with segmentation results. Columns include row_index,
+          segger_similarity, segger_cell_id, and similarity_threshold.
+        pattern: "*_segger/segger_segmentation.parquet"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

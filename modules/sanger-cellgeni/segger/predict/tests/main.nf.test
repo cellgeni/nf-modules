@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process SEGGER_PREDICT"
+    script "../main.nf"
+    process "SEGGER_PREDICT"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "segger"
+    tag "segger/predict"
+
+    test("xenium - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'spatial/segger/model.ckpt', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'spatial/xenium/sample/', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
