@@ -1,0 +1,57 @@
+name: "segger_xenium_bundle"
+description: |
+  Duplicate a Xenium bundle locally and inject segger export outputs into it,
+  producing a self-contained Xenium bundle enriched with segger segmentation files.
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - bundle
+  - export
+tools:
+  - "segger":
+      description: "segger is a graph neural network-based cell segmentation tool for spatial transcriptomics data."
+      homepage: "https://github.com/dpeerlab/segger"
+      documentation: "https://github.com/dpeerlab/segger"
+      tool_dev_url: "https://github.com/dpeerlab/segger"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - xenium_dir:
+        type: directory
+        description: |
+          Original Xenium bundle directory containing detected_transcripts.parquet,
+          cell_boundaries.parquet, and associated metadata files.
+    - export_dir:
+        type: directory
+        description: |
+          Directory of segger export outputs (produced by SEGGER_EXPORT) whose
+          contents will be injected into the duplicated Xenium bundle.
+          e.g. seg_cells.zarr.zip, seg_analysis.zarr.zip, seg_experiment.xenium.
+
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - xenium_bundle:
+        type: directory
+        description: |
+          Enriched Xenium bundle: a local copy of the original xenium_dir with all
+          segger export files added alongside the existing bundle contents.
+        pattern: "*_xenium_segger"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

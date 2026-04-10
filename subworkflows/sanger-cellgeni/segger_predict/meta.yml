@@ -2,7 +2,8 @@
 name: "segger_predict"
 description: |
   Run segger cell segmentation end-to-end: trains and segments a spatial transcriptomics
-  dataset with SEGGER_SEGMENT, then exports the results with SEGGER_EXPORT.
+  dataset with SEGGER_SEGMENT, exports the results with SEGGER_EXPORT, then injects the
+  export files into a local copy of the original Xenium bundle with SEGGER_XENIUM_BUNDLE.
 keywords:
   - segmentation
   - spatial transcriptomics
@@ -42,6 +43,13 @@ output:
         anndata produces .h5ad files; spatialdata produces a .zarr store;
         merged produces transcripts_segmented.parquet.
       pattern: "*_segger_export"
+  - xenium_bundle:
+      type: directory
+      description: |
+        Enriched Xenium bundle produced by SEGGER_XENIUM_BUNDLE: a local copy of the
+        original input_dir with all segger export files injected alongside the existing
+        bundle contents.
+      pattern: "*_xenium_segger"
   - versions:
       type: file
       description: File containing software versions
