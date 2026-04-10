@@ -20,7 +20,8 @@ process PE2OMETIF {
 
     script:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
+    def round_index = meta.round_index ? "_${meta.round_index}" : "_1"
+    prefix = task.ext.prefix ?: "${meta.id}${round_index}"
     """
     pe_to_ome_tif.py \\
         ${image_dir}/${index_name} \\
@@ -31,7 +32,8 @@ process PE2OMETIF {
 
     stub:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
+    def round_index = meta.round_index ? "_${meta.round_index}" : "_1"
+    prefix = task.ext.prefix ?: "${meta.id}${round_index}"
     """
     mkdir -p ${prefix}
     touch ${prefix}/A01_F001_maxproj.ome.tif
