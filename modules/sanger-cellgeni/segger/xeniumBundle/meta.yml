@@ -1,4 +1,4 @@
-name: "segger_xenium_bundle"
+name: "segger_xeniumbundle"
 description: |
   Duplicate a Xenium bundle locally and inject segger export outputs into it,
   producing a self-contained Xenium bundle enriched with segger segmentation files.

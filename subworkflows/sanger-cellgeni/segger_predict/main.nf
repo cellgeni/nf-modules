@@ -1,6 +1,6 @@
 include { SEGGER_SEGMENT      } from '../../../modules/sanger-cellgeni/segger/segment/main'
 include { SEGGER_EXPORT       } from '../../../modules/sanger-cellgeni/segger/export/main'
-include { SEGGER_XENIUM_BUNDLE } from '../../../modules/sanger-cellgeni/segger/xenium_bundle/main'
+include { SEGGER_XENIUMBUNDLE } from '../../../modules/sanger-cellgeni/segger/xeniumBundle/main'
 
 workflow SEGGER_PREDICT {
     take:
@@ -24,12 +24,12 @@ workflow SEGGER_PREDICT {
         .join(ch_input, by: 0)
         .map { meta, export_dir, xenium_dir -> [ meta, xenium_dir, export_dir ] }
 
-    SEGGER_XENIUM_BUNDLE(ch_bundle)
-    ch_versions = ch_versions.mix(SEGGER_XENIUM_BUNDLE.out.versions.first())
+    SEGGER_XENIUMBUNDLE(ch_bundle)
+    ch_versions = ch_versions.mix(SEGGER_XENIUMBUNDLE.out.versions.first())
 
     emit:
     segmentation  = SEGGER_SEGMENT.out.segmentation        // channel: [ val(meta), path(parquet) ]
     export_dir    = SEGGER_EXPORT.out.export_dir           // channel: [ val(meta), path(export_dir) ]
-    xenium_bundle = SEGGER_XENIUM_BUNDLE.out.xenium_bundle // channel: [ val(meta), path(xenium_bundle) ]
+    xenium_bundle = SEGGER_XENIUMBUNDLE.out.xenium_bundle // channel: [ val(meta), path(xenium_bundle) ]
     versions      = ch_versions                            // channel: [ versions.yml ]
 }

@@ -1,4 +1,4 @@
-process SEGGER_XENIUM_BUNDLE {
+process SEGGER_XENIUMBUNDLE {
     tag "${meta.id}"
     label 'process_medium'
 
