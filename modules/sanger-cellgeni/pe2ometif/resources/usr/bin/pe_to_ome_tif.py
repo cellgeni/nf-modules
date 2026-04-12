@@ -157,6 +157,9 @@ class TiffInfo:
     px_x_um: float
     px_y_um: float
     px_z_um: float
+    stage_x_um: float
+    stage_y_um: float
+    stage_z_um: float
     channels: list[dict] # [{name, excitation_nm, emission_nm, …}, …]
     file_uuid: str       # per-file UUID used in companion TiffData/UUID
 
@@ -931,6 +934,10 @@ def _read_tiff_info(path: Path, image_idx: int) -> TiffInfo:
     pixels = root.find(".//Pixels")
     if pixels is None:
         raise ValueError(f"No <Pixels> in {path.name}")
+    first_plane = pixels.find("Plane")
+    stage_x_um = float(first_plane.get("PositionX", 0.0)) if first_plane is not None else 0.0
+    stage_y_um = float(first_plane.get("PositionY", 0.0)) if first_plane is not None else 0.0
+    stage_z_um = float(first_plane.get("PositionZ", 0.0)) if first_plane is not None else 0.0
 
     channels: list[dict] = []
     for ch_el in pixels.findall("Channel"):
@@ -964,6 +971,9 @@ def _read_tiff_info(path: Path, image_idx: int) -> TiffInfo:
         px_x_um=float(pixels.get("PhysicalSizeX", 1.0)),
         px_y_um=float(pixels.get("PhysicalSizeY", 1.0)),
         px_z_um=float(pixels.get("PhysicalSizeZ", 1.0)),
+        stage_x_um=stage_x_um,
+        stage_y_um=stage_y_um,
+        stage_z_um=stage_z_um,
         channels=channels,
         file_uuid=str(uuid.uuid4()),
     )
@@ -1040,6 +1050,15 @@ def build_companion_xml(
             uuid_el = _sub(td, "UUID")
             uuid_el.set("FileName", ti.filename)
             uuid_el.text = f"urn:uuid:{ti.file_uuid}"
+            # Preserve stage coordinates in companion metadata so readers like
+            # Ashlar can use them as alignment priors.
+            plane = _sub(pix, "Plane", TheZ=z, TheC=c, TheT=t)
+            plane.set("PositionX", f"{ti.stage_x_um:.3f}")
+            plane.set("PositionXUnit", "µm")
+            plane.set("PositionY", f"{ti.stage_y_um:.3f}")
+            plane.set("PositionYUnit", "µm")
+            plane.set("PositionZ", f"{ti.stage_z_um:.6f}")
+            plane.set("PositionZUnit", "µm")
 
     # ---- Plate / HCS structure ---------------------------------------------
     hcs_infos = [ti for ti in tiff_infos if ti.well_row > 0]
