@@ -868,13 +868,16 @@ def build_ome_xml(
         if pl.get("delta_t_s") is not None:
             plane_el.set("DeltaT", f"{pl['delta_t_s']:.6f}")
             plane_el.set("DeltaTUnit", "s")
-        if pl.get("pos_x_um") is not None:
-            plane_el.set("PositionX", f"{pl['pos_x_um']:.3f}")
-            plane_el.set("PositionXUnit", "µm")
-            plane_el.set("PositionY", f"{pl['pos_y_um']:.3f}")
-            plane_el.set("PositionYUnit", "µm")
-            plane_el.set("PositionZ", f"{pl['pos_z_um']:.6f}")
-            plane_el.set("PositionZUnit", "µm")
+        # Always emit stage coordinates to avoid downstream "undefined" fallbacks.
+        pos_x_um = float(pl.get("pos_x_um", 0.0))
+        pos_y_um = float(pl.get("pos_y_um", 0.0))
+        pos_z_um = float(pl.get("pos_z_um", 0.0))
+        plane_el.set("PositionX", f"{pos_x_um:.3f}")
+        plane_el.set("PositionXUnit", "µm")
+        plane_el.set("PositionY", f"{pos_y_um:.3f}")
+        plane_el.set("PositionYUnit", "µm")
+        plane_el.set("PositionZ", f"{pos_z_um:.6f}")
+        plane_el.set("PositionZUnit", "µm")
 
     # --- Plate (HCS metadata) ----------------------------------------------
     plate_el = _sub(ome, "Plate",
@@ -1216,7 +1219,20 @@ def write_well_field(
                 for zi, z in enumerate(z_offsets):
                     ref = entry_map.get((t, ch, z))
                     if ref is None:
-                        plane_meta.append(dict(t=ti, c=ci, z=zi))
+                        # Preserve stage metadata for missing Z planes so
+                        # downstream alignment does not see undefined positions.
+                        ref = next(
+                            (e for e in entries if e.timepoint == t and e.channel == ch),
+                            entries[0],
+                        )
+                        plane_meta.append(dict(
+                            t=ti, c=ci, z=zi,
+                            exposure_ms=ref.exposure_ms,
+                            delta_t_s=ref.time_offset_s,
+                            pos_x_um=ref.pos_x_m * M_TO_UM,
+                            pos_y_um=ref.pos_y_m * M_TO_UM,
+                            pos_z_um=ref.z_offset_m * M_TO_UM,
+                        ))
                     else:
                         plane_meta.append(dict(
                             t=ti, c=ci, z=zi,
