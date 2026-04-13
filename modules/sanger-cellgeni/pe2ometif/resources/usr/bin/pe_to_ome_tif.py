@@ -723,6 +723,38 @@ def apply_flat_field(
     return corrected.astype(raw.dtype)
 
 
+def apply_flat_field_stack(
+    stack: np.ndarray,
+    corr: CorrectionMaps,
+) -> np.ndarray:
+    """
+    Apply flat-field (and optional dark-field) correction to a Z stack.
+
+    stack shape: (Z, Y, X)
+    """
+    stack_f = stack.astype(np.float32)
+    ff = corr.flatfield.astype(np.float32)
+
+    if corr.darkfield is not None:
+        df = corr.darkfield.astype(np.float32)
+        denom = ff - df
+        safe = np.where(denom > 0, denom, 1.0)
+        scale = float(np.mean(denom[denom > 0])) if np.any(denom > 0) else 1.0
+        corrected = (stack_f - df[None, :, :]) / safe[None, :, :] * scale
+    else:
+        ff_mean = float(np.mean(ff[ff > 0])) if np.any(ff > 0) else 1.0
+        safe = np.where(ff > 0, ff, 1.0)
+        corrected = stack_f / safe[None, :, :] * ff_mean
+
+    if np.issubdtype(stack.dtype, np.integer):
+        info = np.iinfo(stack.dtype)
+        corrected = np.clip(corrected, info.min, info.max)
+    else:
+        corrected = np.clip(corrected, 0, np.finfo(stack.dtype).max)
+
+    return corrected.astype(stack.dtype)
+
+
 # ---------------------------------------------------------------------------
 # Correction map export
 # ---------------------------------------------------------------------------
@@ -1363,10 +1395,11 @@ def write_well_field(
                         else:
                             img_path = _resolve_path(image_dir, e.filename)
                             plane = _load_plane(img_path, dtype, size_y, size_x)
-                            if corr_map is not None:
-                                plane = apply_flat_field(plane, corr_map)
                             z_stack.append(plane)
-                    frame = _project(np.stack(z_stack, axis=0), method)
+                    stack = np.stack(z_stack, axis=0)
+                    if corr_map is not None:
+                        stack = apply_flat_field_stack(stack, corr_map)
+                    frame = _project(stack, method)
                 else:
                     # written inside the Z loop; frame set per Z
                     pass
