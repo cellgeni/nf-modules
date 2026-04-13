@@ -22,6 +22,7 @@ process SCRAFT_SPLITH5AD {
     prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    export NUMBA_CACHE_DIR=/tmp/numba_cache
     scraft split-h5ad \\
         --input ${merged_h5ad} \\
         --output-dir ${prefix} \\
