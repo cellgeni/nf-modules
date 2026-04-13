@@ -193,6 +193,18 @@ def _float(elem, *tags, default=0.0) -> float:
     return default
 
 
+def _float_or_none(elem, *tags) -> Optional[float]:
+    """Return float for first matching tag, or None when tag is absent/invalid."""
+    for tag in tags:
+        child = elem.find(tag)
+        if child is not None and child.text:
+            try:
+                return float(child.text.strip())
+            except ValueError:
+                pass
+    return None
+
+
 def _int(elem, *tags, default=0) -> int:
     """Return the int text of the first matching child tag found."""
     for tag in tags:
@@ -345,6 +357,20 @@ def parse_index(index_path: Path) -> tuple[PlateInfo, list[ImageEntry]]:
         )
         ff_applied = _str(wi, "FlatfieldCorrectionApplied", default="No").lower() == "yes"
 
+        z_offset_m = _float_or_none(wi, "ZOffset", "ZPosition", "Z")
+        if z_offset_m is None:
+            # Filename fallback for datasets where Z is encoded as "...pNN..."
+            # e.g. r01c03f66p14-ch1sk1fk1fl1.tiff -> 14
+            m = re.search(r"[Pp](\d+)", Path(url).name)
+            if m:
+                z_offset_m = float(m.group(1))
+            else:
+                z_offset_m = 0.0
+                print(
+                    f"  WARNING: no Z metadata (ZOffset/ZPosition/Z) and no 'pNN' "
+                    f"token in filename '{Path(url).name}'; using z_offset=0.0"
+                )
+
         entries.append(ImageEntry(
             row=_int(wi, "Row", default=1),
             col=_int(wi, "Col", "Column", default=1),
@@ -360,7 +386,7 @@ def parse_index(index_path: Path) -> tuple[PlateInfo, list[ImageEntry]]:
             filename=url,
             pos_x_m=_float(wi, "PositionX", "StagePositionX"),
             pos_y_m=_float(wi, "PositionY", "StagePositionY"),
-            z_offset_m=_float(wi, "ZOffset", "ZPosition", "Z"),
+            z_offset_m=z_offset_m,
             excitation_nm=_float(wi, "MainExcitationWavelength", "ExcitationWavelength"),
             emission_nm=_float(wi, "MainEmissionWavelength", "EmissionWavelength"),
             exposure_ms=_float(wi, "ExposureTime"),
@@ -1304,34 +1330,18 @@ def write_well_field(
 
                 if do_project:
                     z_stack = []
-                    # If metadata collapsed all Z offsets to one value, fall back
-                    # to loading all in-file TIFF pages as the Z stack.
-                    if len(z_offsets) == 1:
-                        e0 = entry_map.get((t, ch, z_offsets[0]))
-                        if e0 is None:
+                    for z in z_offsets:
+                        e = entry_map.get((t, ch, z))
+                        if e is None:
                             print(f"\n  WARNING: missing plane T={t} C={ch} "
-                                  f"Z={z_offsets[0]:.2e} — filling with zeros")
+                                  f"Z={z:.2e} — filling with zeros")
                             z_stack.append(np.zeros((size_y, size_x), dtype=dtype))
                         else:
-                            img_path = _resolve_path(image_dir, e0.filename)
-                            stack = _load_z_stack(img_path, dtype, size_y, size_x)
-                            for plane in stack:
-                                if corr_map is not None:
-                                    plane = apply_flat_field(plane, corr_map)
-                                z_stack.append(plane)
-                    else:
-                        for z in z_offsets:
-                            e = entry_map.get((t, ch, z))
-                            if e is None:
-                                print(f"\n  WARNING: missing plane T={t} C={ch} "
-                                      f"Z={z:.2e} — filling with zeros")
-                                z_stack.append(np.zeros((size_y, size_x), dtype=dtype))
-                            else:
-                                img_path = _resolve_path(image_dir, e.filename)
-                                plane = _load_plane(img_path, dtype, size_y, size_x)
-                                if corr_map is not None:
-                                    plane = apply_flat_field(plane, corr_map)
-                                z_stack.append(plane)
+                            img_path = _resolve_path(image_dir, e.filename)
+                            plane = _load_plane(img_path, dtype, size_y, size_x)
+                            if corr_map is not None:
+                                plane = apply_flat_field(plane, corr_map)
+                            z_stack.append(plane)
                     frame = _project(np.stack(z_stack, axis=0), method)
                 else:
                     # written inside the Z loop; frame set per Z
@@ -1402,29 +1412,6 @@ def _load_plane(path: Path, dtype: np.dtype, size_y: int, size_x: int) -> np.nda
         out[:sy, :sx] = arr[:sy, :sx]
         return out
     return arr
-
-
-def _load_z_stack(path: Path, dtype: np.dtype, size_y: int, size_x: int) -> np.ndarray:
-    """Load all TIFF pages from one file as a Z stack of shape (Z, Y, X)."""
-    with tifffile.TiffFile(str(path)) as tif:
-        pages = [p.asarray() for p in tif.pages]
-    if not pages:
-        raise ValueError(f"{path.name} contains no TIFF pages")
-
-    stack = np.stack(pages, axis=0)
-    if stack.ndim != 3:
-        raise ValueError(f"{path.name} expected 2D TIFF pages, got stack shape {stack.shape}")
-
-    if stack.dtype != dtype:
-        stack = stack.astype(dtype, copy=False)
-
-    if stack.shape[1:] != (size_y, size_x):
-        out = np.zeros((stack.shape[0], size_y, size_x), dtype=dtype)
-        sy = min(stack.shape[1], size_y)
-        sx = min(stack.shape[2], size_x)
-        out[:, :sy, :sx] = stack[:, :sy, :sx]
-        return out
-    return stack
 
 
 # ---------------------------------------------------------------------------
