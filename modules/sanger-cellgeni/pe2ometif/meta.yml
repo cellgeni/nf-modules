@@ -53,6 +53,28 @@ output:
           description: Optional plate companion OME XML linking all output OME-TIFF files. Named {prefix}.companion.ome when --prefix is supplied, otherwise plate.companion.ome.
           pattern: "*.companion.ome"
 
+  ffp_maps:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*/*_ch*_ffp.tiff":
+          type: file
+          description: Optional per-channel flat-field correction maps exported as TIFF.
+          pattern: "*_ch*_ffp.tiff"
+
+  dfp_maps:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*/*_ch*_dfp.tiff":
+          type: file
+          description: Optional per-channel dark-field correction maps exported as TIFF.
+          pattern: "*_ch*_dfp.tiff"
+
   versions_pe2ometif:
     - - "${task.process}":
           type: string

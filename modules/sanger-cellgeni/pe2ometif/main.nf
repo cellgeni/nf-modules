@@ -13,6 +13,8 @@ process PE2OMETIF {
     output:
     tuple val(meta), path("${prefix}/${prefix}*.ome.tif"), emit: ome_tif
     tuple val(meta), path("${prefix}/${prefix}.companion.ome"), optional: true, emit: companion
+    tuple val(meta), path("${prefix}/${prefix}_ch*_ffp.tiff"), optional: true, emit: ffp_maps
+    tuple val(meta), path("${prefix}/${prefix}_ch*_dfp.tiff"), optional: true, emit: dfp_maps
     tuple val("${task.process}"), val('pe2ometif'), eval("python --version | sed 's/Python //'"), topic: versions, emit: versions_pe2ometif
 
     when:
@@ -37,6 +39,8 @@ process PE2OMETIF {
     """
     mkdir -p ${prefix}
     touch ${prefix}/A01_F001_maxproj.ome.tif
+    touch ${prefix}/${prefix}_ch01_ffp.tiff
+    touch ${prefix}/${prefix}_ch01_dfp.tiff
 
     if [[ ! " ${args} " =~ " --no-companion " ]]; then
         _img_prefix=\$(echo "${args}" | sed -n 's/.*--prefix[[:space:]]\\+\\([^[:space:]]\\+\\).*/\\1/p')
