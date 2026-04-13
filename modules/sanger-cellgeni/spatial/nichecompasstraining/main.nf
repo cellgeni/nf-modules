@@ -20,6 +20,8 @@ process SPATIAL_NICHECOMPASSTRAINING {
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_name = "${prefix}_nichecompass_dir"
     """
+    export HOME=/tmp
+    export XDG_CONFIG_HOME=/tmp/.config
     nichecompass_train_sample_integration.py \\
         --batches ${h5ad} \\
         --model_dir "${out_name}" \\
