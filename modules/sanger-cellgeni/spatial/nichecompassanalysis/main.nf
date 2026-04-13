@@ -22,6 +22,8 @@ process SPATIAL_NICHECOMPASSANALYSIS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_dir = "${prefix}_nichecompass"
     """
+    export HOME=/tmp
+    export XDG_CONFIG_HOME=/tmp/.config
     mkdir ${out_dir}
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
