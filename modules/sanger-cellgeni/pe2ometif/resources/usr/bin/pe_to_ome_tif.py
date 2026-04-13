@@ -724,6 +724,30 @@ def apply_flat_field(
 
 
 # ---------------------------------------------------------------------------
+# Correction map export
+# ---------------------------------------------------------------------------
+
+def save_correction_maps(
+    correction: dict[int, CorrectionMaps],
+    output_dir: Path,
+    prefix: str = "",
+) -> None:
+    """Save per-channel flatfield/darkfield maps as TIFF files."""
+    if not correction:
+        return
+
+    stem = f"{prefix}_" if prefix else ""
+    for ch_id in sorted(correction):
+        corr = correction[ch_id]
+        ff_path = output_dir / f"{stem}ch{ch_id:02d}_ffp.tiff"
+        tifffile.imwrite(str(ff_path), corr.flatfield.astype(np.float32))
+
+        if corr.darkfield is not None:
+            df_path = output_dir / f"{stem}ch{ch_id:02d}_dfp.tiff"
+            tifffile.imwrite(str(df_path), corr.darkfield.astype(np.float32))
+
+
+# ---------------------------------------------------------------------------
 # Grouping & well utilities
 # ---------------------------------------------------------------------------
 
@@ -1518,6 +1542,10 @@ def convert(
             sys.exit("No matching wells found after applying --wells filter.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    if correction:
+        save_correction_maps(correction, output_dir, prefix=prefix)
+        print(f"Saved correction maps (ffp/dfp) to: {output_dir}")
+
     proj_label = f"{method}-projection" if method else "all-Z-planes"
     corr_label = "with FF correction" if correction else "no FF correction"
     print(
