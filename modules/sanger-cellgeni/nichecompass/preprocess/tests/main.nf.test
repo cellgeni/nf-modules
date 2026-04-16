@@ -1,0 +1,58 @@
+nextflow_process {
+
+    name "Test Process NICHECOMPASS_PREPROCESS"
+    script "../main.nf"
+    process "NICHECOMPASS_PREPROCESS"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "nichecompass"
+    tag "nichecompass/preprocess"
+
+    test("nichecompass_preprocess - 3 samples") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_20250829' ],
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("nichecompass_preprocess - 3 samples - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_20250829' ],
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}
