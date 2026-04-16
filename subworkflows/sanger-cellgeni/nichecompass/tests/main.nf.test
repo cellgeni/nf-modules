@@ -7,7 +7,8 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_sangercellgeni"
     tag "subworkflows/nichecompass"
-    tag "spatial/nichecompasstraining"
+    tag "nichecompass/preprocess"
+    tag "nichecompass/train"
     tag "spatial/nichecompassanalysis"
 
 
@@ -39,7 +40,9 @@ nextflow_workflow {
 
         when {
             params {
-                spatial_nichecompasstraining_args = '--species mouse'
+                modules_testdata_base_path  = 's3://spatial_demo_datasets/'
+                nichecompass_preprocess_args = '--species mouse'
+                nichecompass_train_args      = '--use_cuda_if_available false'
             }
             workflow {
                 """

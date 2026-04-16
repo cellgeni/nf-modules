@@ -1,4 +1,5 @@
-include { SPATIAL_NICHECOMPASSTRAINING } from '../../../modules/sanger-cellgeni/spatial/nichecompasstraining/main'
+include { NICHECOMPASS_PREPROCESS } from '../../../modules/sanger-cellgeni/nichecompass/preprocess/main'
+include { NICHECOMPASS_TRAIN } from '../../../modules/sanger-cellgeni/nichecompass/train/main'
 include { SPATIAL_NICHECOMPASSANALYSIS } from '../../../modules/sanger-cellgeni/spatial/nichecompassanalysis/main'
 include { SCRAFT_SPLITH5AD } from '../../../modules/sanger-cellgeni/scraft/splith5ad/main'
 
@@ -12,10 +13,13 @@ workflow NICHECOMPASS {
     SCRAFT_SPLITH5AD(ch_h5ad)
     ch_versions = ch_versions.mix(SCRAFT_SPLITH5AD.out.versions.first())
 
-    SPATIAL_NICHECOMPASSTRAINING(SCRAFT_SPLITH5AD.out.h5ad_splits)
-    ch_versions = ch_versions.mix(SPATIAL_NICHECOMPASSTRAINING.out.versions.first())
+    NICHECOMPASS_PREPROCESS(SCRAFT_SPLITH5AD.out.h5ad_splits)
+    ch_versions = ch_versions.mix(NICHECOMPASS_PREPROCESS.out.versions.first())
 
-    SPATIAL_NICHECOMPASSANALYSIS(SPATIAL_NICHECOMPASSTRAINING.out.nichecompass_model)
+    NICHECOMPASS_TRAIN(NICHECOMPASS_PREPROCESS.out.preprocessed)
+    ch_versions = ch_versions.mix(NICHECOMPASS_TRAIN.out.versions.first())
+
+    SPATIAL_NICHECOMPASSANALYSIS(NICHECOMPASS_TRAIN.out.nichecompass_model)
     ch_versions = ch_versions.mix(SPATIAL_NICHECOMPASSANALYSIS.out.versions.first())
 
     emit:
