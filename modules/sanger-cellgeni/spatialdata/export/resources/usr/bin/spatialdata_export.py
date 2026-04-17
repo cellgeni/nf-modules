@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Export SpatialData-IO reader outputs to an AnnData .h5ad file."""
+"""Export SpatialData-IO reader outputs to SpatialData .zarr format."""
 
 from __future__ import annotations
 
@@ -15,17 +15,19 @@ from typing import Any, Callable, Dict, Iterable, List, Mapping, Tuple
 
 try:
     import spatialdata_io as sdio
-    from spatialdata_io import experimental as sdio_experimental
 except ImportError as exc:  # pragma: no cover - import guard for runtime
     raise SystemExit(
         "ERROR: spatialdata-io is required to run this script. "
         "Please install spatialdata-io in the environment."
     ) from exc
-if not hasattr(sdio_experimental, "to_legacy_anndata"):
+
+try:
+    import spatialdata as sd
+except ImportError as exc:  # pragma: no cover - import guard for runtime
     raise SystemExit(
-        "ERROR: spatialdata-io does not expose experimental.to_legacy_anndata. "
-        "Please install a compatible spatialdata-io version."
-    )
+        "ERROR: spatialdata is required to run this script. "
+        "Please install spatialdata in the environment."
+    ) from exc
 
 
 LOGGER = logging.getLogger("spatialdata_export")
@@ -297,25 +299,9 @@ def _build_parser(readers: Dict[str, Callable[..., Any]]) -> argparse.ArgumentPa
         help="JSON string or path to JSON file with reader kwargs.",
     )
     parser.add_argument(
-        "--coordinate-system",
-        default=None,
-        help="Coordinate system passed to to_legacy_anndata.",
-    )
-    parser.add_argument(
-        "--table-name",
-        default='table',
-        help="Table name passed to to_legacy_anndata.",
-    )
-    parser.add_argument(
-        "--output-format",
-        default="h5ad",
-        choices=["h5ad", "zarr"],
-        help="Output format: 'h5ad' (default) exports legacy AnnData; 'zarr' exports the full SpatialData object with images and labels.",
-    )
-    parser.add_argument(
-        "--include-images",
-        action="store_false",
-        help="Include downscaled images in the legacy AnnData output.",
+        "--include-points",
+        action="store_true",
+        help="Include points (transcripts) in the zarr output. Excluded by default.",
     )
     parser.add_argument(
         "--raw-image-output",
@@ -431,33 +417,20 @@ def main(argv: List[str] | None = None) -> int:
             LOGGER.error("Failed to export label image: %s", exc)
             return 1
 
-    if args.output_format == "zarr":
-        LOGGER.info("Writing SpatialData to zarr at %s", output_path)
-        try:
-            sdata.write(str(output_path), overwrite=args.overwrite)
-        except Exception as exc:
-            LOGGER.error("Failed to write zarr: %s", exc)
-            return 1
-        LOGGER.info("Done (reader: %s).", used_reader)
-        return 0
-
-    LOGGER.info("Converting SpatialData to legacy AnnData...")
-    try:
-        adata = sdio_experimental.to_legacy_anndata(
-            sdata,
-            coordinate_system=args.coordinate_system,
-            table_name=args.table_name,
-            include_images=args.include_images,
+    if not args.include_points and sdata.points:
+        LOGGER.info("Filtering out %d points element(s) (use --include-points to keep).", len(sdata.points))
+        sdata = sd.SpatialData(
+            images=dict(sdata.images),
+            labels=dict(sdata.labels),
+            shapes=dict(sdata.shapes),
+            tables=dict(sdata.tables),
         )
-    except Exception as exc:
-        LOGGER.error("Failed to convert to legacy AnnData: %s", exc)
-        adata = sdata.tables[args.table_name]
 
-    LOGGER.info("Writing AnnData to %s", output_path)
+    LOGGER.info("Writing SpatialData to zarr at %s", output_path)
     try:
-        adata.write_h5ad(output_path)
+        sdata.write(str(output_path), overwrite=args.overwrite)
     except Exception as exc:
-        LOGGER.error("Failed to write .h5ad file: %s", exc)
+        LOGGER.error("Failed to write zarr: %s", exc)
         return 1
 
     LOGGER.info("Done (reader: %s).", used_reader)

@@ -11,8 +11,7 @@ process SPATIALDATA_EXPORT {
     tuple val(meta), path(bundle)
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: anndata, optional: true
-    tuple val(meta), path("${prefix}.zarr"), emit: zarr, optional: true
+    tuple val(meta), path("${prefix}.zarr"), emit: zarr
     tuple val(meta), path("${prefix}_mask.tif"), path("${prefix}_raw.tif"), emit: images, optional: true
     path "versions.yml", emit: versions
 
@@ -22,14 +21,12 @@ process SPATIALDATA_EXPORT {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    def use_zarr = args.contains('--output-format zarr')
-    def out_file = use_zarr ? "${prefix}.zarr" : "${prefix}.h5ad"
     """
     export NUMBA_DISABLE_JIT=0
     export NUMBA_CACHE_DIR=/tmp/numba_cache
     spatialdata_export.py \\
         ${bundle} \\
-        -o ${out_file} \\
+        -o ${prefix}.zarr \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -41,11 +38,10 @@ process SPATIALDATA_EXPORT {
     stub:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    def use_zarr = args.contains('--output-format zarr')
     """
     echo ${args}
 
-    ${use_zarr ? "mkdir -p ${prefix}.zarr" : "touch ${prefix}.h5ad"}
+    mkdir -p ${prefix}.zarr
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
