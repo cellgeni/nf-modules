@@ -15,6 +15,7 @@ def parse_args():
     parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
     parser.add_argument("--centroid_x_key", default="x_centroid", help="XeniumKeys.CELL_X")
     parser.add_argument("--centroid_y_key", default="y_centroid", help="XeniumKeys.CELL_Y")
+    parser.add_argument("--shapes_cell_id_key", default="cell_id", help="Index/column name for cell ID in cell_boundaries shapes")
     parser.add_argument("--leiden_resolution", type=float, default=0.5)
     parser.add_argument("--n_pcs", type=int, default=50)
     parser.add_argument("--n_neighbors", type=int, default=15)
@@ -30,6 +31,7 @@ def main():
         images_key=args.images_key,
         tables_centroid_x_key=args.centroid_x_key,
         tables_centroid_y_key=args.centroid_y_key,
+        shapes_cell_id_key=args.shapes_cell_id_key,
     )
 
     st.filter_control_and_low_quality_transcripts()
