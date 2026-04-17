@@ -337,7 +337,16 @@ def compute_spatial_neighbors_for_batches(
                 f"Provide --spatial_key or precompute spatial coordinates."
             )
 
-        sq.gr.spatial_neighbors(a, coord_type="generic", spatial_key=spatial_key, n_neighs=n_neighbors)
+        effective_n = min(n_neighbors, a.n_obs - 1)
+        if effective_n < 1:
+            logging.warning(f"Batch {idx} has only {a.n_obs} cell(s); skipping spatial neighbours.")
+            import scipy.sparse as sp
+            a.obsp[adj_key] = sp.csr_matrix((a.n_obs, a.n_obs))
+            a.obsp[adj_key.replace("connectivities", "distances")] = sp.csr_matrix((a.n_obs, a.n_obs))
+        else:
+            if effective_n < n_neighbors:
+                logging.warning(f"Batch {idx}: clamping n_neighbors {n_neighbors} → {effective_n} (only {a.n_obs} cells).")
+            sq.gr.spatial_neighbors(a, coord_type="generic", spatial_key=spatial_key, n_neighs=effective_n)
 
         if adj_key not in a.obsp:
             raise KeyError(
