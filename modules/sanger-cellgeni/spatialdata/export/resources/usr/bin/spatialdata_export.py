@@ -307,6 +307,12 @@ def _build_parser(readers: Dict[str, Callable[..., Any]]) -> argparse.ArgumentPa
         help="Table name passed to to_legacy_anndata.",
     )
     parser.add_argument(
+        "--output-format",
+        default="h5ad",
+        choices=["h5ad", "zarr"],
+        help="Output format: 'h5ad' (default) exports legacy AnnData; 'zarr' exports the full SpatialData object with images and labels.",
+    )
+    parser.add_argument(
         "--include-images",
         action="store_false",
         help="Include downscaled images in the legacy AnnData output.",
@@ -425,6 +431,16 @@ def main(argv: List[str] | None = None) -> int:
             LOGGER.error("Failed to export label image: %s", exc)
             return 1
 
+    if args.output_format == "zarr":
+        LOGGER.info("Writing SpatialData to zarr at %s", output_path)
+        try:
+            sdata.write(str(output_path), overwrite=args.overwrite)
+        except Exception as exc:
+            LOGGER.error("Failed to write zarr: %s", exc)
+            return 1
+        LOGGER.info("Done (reader: %s).", used_reader)
+        return 0
+
     LOGGER.info("Converting SpatialData to legacy AnnData...")
     try:
         adata = sdio_experimental.to_legacy_anndata(
@@ -436,8 +452,6 @@ def main(argv: List[str] | None = None) -> int:
     except Exception as exc:
         LOGGER.error("Failed to convert to legacy AnnData: %s", exc)
         adata = sdata.tables[args.table_name]
-        # return 1
-    
 
     LOGGER.info("Writing AnnData to %s", output_path)
     try:
