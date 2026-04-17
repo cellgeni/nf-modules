@@ -1,0 +1,81 @@
+name: "segtraq_qc"
+description: |
+  Run all unsupervised SegTraQ QC modules on a 10x Xenium SpatialData zarr directory.
+  Executes baseline metrics, clustering stability, region similarity, and 3D volume
+  analysis in parallel. All modules operate independently on the same zarr input, so
+  they are scheduled concurrently by Nextflow.
+  For supervised QC (label transfer, marker purity, contamination), use the
+  segtraq/labeltransfer and segtraq/supervised modules with a reference scRNA-seq dataset.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - segmentation
+components:
+  - segtraq/baseline
+  - segtraq/clusteringstability
+  - segtraq/regionsimilarity
+  - segtraq/volume
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1' ]`
+  - zarr_dir:
+      type: directory
+      description: |
+        SpatialData zarr directory for the 10x Xenium sample, produced by spatialdata.
+        Structure: [ val(meta), path(zarr_dir) ]
+
+output:
+  - baseline_obs:
+      type: file
+      description: |
+        Per-cell baseline QC metrics (transcripts_per_cell, genes_per_cell,
+        morphological features).
+        Structure: [ val(meta), path(*_baseline_obs.csv) ]
+      pattern: "*_baseline_obs.csv"
+  - baseline_summary:
+      type: file
+      description: |
+        Dataset-level summary metrics (num_cells, perc_unassigned_transcripts).
+        Structure: [ val(meta), path(*_baseline_summary.json) ]
+      pattern: "*_baseline_summary.json"
+  - clustering_obs:
+      type: file
+      description: |
+        Per-cell clustering labels and purity scores from Leiden clustering.
+        Structure: [ val(meta), path(*_clustering_stability_obs.csv) ]
+      pattern: "*_clustering_stability_obs.csv"
+  - clustering_metrics:
+      type: file
+      description: |
+        Dataset-level clustering stability metrics (silhouette score, ARI,
+        cluster connectedness).
+        Structure: [ val(meta), path(*_clustering_stability_metrics.json) ]
+      pattern: "*_clustering_stability_metrics.json"
+  - region_similarity_obs:
+      type: file
+      description: |
+        Per-cell nucleus-cytoplasm and border-neighbourhood similarity scores.
+        Structure: [ val(meta), path(*_region_similarity_obs.csv) ]
+      pattern: "*_region_similarity_obs.csv"
+  - volume_obs:
+      type: file
+      description: |
+        Per-cell top/bottom z-axis cosine similarity scores (3D QC).
+        Structure: [ val(meta), path(*_volume_similarity_obs.csv) ]
+      pattern: "*_volume_similarity_obs.csv"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"
