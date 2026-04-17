@@ -31,7 +31,7 @@ process SPATIALDATA_EXPORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        spatialdata_export: \$(spatialdata_export --version)
+        spatialdata_export: \$(spatialdata_export.py --version)
     END_VERSIONS
     """
 
@@ -45,7 +45,7 @@ process SPATIALDATA_EXPORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        spatialdata_export: \$(spatialdata_export --version)
+        spatialdata_export: \$(spatialdata_export.py --version)
     END_VERSIONS
     """
 }

@@ -19,29 +19,69 @@ LOGGER = logging.getLogger(__name__)
 READERS = {
     name: getattr(sdio, name)
     for name in (
-        "codex", "cosmx", "curio", "dbit", "mcmicro", "merscope",
-        "seqfish", "steinbock", "stereoseq", "visium", "visium_hd",
-        "xenium", "generic", "image", "geojson",
+        "codex",
+        "cosmx",
+        "curio",
+        "dbit",
+        "mcmicro",
+        "merscope",
+        "seqfish",
+        "steinbock",
+        "stereoseq",
+        "visium",
+        "visium_hd",
+        "xenium",
+        "generic",
+        "image",
+        "geojson",
     )
     if hasattr(sdio, name)
 }
 if hasattr(sdio, "experimental") and hasattr(sdio.experimental, "iss"):
     READERS["iss"] = sdio.experimental.iss
 
-ALIASES = {k.lower(): v for k, v in {
-    "phenocycler": "codex", "codex": "codex",
-    "dbit-seq": "dbit", "dbit_seq": "dbit",
-    "visiumhd": "visium_hd", "visium-hd": "visium_hd", "visium_hd": "visium_hd",
-    "geneps": "seqfish", "genep": "seqfish", "seqfish": "seqfish",
-    "stereo-seq": "stereoseq", "stereoseq": "stereoseq",
-    "xenium": "xenium", "cosmx": "cosmx", "merscope": "merscope",
-    "mcmicro": "mcmicro", "iss": "iss", "curio": "curio",
-    "generic": "generic", "image": "image", "geojson": "geojson",
-}.items() if v in READERS}
+ALIASES = {
+    k.lower(): v
+    for k, v in {
+        "phenocycler": "codex",
+        "codex": "codex",
+        "dbit-seq": "dbit",
+        "dbit_seq": "dbit",
+        "visiumhd": "visium_hd",
+        "visium-hd": "visium_hd",
+        "visium_hd": "visium_hd",
+        "geneps": "seqfish",
+        "genep": "seqfish",
+        "seqfish": "seqfish",
+        "stereo-seq": "stereoseq",
+        "stereoseq": "stereoseq",
+        "xenium": "xenium",
+        "cosmx": "cosmx",
+        "merscope": "merscope",
+        "mcmicro": "mcmicro",
+        "iss": "iss",
+        "curio": "curio",
+        "generic": "generic",
+        "image": "image",
+        "geojson": "geojson",
+    }.items()
+    if v in READERS
+}
 
 AUTO_ORDER = [
-    "visium", "visium_hd", "xenium", "codex", "cosmx", "curio", "dbit",
-    "iss", "mcmicro", "merscope", "seqfish", "steinbock", "stereoseq",
+    "visium",
+    "visium_hd",
+    "xenium",
+    "codex",
+    "cosmx",
+    "curio",
+    "dbit",
+    "iss",
+    "mcmicro",
+    "merscope",
+    "seqfish",
+    "steinbock",
+    "stereoseq",
 ]
 
 
@@ -61,14 +101,20 @@ def _parse_val(s):
 def _call_reader(func, path, kwargs):
     sig = inspect.signature(func)
     has_varkw = any(p.kind == p.VAR_KEYWORD for p in sig.parameters.values())
-    filtered = kwargs if has_varkw else {k: v for k, v in kwargs.items() if k in sig.parameters}
+    filtered = (
+        kwargs
+        if has_varkw
+        else {k: v for k, v in kwargs.items() if k in sig.parameters}
+    )
     return func(str(path), **filtered)
 
 
 def _load_sdata(input_path, reader_name, kwargs):
     if reader_name != "auto":
         if reader_name not in READERS:
-            raise ValueError(f"Unknown reader '{reader_name}'. Known: {', '.join(sorted(READERS))}")
+            raise ValueError(
+                f"Unknown reader '{reader_name}'. Known: {', '.join(sorted(READERS))}"
+            )
         LOGGER.info("Using reader '%s'.", reader_name)
         return _call_reader(READERS[reader_name], input_path, kwargs)
 
@@ -82,20 +128,32 @@ def _load_sdata(input_path, reader_name, kwargs):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Export spatialdata-io datasets to .zarr.")
+    parser = argparse.ArgumentParser(
+        description="Export spatialdata-io datasets to .zarr."
+    )
     parser.add_argument("input_path")
     parser.add_argument("-o", "--output", required=True)
-    parser.add_argument("--reader", default="auto",
-                        help="Reader name (default: auto). Use --list-readers to see options.")
-    parser.add_argument("--reader-arg", action="append", metavar="KEY=VALUE",
-                        help="Reader kwargs as KEY=VALUE (repeatable).")
-    parser.add_argument("--reader-kwargs-json",
-                        help="JSON string or file path with reader kwargs.")
+    parser.add_argument(
+        "--reader",
+        default="xenium",
+        help="Reader name (default: xenium). Use --list-readers to see options.",
+    )
+    parser.add_argument(
+        "--reader-arg",
+        action="append",
+        metavar="KEY=VALUE",
+        help="Reader kwargs as KEY=VALUE (repeatable).",
+    )
+    parser.add_argument(
+        "--reader-kwargs-json", help="JSON string or file path with reader kwargs."
+    )
     parser.add_argument("-@", "--threads", type=int, default=None)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--list-readers", action="store_true")
     parser.add_argument("--verbose", action="store_true")
-    parser.add_argument("--version", action="version", version="spatialdata_export.py 0.1.0")
+    parser.add_argument(
+        "--version", action="version", version="spatialdata_export.py 0.1.0"
+    )
     args = parser.parse_args(argv)
 
     logging.basicConfig(
