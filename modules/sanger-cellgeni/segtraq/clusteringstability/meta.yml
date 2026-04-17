@@ -1,0 +1,58 @@
+name: "segtraq_clusteringstability"
+description: |
+  Evaluate clustering robustness and cell-type separation for a 10x Xenium dataset using SegTraQ.
+  Runs scanpy preprocessing (normalise, log1p, PCA, neighbours, UMAP, Leiden) on the Xenium table,
+  then computes cluster connectedness, silhouette score, adjusted rand index across gene subsets,
+  and per-cell cluster purity.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - clustering
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: SpatialData zarr directory for the Xenium sample.
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - obs:
+        type: file
+        description: |
+          CSV with per-cell clustering labels and purity scores.
+        pattern: "*_clustering_stability_obs.csv"
+
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - metrics:
+        type: file
+        description: |
+          JSON with dataset-level clustering stability metrics
+          (cluster_connectedness, silhouette_score, adjusted_rand_index).
+        pattern: "*_clustering_stability_metrics.json"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

@@ -1,0 +1,60 @@
+name: "segtraq_baseline"
+description: |
+  Compute baseline QC metrics for a 10x Xenium SpatialData dataset using SegTraQ.
+  Filters control and low-quality transcripts, then computes per-cell metrics including
+  transcript counts, gene counts, mean transcripts per gene, morphological features,
+  and the percentage of unassigned transcripts.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - segmentation
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: |
+          SpatialData zarr directory produced by spatialdata for the Xenium sample.
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - obs:
+        type: file
+        description: |
+          CSV file with per-cell baseline QC metrics (transcripts_per_cell,
+          genes_per_cell, mean_transcripts_per_gene_per_cell, morphological features).
+        pattern: "*_baseline_obs.csv"
+
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - summary:
+        type: file
+        description: |
+          JSON file with dataset-level summary metrics (num_cells,
+          perc_unassigned_transcripts).
+        pattern: "*_baseline_summary.json"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

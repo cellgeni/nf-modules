@@ -1,0 +1,37 @@
+nextflow_process {
+
+    name "Test Process SEGTRAQ_REGIONSIMILARITY"
+    script "../main.nf"
+    process "SEGTRAQ_REGIONSIMILARITY"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "segtraq"
+    tag "segtraq/regionsimilarity"
+
+    test("segtraq_regionsimilarity - xenium zarr - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_xenium' ],
+                    file(params.modules_testdata_base_path + 'segtraq/xenium.zarr', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

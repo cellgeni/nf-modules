@@ -1,0 +1,37 @@
+nextflow_process {
+
+    name "Test Process SEGTRAQ_BASELINE"
+    script "../main.nf"
+    process "SEGTRAQ_BASELINE"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "segtraq"
+    tag "segtraq/baseline"
+
+    test("segtraq_baseline - xenium zarr - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_xenium' ],
+                    file(params.modules_testdata_base_path + 'segtraq/xenium.zarr', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

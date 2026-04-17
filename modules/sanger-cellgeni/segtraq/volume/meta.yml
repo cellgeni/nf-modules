@@ -1,0 +1,49 @@
+name: "segtraq_volume"
+description: |
+  Compute 3D volume similarity metrics for a 10x Xenium dataset using SegTraQ.
+  Splits the z-axis at a configurable quantile and computes cosine similarity between
+  the top and bottom transcript halves per cell, detecting z-axis overlap artefacts
+  in 3D tissue sections.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - 3d
+  - volume
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: |
+          SpatialData zarr directory for the Xenium sample.
+          Must contain z-coordinate information for transcripts.
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - obs:
+        type: file
+        description: |
+          CSV with per-cell top/bottom cosine similarity scores.
+        pattern: "*_volume_similarity_obs.csv"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

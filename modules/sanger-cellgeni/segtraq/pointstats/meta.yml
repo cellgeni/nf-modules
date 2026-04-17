@@ -1,0 +1,51 @@
+name: "segtraq_pointstats"
+description: |
+  Compute per-transcript distance-to-membrane statistics for selected genes and a
+  queried cell type in a 10x Xenium dataset using SegTraQ. Characterises whether
+  transcripts of specified genes localise near or away from cell boundaries,
+  which is informative for assessing segmentation quality.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - transcript_localisation
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: SpatialData zarr directory for the Xenium sample.
+    - labeled_h5ad:
+        type: file
+        description: |
+          H5AD output from segtraq/labeltransfer containing `transferred_cell_type` in obs.
+        pattern: "*.h5ad"
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - stats:
+        type: file
+        description: |
+          CSV with mean distance-to-membrane metrics per gene and cell type.
+        pattern: "*_point_stats.csv"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"
