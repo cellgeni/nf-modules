@@ -17,9 +17,10 @@ def parse_args():
     parser.add_argument("--ref_cell_type_key", default="celltype_major")
     parser.add_argument("--min_pos_frac", type=float, default=0.3)
     parser.add_argument("--n_jobs", type=int, default=1)
-    parser.add_argument("--images_key", default="image")
-    parser.add_argument("--centroid_x_key", default="x_centroid")
-    parser.add_argument("--centroid_y_key", default="y_centroid")
+    parser.add_argument("--images_key", default="morphology_focus", help="Key for image in sdata.images (XeniumKeys.MORPHOLOGY_FOCUS_FILE)")
+    parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
+    parser.add_argument("--centroid_x_key", default="x_centroid", help="XeniumKeys.CELL_X")
+    parser.add_argument("--centroid_y_key", default="y_centroid", help="XeniumKeys.CELL_Y")
     return parser.parse_args()
 
 
@@ -36,12 +37,9 @@ def main():
 
     st.filter_control_and_low_quality_transcripts()
 
-    # Inject transferred labels from labeltransfer output
     labeled_adata = ad.read_h5ad(args.labeled_h5ad)
-    table_key = next(iter(sdata.tables.keys()))
-    sdata.tables[table_key].obs[args.cell_type_key] = labeled_adata.obs[args.cell_type_key].values
+    sdata.tables[args.table_key].obs[args.cell_type_key] = labeled_adata.obs[args.cell_type_key].values
 
-    # Compute markers from reference
     adata_ref = ad.read_h5ad(args.ref_h5ad)
     markers = segtraq.markers_from_reference(
         adata_ref,
@@ -54,10 +52,9 @@ def main():
     st.sp.neighbor_contamination(cell_type_key=args.cell_type_key)
     st.sp.mutually_exclusive_coexpression_rate(cell_type_key=args.cell_type_key, markers=markers)
 
-    sdata.tables[table_key].obs.to_csv(f"{args.prefix}_supervised_obs.csv")
+    sdata.tables[args.table_key].obs.to_csv(f"{args.prefix}_supervised_obs.csv")
 
-    # Save contamination matrix from uns if available
-    uns = sdata.tables[table_key].uns
+    uns = sdata.tables[args.table_key].uns
     contamination_key = next((k for k in uns if "contamination" in k.lower()), None)
     if contamination_key is not None:
         pd.DataFrame(uns[contamination_key]).to_csv(f"{args.prefix}_contamination_matrix.csv")

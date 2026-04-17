@@ -14,9 +14,10 @@ def parse_args():
     parser.add_argument("--genes", required=True, help="Comma-separated list of genes to analyse")
     parser.add_argument("--cell_type_key", default="transferred_cell_type")
     parser.add_argument("--cell_type_query", required=True, help="Cell type name to query distance statistics for")
-    parser.add_argument("--images_key", default="image")
-    parser.add_argument("--centroid_x_key", default="x_centroid")
-    parser.add_argument("--centroid_y_key", default="y_centroid")
+    parser.add_argument("--images_key", default="morphology_focus", help="Key for image in sdata.images (XeniumKeys.MORPHOLOGY_FOCUS_FILE)")
+    parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
+    parser.add_argument("--centroid_x_key", default="x_centroid", help="XeniumKeys.CELL_X")
+    parser.add_argument("--centroid_y_key", default="y_centroid", help="XeniumKeys.CELL_Y")
     return parser.parse_args()
 
 
@@ -34,8 +35,7 @@ def main():
     st.filter_control_and_low_quality_transcripts()
 
     labeled_adata = ad.read_h5ad(args.labeled_h5ad)
-    table_key = next(iter(sdata.tables.keys()))
-    sdata.tables[table_key].obs[args.cell_type_key] = labeled_adata.obs[args.cell_type_key].values
+    sdata.tables[args.table_key].obs[args.cell_type_key] = labeled_adata.obs[args.cell_type_key].values
 
     genes = [g.strip() for g in args.genes.split(",")]
     result = st.ps.distance_to_membrane(
@@ -48,7 +48,7 @@ def main():
     if result is not None:
         result.to_csv(f"{args.prefix}_point_stats.csv")
     else:
-        sdata.tables[table_key].obs.to_csv(f"{args.prefix}_point_stats.csv")
+        sdata.tables[args.table_key].obs.to_csv(f"{args.prefix}_point_stats.csv")
 
 
 if __name__ == "__main__":

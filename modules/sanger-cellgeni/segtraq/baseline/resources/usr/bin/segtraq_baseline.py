@@ -10,9 +10,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description="SegTraQ baseline QC metrics for 10x Xenium")
     parser.add_argument("--zarr_dir", required=True, help="Path to SpatialData zarr directory")
     parser.add_argument("--prefix", required=True, help="Output file prefix")
-    parser.add_argument("--images_key", default="image", help="Key for image in sdata.images")
-    parser.add_argument("--centroid_x_key", default="x_centroid", help="Column name for centroid x in table obs")
-    parser.add_argument("--centroid_y_key", default="y_centroid", help="Column name for centroid y in table obs")
+    parser.add_argument("--images_key", default="morphology_focus", help="Key for image in sdata.images (XeniumKeys.MORPHOLOGY_FOCUS_FILE)")
+    parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
+    parser.add_argument("--centroid_x_key", default="x_centroid", help="Column name for centroid x in table obs (XeniumKeys.CELL_X)")
+    parser.add_argument("--centroid_y_key", default="y_centroid", help="Column name for centroid y in table obs (XeniumKeys.CELL_Y)")
     return parser.parse_args()
 
 
@@ -36,8 +37,7 @@ def main():
     st.bl.mean_transcripts_per_gene_per_cell()
     st.bl.morphological_features()
 
-    table_key = next(iter(sdata.tables.keys()))
-    obs = sdata.tables[table_key].obs
+    obs = sdata.tables[args.table_key].obs
     obs.to_csv(f"{args.prefix}_baseline_obs.csv")
 
     summary = {

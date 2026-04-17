@@ -12,9 +12,10 @@ def parse_args():
     parser.add_argument("--ref_h5ad", required=True, help="Reference scRNA-seq AnnData (H5AD)")
     parser.add_argument("--prefix", required=True)
     parser.add_argument("--cell_type_key", default="celltype_major", help="Column in ref_h5ad.obs with cell type labels")
-    parser.add_argument("--images_key", default="image")
-    parser.add_argument("--centroid_x_key", default="x_centroid")
-    parser.add_argument("--centroid_y_key", default="y_centroid")
+    parser.add_argument("--images_key", default="morphology_focus", help="Key for image in sdata.images (XeniumKeys.MORPHOLOGY_FOCUS_FILE)")
+    parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
+    parser.add_argument("--centroid_x_key", default="x_centroid", help="XeniumKeys.CELL_X")
+    parser.add_argument("--centroid_y_key", default="y_centroid", help="XeniumKeys.CELL_Y")
     return parser.parse_args()
 
 
@@ -34,8 +35,7 @@ def main():
     adata_ref = ad.read_h5ad(args.ref_h5ad)
     st.run_label_transfer(adata_ref, ref_cell_type=args.cell_type_key)
 
-    table_key = next(iter(sdata.tables.keys()))
-    labeled = sdata.tables[table_key]
+    labeled = sdata.tables[args.table_key]
     labeled.write_h5ad(f"{args.prefix}_labeled.h5ad")
 
 

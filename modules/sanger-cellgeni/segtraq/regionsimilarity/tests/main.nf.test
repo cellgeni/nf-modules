@@ -10,7 +10,30 @@ nextflow_process {
     tag "segtraq"
     tag "segtraq/regionsimilarity"
 
-    test("segtraq_regionsimilarity - xenium zarr - stub") {
+    test("segtraq_regionsimilarity - A02_4xHipSci sdata") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'A02_4xHipSci' ],
+                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.obs[0][1]).exists() },
+                { assert file(process.out.obs[0][1]).size() > 0 }
+            )
+        }
+
+    }
+
+    test("segtraq_regionsimilarity - A02_4xHipSci sdata - stub") {
 
         options "-stub"
 
@@ -18,8 +41,8 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test_xenium' ],
-                    file(params.modules_testdata_base_path + 'segtraq/xenium.zarr', checkIfExists: true),
+                    [ id:'A02_4xHipSci' ],
+                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
                 ]
                 """
             }

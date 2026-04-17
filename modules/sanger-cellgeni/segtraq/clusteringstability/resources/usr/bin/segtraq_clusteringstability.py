@@ -11,9 +11,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description="SegTraQ clustering stability metrics for 10x Xenium")
     parser.add_argument("--zarr_dir", required=True)
     parser.add_argument("--prefix", required=True)
-    parser.add_argument("--images_key", default="image")
-    parser.add_argument("--centroid_x_key", default="x_centroid")
-    parser.add_argument("--centroid_y_key", default="y_centroid")
+    parser.add_argument("--images_key", default="morphology_focus", help="Key for image in sdata.images (XeniumKeys.MORPHOLOGY_FOCUS_FILE)")
+    parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
+    parser.add_argument("--centroid_x_key", default="x_centroid", help="XeniumKeys.CELL_X")
+    parser.add_argument("--centroid_y_key", default="y_centroid", help="XeniumKeys.CELL_Y")
     parser.add_argument("--leiden_resolution", type=float, default=0.5)
     parser.add_argument("--n_pcs", type=int, default=50)
     parser.add_argument("--n_neighbors", type=int, default=15)
@@ -33,8 +34,7 @@ def main():
 
     st.filter_control_and_low_quality_transcripts()
 
-    table_key = next(iter(sdata.tables.keys()))
-    adata = sdata.tables[table_key]
+    adata = sdata.tables[args.table_key]
 
     sc.pp.normalize_total(adata)
     sc.pp.log1p(adata)
