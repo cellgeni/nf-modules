@@ -13,10 +13,6 @@ try:
 except ImportError as exc:
     raise SystemExit("ERROR: spatialdata-io is required.") from exc
 
-try:
-    import spatialdata as sd
-except ImportError as exc:
-    raise SystemExit("ERROR: spatialdata is required.") from exc
 
 LOGGER = logging.getLogger(__name__)
 
@@ -95,11 +91,6 @@ def main(argv=None):
                         help="Reader kwargs as KEY=VALUE (repeatable).")
     parser.add_argument("--reader-kwargs-json",
                         help="JSON string or file path with reader kwargs.")
-    parser.add_argument("--include-points", action="store_true",
-                        help="Include points/transcripts in output (excluded by default).")
-    parser.add_argument("--rename-image-to", default="raw_image",
-                        help="Rename a single image element to this key (default: raw_image). "
-                             "Pass empty string to skip renaming.")
     parser.add_argument("-@", "--threads", type=int, default=None)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--list-readers", action="store_true")
@@ -144,25 +135,6 @@ def main(argv=None):
     except Exception as exc:
         LOGGER.error("Failed to load: %s", exc)
         return 1
-
-    images = dict(sdata.images)
-    if args.rename_image_to and len(images) == 1:
-        (old_key, img), = images.items()
-        if old_key != args.rename_image_to:
-            LOGGER.info("Renaming image '%s' -> '%s'.", old_key, args.rename_image_to)
-            images = {args.rename_image_to: img}
-
-    points = dict(sdata.points) if args.include_points else {}
-    if sdata.points and not args.include_points:
-        LOGGER.info("Dropping %d points element(s) (use --include-points to keep).", len(sdata.points))
-
-    sdata = sd.SpatialData(
-        images=images,
-        labels=dict(sdata.labels),
-        shapes=dict(sdata.shapes),
-        tables=dict(sdata.tables),
-        points=points,
-    )
 
     LOGGER.info("Writing to %s", output_path)
     try:
