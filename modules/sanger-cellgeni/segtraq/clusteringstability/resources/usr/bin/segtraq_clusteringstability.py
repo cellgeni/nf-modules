@@ -89,19 +89,35 @@ def main():
 
     st.filter_control_and_low_quality_transcripts(min_qv=min_qv)
 
+    import sys
+    import numpy as np
+
     adata = sdata.tables[args.table_key]
+    X = adata.X
+    cell_totals = np.asarray(X.sum(axis=1)).flatten() if hasattr(X, "sum") else np.array(X).sum(axis=1)
+    expressed_mask = cell_totals > 0
+    n_expressed = int(expressed_mask.sum())
 
-    sc.pp.normalize_total(adata)
-    sc.pp.log1p(adata)
-    sc.pp.pca(adata, n_comps=min(args.n_pcs, adata.n_vars - 1))
-    sc.pp.neighbors(adata, n_neighbors=min(args.n_neighbors, adata.n_obs - 1))
-    sc.tl.umap(adata)
-    sc.tl.leiden(adata, resolution=args.leiden_resolution, flavor="igraph", n_iterations=2)
+    connectedness = silhouette = ari = None
 
-    connectedness = st.cs.cluster_connectedness()
-    silhouette = st.cs.silhouette_score()
-    ari = st.cs.adjusted_rand_index()
-    st.cs.purity()
+    if n_expressed < 10:
+        print(f"WARNING: only {n_expressed} cells have non-zero expression; skipping clustering.", file=sys.stderr)
+    else:
+        if n_expressed < adata.n_obs:
+            sdata.tables[args.table_key] = adata[expressed_mask].copy()
+        adata = sdata.tables[args.table_key]
+
+        sc.pp.normalize_total(adata)
+        sc.pp.log1p(adata)
+        sc.pp.pca(adata, n_comps=min(args.n_pcs, adata.n_vars - 1, adata.n_obs - 1))
+        sc.pp.neighbors(adata, n_neighbors=min(args.n_neighbors, adata.n_obs - 1))
+        sc.tl.umap(adata)
+        sc.tl.leiden(adata, resolution=args.leiden_resolution, flavor="igraph", n_iterations=2)
+
+        connectedness = st.cs.cluster_connectedness()
+        silhouette = st.cs.silhouette_score()
+        ari = st.cs.adjusted_rand_index()
+        st.cs.purity()
 
     adata.obs.to_csv(f"{args.prefix}_clustering_stability_obs.csv")
 
