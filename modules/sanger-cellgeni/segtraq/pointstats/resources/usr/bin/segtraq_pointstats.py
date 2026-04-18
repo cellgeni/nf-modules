@@ -9,30 +9,85 @@ import segtraq
 def parse_args():
     parser = argparse.ArgumentParser(description="SegTraQ point statistics (distance to membrane) for 10x Xenium")
     parser.add_argument("--zarr_dir", required=True)
-    parser.add_argument("--labeled_h5ad", required=True, help="H5AD from segtraq/labeltransfer with transferred_cell_type in obs")
+    parser.add_argument("--labeled_h5ad", required=True)
     parser.add_argument("--prefix", required=True)
     parser.add_argument("--genes", required=True, help="Comma-separated list of genes to analyse")
     parser.add_argument("--cell_type_key", default="transferred_cell_type")
-    parser.add_argument("--cell_type_query", required=True, help="Cell type name to query distance statistics for")
-    parser.add_argument("--images_key", default="morphology_focus", help="Key for image in sdata.images (XeniumKeys.MORPHOLOGY_FOCUS_FILE)")
-    parser.add_argument("--table_key", default="table", help="Key for cell table in sdata.tables")
-    parser.add_argument("--centroid_x_key", default="x_centroid", help="XeniumKeys.CELL_X")
-    parser.add_argument("--centroid_y_key", default="y_centroid", help="XeniumKeys.CELL_Y")
+    parser.add_argument("--cell_type_query", required=True)
+    parser.add_argument("--images_key", default="morphology_focus")
+    parser.add_argument("--table_key", default="table")
+    parser.add_argument("--tables_cell_id_key", default="cell_id")
+    parser.add_argument("--tables_area_key", default="cell_area",
+                        help="Obs column for cell area; use 'None' to auto-compute")
+    parser.add_argument("--centroid_x_key", default=None)
+    parser.add_argument("--centroid_y_key", default=None)
+    parser.add_argument("--shapes_key", default="cell_boundaries")
+    parser.add_argument("--shapes_cell_id_key", default="cell_id")
+    parser.add_argument("--nucleus_shapes_key", default="nucleus_boundaries",
+                        help="Key for nucleus shapes; use 'None' if unavailable")
+    parser.add_argument("--nucleus_shapes_cell_id_key", default="cell_id")
+    parser.add_argument("--points_z_key", default="z",
+                        help="Z coordinate column in transcripts; use 'None' for 2D data")
+    parser.add_argument("--points_gene_key", default="feature_name")
+    parser.add_argument("--points_background_id", default="UNASSIGNED",
+                        help="Background cell ID in transcripts (Xenium default: UNASSIGNED, use 'None' to disable)")
+    parser.add_argument("--min_qv", default="20.0",
+                        help="Minimum quality value for transcript filtering; use 'None' to disable")
     return parser.parse_args()
+
+
+def _none_or_str(val):
+    return None if val == "None" else val
+
+
+def _parse_bg_id(val):
+    if val == "None":
+        return None
+    try:
+        return int(val)
+    except ValueError:
+        return val
+
+
+def _fix_shapes_index(sdata, shapes_key, cell_id_key):
+    if shapes_key not in sdata.shapes:
+        return
+    shape = sdata.shapes[shapes_key]
+    if cell_id_key not in shape.columns and shape.index.name != cell_id_key:
+        shape.index.name = cell_id_key
+        sdata.shapes[shapes_key] = shape
 
 
 def main():
     args = parse_args()
+    bg_id = _parse_bg_id(args.points_background_id)
+    min_qv = None if args.min_qv == "None" else float(args.min_qv)
 
     sdata = spatialdata.read_zarr(args.zarr_dir)
+
+    _fix_shapes_index(sdata, args.shapes_key, args.shapes_cell_id_key)
+    nsk = _none_or_str(args.nucleus_shapes_key)
+    if nsk:
+        _fix_shapes_index(sdata, nsk, args.nucleus_shapes_cell_id_key)
+
     st = segtraq.SegTraQ(
         sdata,
-        images_key=args.images_key,
+        images_key=_none_or_str(args.images_key),
+        tables_key=args.table_key,
+        tables_cell_id_key=args.tables_cell_id_key,
+        tables_area_key=_none_or_str(args.tables_area_key),
         tables_centroid_x_key=args.centroid_x_key,
         tables_centroid_y_key=args.centroid_y_key,
+        shapes_key=args.shapes_key,
+        shapes_cell_id_key=args.shapes_cell_id_key,
+        nucleus_shapes_key=nsk,
+        nucleus_shapes_cell_id_key=args.nucleus_shapes_cell_id_key,
+        points_z_key=_none_or_str(args.points_z_key),
+        points_gene_key=args.points_gene_key,
+        points_background_id=bg_id,
     )
 
-    st.filter_control_and_low_quality_transcripts()
+    st.filter_control_and_low_quality_transcripts(min_qv=min_qv)
 
     labeled_adata = ad.read_h5ad(args.labeled_h5ad)
     sdata.tables[args.table_key].obs[args.cell_type_key] = labeled_adata.obs[args.cell_type_key].values

@@ -3,6 +3,7 @@ nextflow_process {
     name "Test Process SEGTRAQ_BASELINE"
     script "../main.nf"
     process "SEGTRAQ_BASELINE"
+    config "./nextflow.config"
 
     tag "modules"
     tag "modules_sanger-cellgeni"

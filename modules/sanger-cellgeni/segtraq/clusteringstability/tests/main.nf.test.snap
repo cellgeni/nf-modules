@@ -1,5 +1,5 @@
 {
-    "segtraq_baseline - A02_4xHipSci sdata - stub": {
+    "segtraq_clusteringstability - A02_4xHipSci sdata - stub": {
         "content": [
             {
                 "0": [
@@ -7,7 +7,7 @@
                         {
                             "id": "A02_4xHipSci"
                         },
-                        "A02_4xHipSci_baseline_obs.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "A02_4xHipSci_clustering_stability_obs.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -15,14 +15,22 @@
                         {
                             "id": "A02_4xHipSci"
                         },
-                        "A02_4xHipSci_baseline_summary.json:md5,20d79ad5eec83ec8f086b78ea56308ba"
+                        "A02_4xHipSci_clustering_stability_metrics.json:md5,8a80554c91d9fca8acb82f023de02f11"
                     ]
                 ],
                 "2": [
                     [
-                        "SEGTRAQ_BASELINE",
+                        "SEGTRAQ_CLUSTERINGSTABILITY",
                         "segtraq",
                         ""
+                    ]
+                ],
+                "metrics": [
+                    [
+                        {
+                            "id": "A02_4xHipSci"
+                        },
+                        "A02_4xHipSci_clustering_stability_metrics.json:md5,8a80554c91d9fca8acb82f023de02f11"
                     ]
                 ],
                 "obs": [
@@ -30,20 +38,12 @@
                         {
                             "id": "A02_4xHipSci"
                         },
-                        "A02_4xHipSci_baseline_obs.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "summary": [
-                    [
-                        {
-                            "id": "A02_4xHipSci"
-                        },
-                        "A02_4xHipSci_baseline_summary.json:md5,20d79ad5eec83ec8f086b78ea56308ba"
+                        "A02_4xHipSci_clustering_stability_obs.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
                     [
-                        "SEGTRAQ_BASELINE",
+                        "SEGTRAQ_CLUSTERINGSTABILITY",
                         "segtraq",
                         ""
                     ]
@@ -54,6 +54,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-18T00:38:55.808613351"
+        "timestamp": "2026-04-18T00:07:09.268300937"
     }
 }
