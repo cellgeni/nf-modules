@@ -86,7 +86,10 @@ def main():
     st.filter_control_and_low_quality_transcripts(min_qv=min_qv)
 
     if nsk is not None:
-        st.rs.similarity_nucleus_cytoplasm()
+        try:
+            st.rs.similarity_nucleus_cytoplasm()
+        except (AssertionError, ValueError) as e:
+            warnings.warn(f"similarity_nucleus_cytoplasm skipped: {e}")
     try:
         st.rs.similarity_border_neighborhood()
     except (KeyError, ValueError) as e:
