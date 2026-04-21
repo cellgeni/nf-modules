@@ -41,16 +41,9 @@ output:
           type: file
           description: Converted per-well-field OME-TIFF files.
           pattern: "*.ome.tif"
-
-  companion:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
       - "*/*.companion.ome":
           type: file
-          description: Optional plate companion OME XML linking all output OME-TIFF files. Named {prefix}.companion.ome when --prefix is supplied, otherwise plate.companion.ome.
+          description: Plate companion OME XML linking all output OME-TIFF files. Named {prefix}.companion.ome.
           pattern: "*.companion.ome"
 
   ffp_maps:

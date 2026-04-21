@@ -11,8 +11,7 @@ process PE2OMETIF {
     tuple val(meta), path(image_dir), val(index_name)
 
     output:
-    tuple val(meta), path("${prefix}/${prefix}*.ome.tif"), emit: ome_tif
-    tuple val(meta), path("${prefix}/${prefix}.companion.ome"), optional: true, emit: companion
+    tuple val(meta), path("${prefix}/${prefix}*.ome.tif"), path("${prefix}/${prefix}.companion.ome"), emit: ome_tif
     tuple val(meta), path("${prefix}/${prefix}_ch*_ffp.tiff"), optional: true, emit: ffp_maps
     tuple val(meta), path("${prefix}/${prefix}_ch*_dfp.tiff"), optional: true, emit: dfp_maps
     tuple val("${task.process}"), val('pe2ometif'), eval("python --version | sed 's/Python //'"), topic: versions, emit: versions_pe2ometif
@@ -33,19 +32,13 @@ process PE2OMETIF {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def round_index = meta.round_index ? "_${meta.round_index}" : "_1"
     prefix = task.ext.prefix ?: "${meta.id}${round_index}"
     """
     mkdir -p ${prefix}
     touch ${prefix}/A01_F001_maxproj.ome.tif
+    touch ${prefix}/${prefix}.companion.ome
     touch ${prefix}/${prefix}_ch01_ffp.tiff
     touch ${prefix}/${prefix}_ch01_dfp.tiff
-
-    if [[ ! " ${args} " =~ " --no-companion " ]]; then
-        _img_prefix=\$(echo "${args}" | sed -n 's/.*--prefix[[:space:]]\\+\\([^[:space:]]\\+\\).*/\\1/p')
-        _img_prefix=\${_img_prefix:-plate}
-        touch ${prefix}/\${_img_prefix}.companion.ome
-    fi
     """
 }
