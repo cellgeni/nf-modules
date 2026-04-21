@@ -25,7 +25,7 @@ process PE2OMETIF {
     prefix = task.ext.prefix ?: "${meta.id}${round_index}"
     """
     pe_to_ome_tif.py \\
-        ${image_dir}/${index_name} \\
+        "${image_dir}/${index_name}" \\
         --output-dir ${prefix} \\
         --prefix ${prefix} \\
         ${args}
