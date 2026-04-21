@@ -36,12 +36,11 @@ def main(input_folder, regex, out_companion_xml, out_folder="./", channel_names=
 
     for ind, img in enumerate(images):
         img_basename = os.path.basename(img)
-        row = re.search(r"([A-Z])", os.path.basename(img)).group(
-            1
-        )  # Extract row name using regex
-        column = re.search(r"(\d{2})", os.path.basename(img)).group(
-            1
-        )  # Extract column name using regex
+        well_match = re.search(r"_([A-Z])(\d{2})_", img_basename)
+        if not well_match:
+            raise ValueError(f"Could not extract well info from filename: {img_basename}")
+        row = well_match.group(1)
+        column = well_match.group(2)
         img_obj = AICSImage(img)
 
         image_id = f"Image:{ind}"
