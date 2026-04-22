@@ -81,6 +81,7 @@ def fixed_seeds(seed: int = 0) -> None:
     global _UMAP_RANDOM_STATE
     _UMAP_RANDOM_STATE = seed
     import os
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -96,6 +97,7 @@ def last_n_levels(path_str: Any, n: int) -> Path:
 
 #### Parameter dataclass and parsing ####
 
+
 @dataclass
 class TrainParams:
     # MAIN
@@ -105,7 +107,7 @@ class TrainParams:
     debug: bool = False
 
     # MODEL / ARCHITECTURE
-    cat_covariates_keys: list[str] | None = None       # default: read from preprocess uns
+    cat_covariates_keys: list[str] | None = None  # default: read from preprocess uns
     cat_covariates_embeds_injection: list[str] = field(
         default_factory=lambda: ["gene_expr_decoder"]
     )
@@ -175,7 +177,9 @@ def normalise_list_arg(
         return val
     if len(val) == 1:
         return [val[0]] * expected_len
-    logging.warning("List length %d does not match expected %d; adjusting.", len(val), expected_len)
+    logging.warning(
+        "List length %d does not match expected %d; adjusting.", len(val), expected_len
+    )
     out = list(val)[:expected_len]
     while len(out) < expected_len:
         out.append(val[-1])
@@ -184,7 +188,9 @@ def normalise_list_arg(
 
 def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     pre = argparse.ArgumentParser(add_help=False)
-    pre.add_argument("--config", type=Path, default=None, help="Path to JSON config file.")
+    pre.add_argument(
+        "--config", type=Path, default=None, help="Path to JSON config file."
+    )
 
     parser = argparse.ArgumentParser(
         prog="nichecompass_train.py",
@@ -197,24 +203,56 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     )
 
     g_main = parser.add_argument_group("MAIN")
-    g_main.add_argument("--preprocessed_h5ad", type=Path, required=True,
-                        help="Path to the preprocessed H5AD from nichecompass_preprocess.py.")
-    g_main.add_argument("--model_dir", type=str, required=True,
-                        help="Output directory name (created under --outdir).")
-    g_main.add_argument("--outdir", type=Path, default=argparse.SUPPRESS,
-                        help="Base output directory (default: current working directory).")
+    g_main.add_argument(
+        "--preprocessed_h5ad",
+        type=Path,
+        required=True,
+        help="Path to the preprocessed H5AD from nichecompass_preprocess.py.",
+    )
+    g_main.add_argument(
+        "--model_dir",
+        type=str,
+        required=True,
+        help="Output directory name (created under --outdir).",
+    )
+    g_main.add_argument(
+        "--outdir",
+        type=Path,
+        default=argparse.SUPPRESS,
+        help="Base output directory (default: current working directory).",
+    )
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 
     g_model = parser.add_argument_group("MODEL / ARCHITECTURE")
-    g_model.add_argument("--cat_covariates_keys", nargs="+", type=str, default=argparse.SUPPRESS,
-                         help="obs keys for categorical covariates (default: [sample_key] from preprocess).")
-    g_model.add_argument("--cat_covariates_embeds_injection", nargs="+", type=str,
-                         default=["gene_expr_decoder"])
-    g_model.add_argument("--cat_covariates_embeds_nums", nargs="+", type=int, default=[3])
-    g_model.add_argument("--cat_covariates_no_edges", nargs="+", type=str, default=["true"],
-                         help="Per-covariate bool: no edges between different categories.")
-    g_model.add_argument("--conv_layer_encoder", type=str, choices=["gcnconv", "gatv2conv"],
-                         default="gatv2conv")
+    g_model.add_argument(
+        "--cat_covariates_keys",
+        nargs="+",
+        type=str,
+        default=argparse.SUPPRESS,
+        help="obs keys for categorical covariates (default: [sample_key] from preprocess).",
+    )
+    g_model.add_argument(
+        "--cat_covariates_embeds_injection",
+        nargs="+",
+        type=str,
+        default=["gene_expr_decoder"],
+    )
+    g_model.add_argument(
+        "--cat_covariates_embeds_nums", nargs="+", type=int, default=[3]
+    )
+    g_model.add_argument(
+        "--cat_covariates_no_edges",
+        nargs="+",
+        type=str,
+        default=["true"],
+        help="Per-covariate bool: no edges between different categories.",
+    )
+    g_model.add_argument(
+        "--conv_layer_encoder",
+        type=str,
+        choices=["gcnconv", "gatv2conv"],
+        default="gatv2conv",
+    )
     g_model.add_argument("--active_gp_thresh_ratio", type=float, default=0.01)
 
     g_tr = parser.add_argument_group("TRAINER")
@@ -225,17 +263,23 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_tr.add_argument("--lambda_gene_expr_recon", type=float, default=300.0)
     g_tr.add_argument("--lambda_l1_masked", type=float, default=0.0)
     g_tr.add_argument("--lambda_l1_addon", type=float, default=30.0)
-    g_tr.add_argument("--edge_batch_size", type=int, default=16384)
+    g_tr.add_argument("--edge_batch_size", type=int, default=1024)
     g_tr.add_argument("--n_sampled_neighbors", type=int, default=4)
-    g_tr.add_argument("--use_cuda_if_available", type=str, choices=["true", "false"],
-                       default="true")
+    g_tr.add_argument(
+        "--use_cuda_if_available", type=str, choices=["true", "false"], default="true"
+    )
 
     return parser, pre
 
 
 def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> TrainParams:
     all_params = set(f.name for f in fields(TrainParams))
-    runtime_params = {"run_root", "artifacts_folder_path", "model_folder_path", "figure_folder_path"}
+    runtime_params = {
+        "run_root",
+        "artifacts_folder_path",
+        "model_folder_path",
+        "figure_folder_path",
+    }
     allowed_for_config = sorted(list(all_params - runtime_params))
     if cfg:
         validate_known_keys(cfg, allowed_for_config)
@@ -265,6 +309,7 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> Trai
 ##########################################################
 #### Model construction, training, saving ####
 
+
 def build_model(
     adata: ad.AnnData,
     params: TrainParams,
@@ -274,7 +319,8 @@ def build_model(
     logging.info("Initialising NicheCompass model...")
 
     cat_keys: list[str] = [
-        str(k) for k in (
+        str(k)
+        for k in (
             params.cat_covariates_keys
             or preprocess_ctx.get("cat_covariates_keys")
             or [preprocess_ctx["sample_key"]]
@@ -282,12 +328,17 @@ def build_model(
     ]
     n_cov = len(cat_keys)
 
-    inj = normalise_list_arg(params.cat_covariates_embeds_injection,
-                             expected_len=n_cov, default_item="gene_expr_decoder")
-    emb_dims = normalise_list_arg(params.cat_covariates_embeds_nums,
-                                  expected_len=n_cov, default_item=3)
-    no_edges = normalise_list_arg(params.cat_covariates_no_edges,
-                                  expected_len=n_cov, default_item=True)
+    inj = normalise_list_arg(
+        params.cat_covariates_embeds_injection,
+        expected_len=n_cov,
+        default_item="gene_expr_decoder",
+    )
+    emb_dims = normalise_list_arg(
+        params.cat_covariates_embeds_nums, expected_len=n_cov, default_item=3
+    )
+    no_edges = normalise_list_arg(
+        params.cat_covariates_no_edges, expected_len=n_cov, default_item=True
+    )
 
     model = NicheCompass(
         adata,
@@ -358,9 +409,13 @@ def save_model_and_config(
         "gp_names_key": preprocess_ctx["gp_names_key"],
         "active_gp_names_key": preprocess_ctx["active_gp_names_key"],
         "gp_targets_mask_key": preprocess_ctx["gp_targets_mask_key"],
-        "gp_targets_categories_mask_key": preprocess_ctx["gp_targets_categories_mask_key"],
+        "gp_targets_categories_mask_key": preprocess_ctx[
+            "gp_targets_categories_mask_key"
+        ],
         "gp_sources_mask_key": preprocess_ctx["gp_sources_mask_key"],
-        "gp_sources_categories_mask_key": preprocess_ctx["gp_sources_categories_mask_key"],
+        "gp_sources_categories_mask_key": preprocess_ctx[
+            "gp_sources_categories_mask_key"
+        ],
         "latent_key": preprocess_ctx["latent_key"],
         "sample_key": preprocess_ctx["sample_key"],
         "cell_type_key": preprocess_ctx["cell_type_key"],
@@ -395,6 +450,7 @@ def save_model_and_config(
 
 
 ##########################################################
+
 
 def main(argv: list[str] | None = None) -> None:
     parser, pre = build_parser()
@@ -441,7 +497,8 @@ def main(argv: list[str] | None = None) -> None:
     model = build_model(adata, params, preprocess_ctx, counts_key_effective)
 
     cat_keys: list[str] = [
-        str(k) for k in (
+        str(k)
+        for k in (
             params.cat_covariates_keys
             or preprocess_ctx.get("cat_covariates_keys")
             or [preprocess_ctx["sample_key"]]
