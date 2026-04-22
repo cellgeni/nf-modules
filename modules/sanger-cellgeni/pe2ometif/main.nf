@@ -36,7 +36,7 @@ process PE2OMETIF {
     prefix = task.ext.prefix ?: "${meta.id}${round_index}"
     """
     mkdir -p ${prefix}
-    touch ${prefix}/A01_F001_maxproj.ome.tif
+    touch ${prefix}/${prefix}_A01_F001_maxproj.ome.tif
     touch ${prefix}/${prefix}.companion.ome
     touch ${prefix}/${prefix}_ch01_ffp.tiff
     touch ${prefix}/${prefix}_ch01_dfp.tiff

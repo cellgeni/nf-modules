@@ -845,6 +845,59 @@ def parse_well_field(filename: str) -> tuple[int, int, int]:
     return 0, 0, 0
 
 
+def _row_letter_to_int(letter: str) -> int:
+    """'A' → 1, 'B' → 2, …, 'Z' → 26, 'AA' → 27, …"""
+    result = 0
+    for c in letter.strip().upper():
+        if not c.isalpha():
+            raise ValueError(f"Invalid row letter: {letter!r}")
+        result = result * 26 + (ord(c) - ord("A") + 1)
+    return result
+
+
+def parse_row_range(spec: str) -> list[int]:
+    """
+    Parse a row-letter range spec into a list of 1-based row indices.
+
+    Examples
+    --------
+    'B'    → [2]
+    'B-D'  → [2, 3, 4]
+    'AA'   → [27]
+    """
+    spec = spec.strip().upper()
+    if "-" in spec:
+        start_s, end_s = [s.strip() for s in spec.split("-", 1)]
+        start, end = _row_letter_to_int(start_s), _row_letter_to_int(end_s)
+        if start > end:
+            raise ValueError(
+                f"Row range start '{start_s}' is after end '{end_s}'."
+            )
+        return list(range(start, end + 1))
+    return [_row_letter_to_int(spec)]
+
+
+def parse_col_range(spec: str) -> list[int]:
+    """
+    Parse a column-number range spec into a list of 1-based column indices.
+
+    Examples
+    --------
+    '4'    → [4]
+    '4-6'  → [4, 5, 6]
+    """
+    spec = spec.strip()
+    if "-" in spec:
+        start_s, end_s = [s.strip() for s in spec.split("-", 1)]
+        start, end = int(start_s), int(end_s)
+        if start > end:
+            raise ValueError(
+                f"Column range start {start} is after end {end}."
+            )
+        return list(range(start, end + 1))
+    return [int(spec)]
+
+
 def group_by_well_field(
     entries: list[ImageEntry],
 ) -> dict[tuple[int, int, int], list[ImageEntry]]:
@@ -1496,6 +1549,8 @@ def convert(
     apply_correction: bool,
     write_companion: bool,
     prefix: str = "",
+    row_range: Optional[list[int]] = None,
+    col_range: Optional[list[int]] = None,
 ) -> None:
     print(f"Parsing {index_path.name} …")
     plate, entries = parse_index(index_path)
@@ -1584,6 +1639,24 @@ def convert(
         groups = {k: v for k, v in groups.items() if (k[0], k[1]) in wells_filter}
         if not groups:
             sys.exit("No matching wells found after applying --wells filter.")
+
+    if row_range is not None or col_range is not None:
+        allowed_rows = set(row_range) if row_range is not None else None
+        allowed_cols = set(col_range) if col_range is not None else None
+        groups = {
+            k: v for k, v in groups.items()
+            if (allowed_rows is None or k[0] in allowed_rows)
+            and (allowed_cols is None or k[1] in allowed_cols)
+        }
+        range_desc = "".join([
+            f" rows {chr(ord('A') + min(allowed_rows) - 1)}"
+            f"-{chr(ord('A') + max(allowed_rows) - 1)}" if allowed_rows else "",
+            f" cols {min(allowed_cols)}-{max(allowed_cols)}" if allowed_cols else "",
+        ]).strip()
+        if not groups:
+            sys.exit(
+                f"No wells found after applying range filter ({range_desc})."
+            )
 
     output_dir.mkdir(parents=True, exist_ok=True)
     if correction:
@@ -1709,6 +1782,26 @@ def parse_args(argv=None):
         ),
     )
     ap.add_argument(
+        "--row-range",
+        default=None,
+        metavar="START[-END]",
+        help=(
+            "Row letter range to process, inclusive.  "
+            "Single row: 'B'.  Range: 'B-D' processes rows B, C, D.  "
+            "Can be combined with --col-range.  Default: all rows."
+        ),
+    )
+    ap.add_argument(
+        "--col-range",
+        default=None,
+        metavar="START[-END]",
+        help=(
+            "Column number range to process, inclusive.  "
+            "Single column: '4'.  Range: '4-6' processes columns 4, 5, 6.  "
+            "Can be combined with --row-range.  Default: all columns."
+        ),
+    )
+    ap.add_argument(
         "--no-companion",
         action="store_true",
         help=(
@@ -1751,6 +1844,20 @@ def main(argv=None):
             except ValueError as exc:
                 sys.exit(f"Error: {exc}")
 
+    row_range: Optional[list[int]] = None
+    if args.row_range:
+        try:
+            row_range = parse_row_range(args.row_range)
+        except ValueError as exc:
+            sys.exit(f"Error in --row-range: {exc}")
+
+    col_range: Optional[list[int]] = None
+    if args.col_range:
+        try:
+            col_range = parse_col_range(args.col_range)
+        except ValueError as exc:
+            sys.exit(f"Error in --col-range: {exc}")
+
     convert(
         index_path=index_path,
         output_dir=output_dir,
@@ -1761,6 +1868,8 @@ def main(argv=None):
         apply_correction=not args.no_correction,
         write_companion=not args.no_companion,
         prefix=args.prefix,
+        row_range=row_range,
+        col_range=col_range,
     )
 
 
