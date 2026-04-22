@@ -36,7 +36,7 @@ def main(input_folder, regex, out_companion_xml, out_folder="./", channel_names=
 
     for ind, img in enumerate(images):
         img_basename = os.path.basename(img)
-        well_match = re.search(r"_([A-Z])(\d{2})_", img_basename)
+        well_match = re.search(r"(?:^|_)([A-Z])(\d{2})_", img_basename)
         if not well_match:
             raise ValueError(f"Could not extract well info from filename: {img_basename}")
         row = well_match.group(1)
