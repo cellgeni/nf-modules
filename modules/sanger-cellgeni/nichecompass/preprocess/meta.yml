@@ -29,19 +29,26 @@ input:
           One or more H5AD files containing spatial AnnData objects.
           e.g. `[ sample1.h5ad, sample2.h5ad ]`
         pattern: "*.h5ad"
-
-args:
-  description: |
-    The following arguments are **mandatory** and must be supplied via
-    `task.ext.args` in your modules.config:
-
-    - `--cell_type_key <str>` : obs column containing cell-type labels.
-    - `--sample_key <str>`    : obs column identifying the sample/batch.
-    - `--counts_key <str>`    : layers key for raw counts (no fallback to X).
-    - `--spatial_key <str>`   : obsm key for 2-D spatial coordinates.
-
-    These values are stored in `adata.uns['nichecompass_preprocess_params']`
-    and are automatically consumed by the downstream `nichecompass/train` module.
+    - cell_type_key:
+        type: string
+        description: |
+          obs column name containing cell-type labels.
+          e.g. `'Main_molecular_cell_type'`
+    - sample_key:
+        type: string
+        description: |
+          obs column name identifying the sample/batch.
+          e.g. `'batch'`
+    - counts_key:
+        type: string
+        description: |
+          layers key for raw counts (no fallback to X).
+          e.g. `'counts'`
+    - spatial_key:
+        type: string
+        description: |
+          obsm key for 2-D spatial coordinates.
+          e.g. `'spatial'`
 output:
   - - meta:
         type: map

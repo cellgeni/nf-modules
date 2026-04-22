@@ -17,13 +17,12 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_20250829' ],
                     file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                    'Main_molecular_cell_type',
+                    'batch',
+                    'counts',
+                    'spatial',
                 ]
                 """
-            }
-            config {
-                process {
-                    ext.args = "--cell_type_key Main_molecular_cell_type --sample_key batch --counts_key counts --spatial_key spatial"
-                }
             }
         }
 
@@ -46,13 +45,12 @@ nextflow_process {
                 input[0] = [
                     [ id:'test_20250829' ],
                     file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                    'Main_molecular_cell_type',
+                    'batch',
+                    'counts',
+                    'spatial',
                 ]
                 """
-            }
-            config {
-                process {
-                    ext.args = "--cell_type_key Main_molecular_cell_type --sample_key batch --counts_key counts --spatial_key spatial"
-                }
             }
         }
 
