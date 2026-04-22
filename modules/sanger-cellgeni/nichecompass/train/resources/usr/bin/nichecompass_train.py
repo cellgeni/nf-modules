@@ -43,6 +43,24 @@ _UMAP_RANDOM_STATE: int = 0
 Touch_geometric: TypeAlias = Literal["gcnconv", "gatv2conv"]
 
 
+def _json_default(obj: Any) -> Any:
+    """JSON serializer that converts numpy scalars/arrays to Python natives.
+
+    anndata loads uns values from h5ad as numpy types; without this, json.dump
+    with default=str would turn array(['batch']) into the string "['batch']",
+    which breaks downstream consumers expecting a JSON array.
+    """
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, (np.integer,)):
+        return int(obj)
+    if isinstance(obj, (np.floating,)):
+        return float(obj)
+    if isinstance(obj, (np.bool_,)):
+        return bool(obj)
+    return str(obj)
+
+
 def setup_logging(log_path: Path, debug: bool) -> None:
     level = logging.DEBUG if debug else logging.INFO
     fmt = "%(asctime)s | %(levelname)s | %(message)s"
@@ -255,7 +273,13 @@ def build_model(
 ) -> NicheCompass:
     logging.info("Initialising NicheCompass model...")
 
-    cat_keys = params.cat_covariates_keys or preprocess_ctx.get("cat_covariates_keys") or [preprocess_ctx["sample_key"]]
+    cat_keys: list[str] = [
+        str(k) for k in (
+            params.cat_covariates_keys
+            or preprocess_ctx.get("cat_covariates_keys")
+            or [preprocess_ctx["sample_key"]]
+        )
+    ]
     n_cov = len(cat_keys)
 
     inj = normalise_list_arg(params.cat_covariates_embeds_injection,
@@ -366,7 +390,7 @@ def save_model_and_config(
     }
 
     with open(cfg_path, "w", encoding="utf-8") as f:
-        json.dump(run_config, f, indent=2, default=str)
+        json.dump(run_config, f, indent=2, default=_json_default)
     logging.info(f"Saved run_config.json at {cfg_path}")
 
 
@@ -416,7 +440,13 @@ def main(argv: list[str] | None = None) -> None:
     # Build, train, embed
     model = build_model(adata, params, preprocess_ctx, counts_key_effective)
 
-    cat_keys = params.cat_covariates_keys or preprocess_ctx.get("cat_covariates_keys") or [preprocess_ctx["sample_key"]]
+    cat_keys: list[str] = [
+        str(k) for k in (
+            params.cat_covariates_keys
+            or preprocess_ctx.get("cat_covariates_keys")
+            or [preprocess_ctx["sample_key"]]
+        )
+    ]
 
     train_and_embed(model, params, latent_key=preprocess_ctx["latent_key"])
 
