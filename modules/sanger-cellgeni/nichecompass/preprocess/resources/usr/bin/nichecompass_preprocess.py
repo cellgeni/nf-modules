@@ -78,19 +78,22 @@ def fixed_seeds(seed: int = 0) -> None:
 
 @dataclass
 class PreprocessParams:
-    # MAIN
+    # MAIN (mandatory — no defaults)
     batches: list[Path]
     prefix: str
+    cell_type_key: str          # obs key for cell type labels
+    sample_key: str             # obs key for sample/batch
+    counts_key: str             # layers key for raw counts
+    spatial_key: str            # obsm key for spatial coordinates
+
+    # Optional with defaults
     species: Species = "human"
     debug: bool = False
 
     # DATASET / GRAPH
-    spatial_key: str = "spatial"
     n_neighbors: int = 4
-    sample_key: str = "batch"
 
     # AnnData keys
-    counts_key: str = "counts"
     gp_names_key: str = "nichecompass_gp_names"
     active_gp_names_key: str = "nichecompass_active_gp_names"
     gp_targets_mask_key: str = "nichecompass_gp_targets"
@@ -100,7 +103,6 @@ class PreprocessParams:
     latent_key: str = "nichecompass_latent"
 
     # Metadata for downstream use (training, analysis)
-    cell_type_key: str = "Main_molecular_cell_type"
     cat_covariates_keys: list[str] | None = None
 
 
@@ -156,18 +158,18 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse.ArgumentParser]:
     g_main.add_argument("--debug", action="store_true", help="Enable DEBUG logging.")
 
     g_dataset = parser.add_argument_group("DATASET / GRAPH")
-    g_dataset.add_argument("--sample_key", type=str, default="batch",
-                           help="obs key for sample/batch.")
-    g_dataset.add_argument("--cell_type_key", type=str, default="Main_molecular_cell_type",
-                           help="obs key for cell type labels.")
-    g_dataset.add_argument("--spatial_key", type=str, default="spatial",
-                           help="obsm key for spatial coordinates.")
+    g_dataset.add_argument("--sample_key", type=str, required=True,
+                           help="obs key for sample/batch (mandatory).")
+    g_dataset.add_argument("--cell_type_key", type=str, required=True,
+                           help="obs key for cell type labels (mandatory).")
+    g_dataset.add_argument("--spatial_key", type=str, required=True,
+                           help="obsm key for spatial coordinates (mandatory).")
     g_dataset.add_argument("--n_neighbors", type=int, default=4,
                            help="Number of spatial neighbours per node.")
 
     g_ad = parser.add_argument_group("AnnData keys")
-    g_ad.add_argument("--counts_key", type=str, default="counts",
-                      help="Layer name for counts (falls back to X if absent).")
+    g_ad.add_argument("--counts_key", type=str, required=True,
+                      help="Layer name for raw counts (mandatory; no fallback to X).")
     g_ad.add_argument("--gp_names_key", type=str, default="nichecompass_gp_names")
     g_ad.add_argument("--active_gp_names_key", type=str, default="nichecompass_active_gp_names")
     g_ad.add_argument("--gp_targets_mask_key", type=str, default="nichecompass_gp_targets")
@@ -198,8 +200,16 @@ def merge_config_and_args(args: argparse.Namespace, cfg: dict[str, Any]) -> Prep
         if v is not None:
             merged[k] = v
 
-    if "batches" not in merged or not merged["batches"]:
-        raise ValueError("You must provide --batches PATH [PATH ...] or set 'batches' in --config JSON.")
+    _required = {
+        "batches": "--batches PATH [PATH ...] or 'batches' in --config JSON",
+        "cell_type_key": "--cell_type_key or 'cell_type_key' in --config JSON",
+        "sample_key": "--sample_key or 'sample_key' in --config JSON",
+        "counts_key": "--counts_key or 'counts_key' in --config JSON",
+        "spatial_key": "--spatial_key or 'spatial_key' in --config JSON",
+    }
+    missing = [hint for key, hint in _required.items() if not merged.get(key)]
+    if missing:
+        raise ValueError("Missing required parameters:\n" + "\n".join(f"  {h}" for h in missing))
 
     merged["batches"] = [Path(p) for p in merged["batches"]]
 
@@ -294,30 +304,42 @@ def create_prior_gp_mask(
 ##########################################################
 #### Data loading and preparation ####
 
-def load_batches(
-    batch_paths: list[Path],
-    counts_key: str,
-) -> tuple[list[ad.AnnData], str]:
-    """Load .h5ad/.zarr batches. Falls back to X for all if any batch is missing the counts layer."""
+def load_batches(batch_paths: list[Path]) -> list[ad.AnnData]:
+    """Load .h5ad/.zarr batches."""
     adata_batch_list: list[ad.AnnData] = []
-    use_x = False
-
     for p in batch_paths:
         logging.info(f"Loading batch: {p}")
         try:
             a = ad.read_zarr(p) if p.suffix == ".zarr" else sc.read_h5ad(p)
         except Exception as e:
             raise RuntimeError(f"Failed to read H5AD: {p}") from e
-
-        if counts_key not in a.layers.keys():
-            logging.warning(
-                f"Layer '{counts_key}' not found in {p}; falling back to X for all batches."
-            )
-            use_x = True
-
         adata_batch_list.append(a)
+    return adata_batch_list
 
-    return adata_batch_list, ("X" if use_x else counts_key)
+
+def validate_adata_keys(
+    adata_batch_list: list[ad.AnnData],
+    *,
+    cell_type_key: str,
+    sample_key: str,
+    counts_key: str,
+    spatial_key: str,
+) -> None:
+    """Raise KeyError if any batch is missing a mandatory key."""
+    for idx, a in enumerate(adata_batch_list):
+        errors: list[str] = []
+        if cell_type_key not in a.obs.columns:
+            errors.append(f"obs['{cell_type_key}'] (cell_type_key)")
+        if sample_key not in a.obs.columns:
+            errors.append(f"obs['{sample_key}'] (sample_key)")
+        if counts_key not in a.layers:
+            errors.append(f"layers['{counts_key}'] (counts_key)")
+        if spatial_key not in a.obsm:
+            errors.append(f"obsm['{spatial_key}'] (spatial_key)")
+        if errors:
+            raise KeyError(
+                f"Batch #{idx} is missing required keys: {', '.join(errors)}"
+            )
 
 
 def compute_spatial_neighbors_for_batches(
@@ -411,19 +433,12 @@ def sanitize_adata_for_training(
                 "Please fix spatial coordinates."
             )
 
-    if counts_key_effective == "X":
-        mat = adata.X
-        count = _replace_nonfinite_in_matrix(mat)
-        if mat.dtype != np.float32:
-            logging.warning("Casting expression matrix (X) from %s to float32.", mat.dtype)
-            adata.X = mat.astype(np.float32)
-    else:
-        mat = adata.layers[counts_key_effective]
-        count = _replace_nonfinite_in_matrix(mat)
-        if mat.dtype != np.float32:
-            logging.warning("Casting expression matrix (%s) from %s to float32.",
-                            counts_key_effective, mat.dtype)
-            adata.layers[counts_key_effective] = mat.astype(np.float32)
+    mat = adata.layers[counts_key_effective]
+    count = _replace_nonfinite_in_matrix(mat)
+    if mat.dtype != np.float32:
+        logging.warning("Casting expression matrix (%s) from %s to float32.",
+                        counts_key_effective, mat.dtype)
+        adata.layers[counts_key_effective] = mat.astype(np.float32)
     if count:
         logging.warning("Replaced %d non-finite values in expression matrix (%s) with 0.",
                         count, counts_key_effective)
@@ -506,11 +521,17 @@ def main(argv: list[str] | None = None) -> None:
         figure_folder_path=gp_figure_dir,
     )
 
-    # Load batches and build spatial graphs
+    # Load batches and validate mandatory keys
     logging.info("Loading data batches...")
-    adata_batch_list, counts_key_effective = load_batches(
-        batch_paths=params.batches,
+    adata_batch_list = load_batches(params.batches)
+
+    logging.info("Validating mandatory AnnData keys...")
+    validate_adata_keys(
+        adata_batch_list,
+        cell_type_key=params.cell_type_key,
+        sample_key=params.sample_key,
         counts_key=params.counts_key,
+        spatial_key=params.spatial_key,
     )
 
     compute_spatial_neighbors_for_batches(
@@ -528,7 +549,7 @@ def main(argv: list[str] | None = None) -> None:
 
     sanitize_adata_for_training(
         adata,
-        counts_key_effective=counts_key_effective,
+        counts_key_effective=params.counts_key,
         adj_key=_ADJ_KEY,
         spatial_key=params.spatial_key,
     )
@@ -546,7 +567,7 @@ def main(argv: list[str] | None = None) -> None:
 
     # Store preprocessing context for the training step
     adata.uns["nichecompass_preprocess_params"] = {
-        "counts_key_effective": counts_key_effective,
+        "counts_key_effective": params.counts_key,
         "adj_key": _ADJ_KEY,
         "gp_names_key": params.gp_names_key,
         "active_gp_names_key": params.active_gp_names_key,

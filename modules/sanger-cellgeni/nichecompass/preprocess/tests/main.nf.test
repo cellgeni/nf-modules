@@ -20,6 +20,11 @@ nextflow_process {
                 ]
                 """
             }
+            config {
+                process {
+                    ext.args = "--cell_type_key Main_molecular_cell_type --sample_key batch --counts_key counts --spatial_key spatial"
+                }
+            }
         }
 
         then {
@@ -43,6 +48,11 @@ nextflow_process {
                     file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
                 ]
                 """
+            }
+            config {
+                process {
+                    ext.args = "--cell_type_key Main_molecular_cell_type --sample_key batch --counts_key counts --spatial_key spatial"
+                }
             }
         }
 
