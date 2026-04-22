@@ -371,10 +371,21 @@ def parse_index(index_path: Path) -> tuple[PlateInfo, list[ImageEntry]]:
                     f"token in filename '{Path(url).name}'; using z_offset=0.0"
                 )
 
+        # Try to extract row/col/field from the filename as a fallback.
+        # PE filenames encode all three: r02c03f01p01-ch1sk1fk1fl1.tiff
+        m_rcf = re.search(r"[Rr](\d+)[Cc](\d+)[Ff](\d+)", Path(url).name)
+
+        row_val   = _int(wi, "Row", default=0) or (int(m_rcf.group(1)) if m_rcf else 1)
+        col_val   = _int(wi, "Col", "Column", default=0) or (int(m_rcf.group(2)) if m_rcf else 1)
+        field_val = (
+            _int(wi, "FieldID") or _int(wi, "FieldNr") or _int(wi, "Field", default=0)
+            or (int(m_rcf.group(3)) if m_rcf else 1)
+        )
+
         entries.append(ImageEntry(
-            row=_int(wi, "Row", default=1),
-            col=_int(wi, "Col", "Column", default=1),
-            field=_int(wi, "FieldID") or _int(wi, "FieldNr") or _int(wi, "Field", default=1),
+            row=row_val,
+            col=col_val,
+            field=field_val,
             plane=_int(wi, "PlaneID") or _int(wi, "PlaneNr") or _int(wi, "Plane", default=1),
             timepoint=(
                 _int(wi, "TimepointID")
