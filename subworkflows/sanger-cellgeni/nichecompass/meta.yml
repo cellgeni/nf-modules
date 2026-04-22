@@ -11,12 +11,30 @@ components:
   - spatial/nichecompasstraining
   - spatial/nichecompassanalysis
 input:
-  - ch_h5ad:
-      type: file
+  - ch_input:
       description: |
-        The input channel containing the H5AD files
-        Structure: [ val(meta), path(h5ad) ]
-      pattern: "*.h5ad"
+        Input channel with dataset metadata and mandatory AnnData key names.
+        Structure: [ val(meta), path(h5ad), val(cell_type_key), val(sample_key), val(counts_key), val(spatial_key) ]
+      elements:
+        - meta:
+            type: map
+            description: Groovy Map with sample information e.g. `[ id:'sample1' ]`
+        - h5ad:
+            type: file
+            description: One or more H5AD files (pre-merged or per-sample) containing spatial AnnData objects.
+            pattern: "*.h5ad"
+        - cell_type_key:
+            type: string
+            description: obs column containing cell-type labels e.g. `'Main_molecular_cell_type'`
+        - sample_key:
+            type: string
+            description: obs column identifying the sample/batch; also used as the split column for SCRAFT_SPLITH5AD e.g. `'batch'`
+        - counts_key:
+            type: string
+            description: layers key for raw counts (no fallback to X) e.g. `'counts'`
+        - spatial_key:
+            type: string
+            description: obsm key for 2-D spatial coordinates e.g. `'spatial'`
 output:
   - nichecompass_dir:
       type: directory

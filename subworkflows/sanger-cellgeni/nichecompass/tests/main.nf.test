@@ -23,6 +23,10 @@ nextflow_workflow {
     //             input[0] = [
     //                 [ id:'test_20250830' ], // meta map
     //                 file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+    //                 'Main_molecular_cell_type',
+    //                 'batch',
+    //                 'counts',
+    //                 'spatial',
     //             ]
     //             """
     //         }
@@ -41,7 +45,6 @@ nextflow_workflow {
         when {
             params {
                 modules_testdata_base_path  = 's3://spatial_demo_datasets/'
-                nichecompass_preprocess_args = '--species mouse'
                 nichecompass_train_args      = '--use_cuda_if_available false'
             }
             workflow {
@@ -49,7 +52,10 @@ nextflow_workflow {
                 input[0] = [
                     [ id:'test_20250830' ], // meta map
                     file(params.modules_testdata_base_path + 'nichecompass/training/100_concat/*.h5ad', checkIfExists: true),
-                    'batch'
+                    'Main_molecular_cell_type',
+                    'batch',
+                    'counts',
+                    'spatial',
                 ]
                 """
             }
