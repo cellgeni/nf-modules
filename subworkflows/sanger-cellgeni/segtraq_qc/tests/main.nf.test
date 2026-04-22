@@ -13,7 +13,34 @@ nextflow_workflow {
     tag "segtraq/regionsimilarity"
     tag "segtraq/volume"
 
-    test("segtraq_qc - xenium zarr - stub") {
+    test("segtraq_qc - A02_4xHipSci sdata") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'A02_4xHipSci' ],
+                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert file(workflow.out.baseline_obs[0][1]).exists() },
+                { assert file(workflow.out.baseline_summary[0][1]).text.contains("num_cells") },
+                { assert file(workflow.out.clustering_obs[0][1]).exists() },
+                { assert file(workflow.out.clustering_metrics[0][1]).text.contains("silhouette_score") },
+                { assert file(workflow.out.region_similarity_obs[0][1]).exists() },
+                { assert file(workflow.out.volume_obs[0][1]).exists() }
+            )
+        }
+
+    }
+
+    test("segtraq_qc - A02_4xHipSci sdata - stub") {
 
         options "-stub"
 
@@ -21,8 +48,8 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = [
-                    [ id:'test_xenium' ],
-                    file(params.modules_testdata_base_path + 'segtraq/xenium.zarr', checkIfExists: true),
+                    [ id:'A02_4xHipSci' ],
+                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
                 ]
                 """
             }
