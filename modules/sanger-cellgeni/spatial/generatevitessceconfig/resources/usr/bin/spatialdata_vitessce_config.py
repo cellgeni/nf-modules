@@ -16,12 +16,15 @@ from vitessce import (
 )
 
 
-def build_config(wrapper: SpatialDataWrapper, description: Optional[str] = None):
+def build_config(
+    wrapper: SpatialDataWrapper,
+    description: Optional[str] = None,
+    dataset_name: Optional[str] = None,
+) -> VitessceConfig:
     """Construct a VitessceConfig for the given SpatialDataWrapper."""
     vc = VitessceConfig(schema_version="1.0.16", name=description)
 
-    dataset = vc.add_dataset(name="ISS decoding").add_object(wrapper)
-
+    dataset = vc.add_dataset(name=dataset_name).add_object(wrapper)
     spatial = vc.add_view("spatialBeta", dataset=dataset)
     feature_list = vc.add_view(vt.FEATURE_LIST, dataset=dataset)
     layer_controller = vc.add_view("layerControllerBeta", dataset=dataset)
@@ -143,7 +146,7 @@ def build_config(wrapper: SpatialDataWrapper, description: Optional[str] = None)
     help="Paths to observation embeddings within the zarr store.",
     default=["obsm/X_umap", "obsm/X_pca"],
 )
-@click.version_option(version='0.0.1', prog_name="spatialdata_vitessce_config")
+@click.version_option(version="0.0.1", prog_name="spatialdata_vitessce_config")
 def cli(
     sdata_store: str,
     image_path: str,
@@ -161,8 +164,9 @@ def cli(
     print(f"Loading SpatialData.zip from store: {sdata_store}")
     sdata_store_p = sdata_store
     is_zip = False
+    sdata_name = sdata_store_p.rstrip("/").split("/")[-1]
     if output_file is None:
-        output_stem = sdata_store_p.rstrip("/").split("/")[-1].split(".")[0]
+        output_stem = sdata_name.split(".")[0]
     if sdata_store.endswith(".zip"):
         print("Detected zip store...")
         if not data_http_url.endswith(".zip"):
@@ -193,11 +197,11 @@ def cli(
         obs_embedding_names=obs_embedding_names,
     )
 
-    vc = build_config(wrapper, description)
+    vc = build_config(wrapper, description, f"{sdata_name}")
     vw = vc.widget()
     config = vw.config.export(
         to="files",
-        base_url=data_http_url,
+        base_url=f"{data_http_url}/{sdata_name}",
         out_dir="./configs",
     )
 
