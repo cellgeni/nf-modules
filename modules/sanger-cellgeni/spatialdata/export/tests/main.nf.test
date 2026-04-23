@@ -10,14 +10,14 @@ nextflow_process {
     tag "spatialdata"
     tag "spatialdata/export"
 
-    test("spatialdata export - h5ad") {
+    test("spatialdata export - zarr") {
 
         when {
             process {
                 """
                 input[0] = [
                     [ id:'test' ],
-                    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.sorted.bam', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'spatialdata.sdata.zarr/', checkIfExists: true),
                 ]
                 """
             }
@@ -35,7 +35,7 @@ nextflow_process {
 
     }
 
-    test("spatialdata export - h5ad - stub") {
+    test("spatialdata export - zarr - stub") {
 
         options "-stub"
 
@@ -44,7 +44,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ],
-                    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.sorted.bam', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'spatialdata.sdata.zarr/', checkIfExists: true),
                 ]
                 """
             }

@@ -30,16 +30,27 @@ input:
         pattern: "*"
 
 output:
-  anndata:
+  zarr:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - h5ad:
-          type: file
-          description: AnnData h5ad file exported from the SpatialData input.
-          pattern: "*.h5ad"
+      - zarr:
+          type: directory
+          description: SpatialData Zarr store exported from the input dataset.
+          pattern: "*.zarr"
+
+  anndata_zarr:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - anndata_zarr:
+          type: directory
+          description: AnnData table stored inside the SpatialData Zarr store.
+          pattern: "*.zarr/tables/table"
 
   images:
     - - meta:

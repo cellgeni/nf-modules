@@ -12,6 +12,7 @@ process SPATIALDATA_EXPORT {
 
     output:
     tuple val(meta), path("${prefix}.zarr"), emit: zarr
+    tuple val(meta), path("${prefix}.zarr/tables/table"), emit: anndata_zarr
     tuple val(meta), path("${prefix}_mask.tif"), path("${prefix}_raw.tif"), emit: images, optional: true
     path "versions.yml", emit: versions
 
@@ -41,7 +42,7 @@ process SPATIALDATA_EXPORT {
     """
     echo ${args}
 
-    mkdir -p ${prefix}.zarr
+    mkdir -p ${prefix}.zarr/tables/table
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
