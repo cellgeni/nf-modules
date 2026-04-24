@@ -30,7 +30,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].size() > 0 },
-                { assert process.out.ome_tif[0][2].toString().endsWith('.companion.ome') },
+                { assert process.out.master_companion[0][1].toString().endsWith('.companion.ome') },
                 { assert process.out.versions_pe2ometif[0][1] == 'pe2ometif' },
                 { assert snapshot(process.out).match() }
             )
@@ -60,7 +60,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].toString().endsWith('A01_F001_maxproj.ome.tif') },
-                { assert process.out.ome_tif[0][2].toString().endsWith('.companion.ome') },
+                { assert process.out.master_companion[0][1].toString().endsWith('.companion.ome') },
                 { assert snapshot(process.out).match() }
             )
         }
@@ -96,7 +96,7 @@ nextflow_process {
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].size() > 0 },
                 { assert process.out.ome_tif[0][1].toString().contains('C07') },
-                { assert process.out.ome_tif[0][2].toString().endsWith('.companion.ome') },
+                { assert process.out.master_companion[0][1].toString().endsWith('.companion.ome') },
                 { assert snapshot(process.out).match() }
             )
         }
@@ -235,7 +235,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].toString().endsWith('A01_F001_maxproj.ome.tif') },
-                { assert process.out.ome_tif[0][2].toString().endsWith('.companion.ome') },
+                { assert process.out.master_companion[0][1].toString().endsWith('.companion.ome') },
                 { assert snapshot(process.out).match() }
             )
         }
@@ -264,7 +264,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].toString().endsWith('A01_F001_maxproj.ome.tif') },
-                { assert process.out.ome_tif[0][2].toString().endsWith('.companion.ome') },
+                { assert process.out.master_companion[0][1].toString().endsWith('.companion.ome') },
                 { assert snapshot(process.out).match() }
             )
         }
@@ -293,7 +293,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.ome_tif[0][1].toString().endsWith('A01_F001_maxproj.ome.tif') },
-                { assert process.out.ome_tif[0][2].toString().endsWith('.companion.ome') },
+                { assert process.out.master_companion[0][1].toString().endsWith('.companion.ome') },
                 { assert snapshot(process.out).match() }
             )
         }

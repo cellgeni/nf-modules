@@ -7,8 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "1": [
@@ -16,16 +15,24 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
+                        "test_1.companion.ome:md5,4740bb878816304773fb0d58abbf9140"
                     ]
                 ],
                 "2": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,4740bb878816304773fb0d58abbf9140"
+                    ]
                 ],
                 "3": [
                     
                 ],
                 "4": [
+                    
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -38,13 +45,20 @@
                 "ffp_maps": [
                     
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,4740bb878816304773fb0d58abbf9140"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "per_well_companions": [
@@ -52,7 +66,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
+                        "test_1_C07.companion.ome:md5,4740bb878816304773fb0d58abbf9140"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -68,7 +82,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:51:13.068163073"
+        "timestamp": "2026-04-24T16:24:45.402836774"
     },
     "pe2ometif - row range stub": {
         "content": [
@@ -78,8 +92,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -87,7 +100,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -95,7 +108,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -103,10 +116,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "4": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -129,13 +150,20 @@
                         "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "per_well_companions": [
@@ -159,7 +187,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:51:58.535953638"
+        "timestamp": "2026-04-24T16:20:48.46940058"
     },
     "pe2ometif - no companion stub": {
         "content": [
@@ -169,8 +197,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -178,7 +205,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -186,7 +213,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -194,10 +221,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "4": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -220,13 +255,20 @@
                         "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "per_well_companions": [
@@ -250,7 +292,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:51:17.386135849"
+        "timestamp": "2026-04-24T16:20:07.347087383"
     },
     "pe2ometif - row and col range matching well": {
         "content": [
@@ -260,8 +302,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "1": [
@@ -269,16 +310,24 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
+                        "test_1.companion.ome:md5,1ba50e284d50ffc300fcfc8f0ccccc61"
                     ]
                 ],
                 "2": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,1ba50e284d50ffc300fcfc8f0ccccc61"
+                    ]
                 ],
                 "3": [
                     
                 ],
                 "4": [
+                    
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -291,13 +340,20 @@
                 "ffp_maps": [
                     
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,1ba50e284d50ffc300fcfc8f0ccccc61"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "per_well_companions": [
@@ -305,7 +361,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
+                        "test_1_C07.companion.ome:md5,1ba50e284d50ffc300fcfc8f0ccccc61"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -321,7 +377,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:51:39.758954221"
+        "timestamp": "2026-04-24T16:25:12.458615916"
     },
     "pe2ometif - col range stub": {
         "content": [
@@ -331,8 +387,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -340,7 +395,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -348,7 +403,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -356,10 +411,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "4": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -382,13 +445,20 @@
                         "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "per_well_companions": [
@@ -412,7 +482,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:52:03.028511585"
+        "timestamp": "2026-04-24T16:20:53.130619921"
     },
     "pe2ometif - row range matching well": {
         "content": [
@@ -422,8 +492,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "1": [
@@ -431,16 +500,24 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
+                        "test_1.companion.ome:md5,305734cf869cbdffaa6a6299abccaefd"
                     ]
                 ],
                 "2": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,305734cf869cbdffaa6a6299abccaefd"
+                    ]
                 ],
                 "3": [
                     
                 ],
                 "4": [
+                    
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -453,13 +530,20 @@
                 "ffp_maps": [
                     
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,305734cf869cbdffaa6a6299abccaefd"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "per_well_companions": [
@@ -467,7 +551,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
+                        "test_1_C07.companion.ome:md5,305734cf869cbdffaa6a6299abccaefd"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -483,7 +567,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:51:24.686350347"
+        "timestamp": "2026-04-24T16:24:57.185762497"
     },
     "pe2ometif - row and col range stub": {
         "content": [
@@ -493,8 +577,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -502,7 +585,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -510,7 +593,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -518,10 +601,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "4": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -544,13 +635,20 @@
                         "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01_F001_maxproj.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "per_well_companions": [
@@ -574,7 +672,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:52:07.617694899"
+        "timestamp": "2026-04-24T16:20:57.61368744"
     },
     "pe2ometif - col range matching well": {
         "content": [
@@ -584,8 +682,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "1": [
@@ -593,16 +690,24 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
+                        "test_1.companion.ome:md5,172a474bb1fce9058cb573348717d87a"
                     ]
                 ],
                 "2": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,172a474bb1fce9058cb573348717d87a"
+                    ]
                 ],
                 "3": [
                     
                 ],
                 "4": [
+                    
+                ],
+                "5": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -615,13 +720,20 @@
                 "ffp_maps": [
                     
                 ],
+                "master_companion": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.companion.ome:md5,172a474bb1fce9058cb573348717d87a"
+                    ]
+                ],
                 "ome_tif": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
+                        "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d"
                     ]
                 ],
                 "per_well_companions": [
@@ -629,7 +741,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_C07.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
+                        "test_1_C07.companion.ome:md5,172a474bb1fce9058cb573348717d87a"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -645,6 +757,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-24T15:51:32.329793997"
+        "timestamp": "2026-04-24T16:25:05.010329608"
     }
 }
