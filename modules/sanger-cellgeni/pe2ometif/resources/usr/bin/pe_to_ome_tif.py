@@ -1236,34 +1236,38 @@ def build_companion_xml(
     return ET.tostring(ome, encoding="unicode")
 
 
-def make_companion(
-    output_dir: Path,
-    companion_path: Path,
-    plate: PlateInfo,
-) -> None:
-    """
-    Scan *output_dir* for OME-TIFFs and write a companion file to
-    *companion_path*.  Plate metadata comes from the already-parsed *plate*
-    object so the index XML is not re-read.
-    """
+def _collect_tiff_infos(output_dir: Path) -> list[TiffInfo]:
+    """Read OME-XML headers from every OME-TIFF in *output_dir*."""
     tif_files = sorted(
         p for p in output_dir.iterdir()
         if p.name.lower().endswith(".ome.tif")
         or p.name.lower().endswith(".ome.tiff")
     )
-    if not tif_files:
-        print("  WARNING: no OME-TIFFs found in output dir — companion not written.")
-        return
-
-    tiff_infos: list[TiffInfo] = []
+    infos: list[TiffInfo] = []
     for idx, path in enumerate(tif_files):
         try:
-            tiff_infos.append(_read_tiff_info(path, idx))
+            infos.append(_read_tiff_info(path, idx))
         except Exception as exc:
             print(f"  WARNING: skipping {path.name} from companion: {exc}")
+    return infos
+
+
+def make_companion(
+    output_dir: Path,
+    companion_path: Path,
+    plate: PlateInfo,
+    tiff_infos: Optional[list[TiffInfo]] = None,
+) -> None:
+    """
+    Write a master companion file that references every OME-TIFF in
+    *output_dir*.  Pass pre-read *tiff_infos* to avoid a second disk scan
+    when calling alongside make_per_well_companions().
+    """
+    if tiff_infos is None:
+        tiff_infos = _collect_tiff_infos(output_dir)
 
     if not tiff_infos:
-        print("  WARNING: could not read metadata from any output file.")
+        print("  WARNING: no OME-TIFFs found in output dir — companion not written.")
         return
 
     xml_str = build_companion_xml(tiff_infos, plate)
@@ -1280,6 +1284,62 @@ def make_companion(
         f"\nCompanion   : {companion_path.name}  ({mode})\n"
         + (f"  {n_wells} wells, {hcs_count} well-fields\n" if hcs_count else "")
         + f"  {len(tiff_infos)} Image series"
+    )
+
+
+def make_per_well_companions(
+    output_dir: Path,
+    plate: PlateInfo,
+    prefix: str = "",
+    tiff_infos: Optional[list[TiffInfo]] = None,
+) -> None:
+    """
+    Write one OME companion file per well to *output_dir*.
+
+    Each file is named  {prefix}_{well_label}.companion.ome  (e.g.
+    test_1_C07.companion.ome) and contains:
+      - <Image> / <Pixels> / <TiffData> / <Plane> elements for every
+        field-of-view belonging to that well (all metadata preserved).
+      - A <Plate> element with the full plate layout (Rows × Columns) so
+        viewers retain the correct plate context, with only the single
+        <Well> / <WellSample> entry for this well.
+
+    The full plate dimension metadata is preserved from the *plate* object.
+    Pass pre-read *tiff_infos* to share the disk scan with make_companion().
+    """
+    if tiff_infos is None:
+        tiff_infos = _collect_tiff_infos(output_dir)
+
+    if not tiff_infos:
+        return
+
+    # Group by (well_row, well_col); skip images with no well position
+    by_well: dict[tuple[int, int], list[TiffInfo]] = defaultdict(list)
+    for ti in tiff_infos:
+        if ti.well_row > 0:
+            by_well[(ti.well_row, ti.well_col)].append(ti)
+
+    if not by_well:
+        print("  WARNING: no well positions detected — per-well companions not written.")
+        return
+
+    stem = f"{prefix}_" if prefix else ""
+    written: list[str] = []
+    for (row, col), well_tiffs in sorted(by_well.items()):
+        label = well_label(row, col)
+        companion_path = output_dir / f"{stem}{label}.companion.ome"
+        # build_companion_xml keeps full plate dimensions but only adds a
+        # <Well> entry for the TiffInfos it receives.
+        xml_str = build_companion_xml(well_tiffs, plate)
+        companion_path.write_text(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' + xml_str,
+            encoding="utf-8",
+        )
+        written.append(label)
+
+    print(
+        f"\nPer-well companions: {len(written)} file(s) → "
+        + ", ".join(written)
     )
 
 
@@ -1709,11 +1769,20 @@ def convert(
         print()  # newline after \r progress
 
     if write_companion:
+        # Read the output TIFFs once and share across both companion writers.
+        tiff_infos = _collect_tiff_infos(output_dir)
         companion_name = f"{prefix}.companion.ome" if prefix else "plate.companion.ome"
         make_companion(
             output_dir=output_dir,
             companion_path=output_dir / companion_name,
             plate=plate,
+            tiff_infos=tiff_infos,
+        )
+        make_per_well_companions(
+            output_dir=output_dir,
+            plate=plate,
+            prefix=prefix,
+            tiff_infos=tiff_infos,
         )
 
     print("Done.")

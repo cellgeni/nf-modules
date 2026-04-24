@@ -8,16 +8,24 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,4e2e159745daa2be62ac46a0583dce39"
+                        "test_1.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
                     ]
                 ],
                 "1": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
+                    ]
                 ],
                 "2": [
                     
                 ],
                 "3": [
+                    
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -36,7 +44,15 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,4e2e159745daa2be62ac46a0583dce39"
+                        "test_1.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
+                    ]
+                ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,d690467291ce66cc3f1416e78fa6783d"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -52,7 +68,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:20:59.422192106"
+        "timestamp": "2026-04-24T15:51:13.068163073"
     },
     "pe2ometif - row range stub": {
         "content": [
@@ -71,7 +87,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -79,10 +95,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -114,6 +138,14 @@
                         "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions_pe2ometif": [
                     [
                         "PE2OMETIF",
@@ -127,7 +159,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:49.375028348"
+        "timestamp": "2026-04-24T15:51:58.535953638"
     },
     "pe2ometif - no companion stub": {
         "content": [
@@ -146,7 +178,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -154,10 +186,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -189,6 +229,14 @@
                         "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions_pe2ometif": [
                     [
                         "PE2OMETIF",
@@ -202,7 +250,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:03.987097393"
+        "timestamp": "2026-04-24T15:51:17.386135849"
     },
     "pe2ometif - row and col range matching well": {
         "content": [
@@ -213,16 +261,24 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,ddf227cee46e39b06d2e40f7d92c63cf"
+                        "test_1.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
                     ]
                 ],
                 "1": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
+                    ]
                 ],
                 "2": [
                     
                 ],
                 "3": [
+                    
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -241,7 +297,15 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,ddf227cee46e39b06d2e40f7d92c63cf"
+                        "test_1.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
+                    ]
+                ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,4416bc3835fbb2bef9eebd190fac67bb"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -257,7 +321,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:28.340413769"
+        "timestamp": "2026-04-24T15:51:39.758954221"
     },
     "pe2ometif - col range stub": {
         "content": [
@@ -276,7 +340,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -284,10 +348,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -319,6 +391,14 @@
                         "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions_pe2ometif": [
                     [
                         "PE2OMETIF",
@@ -332,7 +412,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:53.992675805"
+        "timestamp": "2026-04-24T15:52:03.028511585"
     },
     "pe2ometif - row range matching well": {
         "content": [
@@ -343,16 +423,24 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,a882300dc7e5dd135a9e6da6deadcc21"
+                        "test_1.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
                     ]
                 ],
                 "1": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
+                    ]
                 ],
                 "2": [
                     
                 ],
                 "3": [
+                    
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -371,7 +459,15 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,a882300dc7e5dd135a9e6da6deadcc21"
+                        "test_1.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
+                    ]
+                ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,5cc4b02d9a1d6506f6d923211e5520c8"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -387,7 +483,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:12.543684091"
+        "timestamp": "2026-04-24T15:51:24.686350347"
     },
     "pe2ometif - row and col range stub": {
         "content": [
@@ -406,7 +502,7 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -414,10 +510,18 @@
                         {
                             "id": "test"
                         },
-                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_1_ch01_ffp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_ch01_dfp.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -449,6 +553,14 @@
                         "test_1.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_A01.companion.ome:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions_pe2ometif": [
                     [
                         "PE2OMETIF",
@@ -462,7 +574,7 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:59.436542949"
+        "timestamp": "2026-04-24T15:52:07.617694899"
     },
     "pe2ometif - col range matching well": {
         "content": [
@@ -473,16 +585,24 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,00387789722b8d55a922ac292bdb7f68"
+                        "test_1.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
                     ]
                 ],
                 "1": [
-                    
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
+                    ]
                 ],
                 "2": [
                     
                 ],
                 "3": [
+                    
+                ],
+                "4": [
                     [
                         "PE2OMETIF",
                         "pe2ometif",
@@ -501,7 +621,15 @@
                             "id": "test"
                         },
                         "test_1_C07_F001_maxproj.ome.tif:md5,039048a87c7eac6bf844564b53ef1b4d",
-                        "test_1.companion.ome:md5,00387789722b8d55a922ac292bdb7f68"
+                        "test_1.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
+                    ]
+                ],
+                "per_well_companions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1_C07.companion.ome:md5,0c7993292466bcfda7dd44ea8ba49aad"
                     ]
                 ],
                 "versions_pe2ometif": [
@@ -517,6 +645,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-22T10:21:20.502546562"
+        "timestamp": "2026-04-24T15:51:32.329793997"
     }
 }
