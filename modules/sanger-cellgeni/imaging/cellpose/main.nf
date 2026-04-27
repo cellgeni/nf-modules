@@ -2,6 +2,7 @@ process IMAGING_CELLPOSE {
     tag "${meta.id}"
 
     label "medium_mem"
+    label "gpu_single"
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
         ? "quay.io/cellgeni/tiled_cellpose:0.2.0"
