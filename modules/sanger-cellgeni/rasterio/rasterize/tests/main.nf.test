@@ -21,9 +21,13 @@ nextflow_process {
                 def geojson_file = file("test_cells.geojson")
                 geojson_file.text = geojson_content
 
+                def ref_file = file("reference.tif")
+                ref_file.text = "stub"
+
                 input[0] = [
                     [ id: 'test' ],
-                    geojson_file
+                    geojson_file,
+                    ref_file
                 ]
                 """
             }

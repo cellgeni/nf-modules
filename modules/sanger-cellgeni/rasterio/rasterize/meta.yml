@@ -24,6 +24,13 @@ input:
         type: file
         description: GeoJSON file containing features to rasterize.
         pattern: "*.geojson"
+    - reference_image:
+        type: file
+        description: |
+          Reference raster (e.g. morphology TIFF) used to inherit CRS, extent,
+          and resolution via --like. Required to avoid EPSG:4326 bounds errors
+          when coordinates are in pixel or micron space.
+        pattern: "*.tif"
 
 output:
   label_image:

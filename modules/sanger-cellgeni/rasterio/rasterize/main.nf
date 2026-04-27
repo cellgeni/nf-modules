@@ -6,7 +6,7 @@ process RASTERIO_RASTERIZE {
     container "quay.io/cellgeni/rasterio:1.5.0"
 
     input:
-    tuple val(meta), path(geojson)
+    tuple val(meta), path(geojson), path(reference_image)
 
     output:
     tuple val(meta), path("${prefix}_labels.tif"), emit: label_image
@@ -20,9 +20,10 @@ process RASTERIO_RASTERIZE {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     rio rasterize \\
+        ${geojson} \\
+        --like ${reference_image} \\
         ${args} \\
-        ${prefix}_labels.tif \\
-        < ${geojson}
+        -o ./${prefix}_labels.tif
     """
 
     stub:
