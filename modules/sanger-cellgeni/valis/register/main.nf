@@ -38,6 +38,10 @@ process VALIS_REGISTER {
     // VALIS stores its data under {dst_dir}/{name}/ — pass --name so the path is predictable.
     reg_dir = "${out_dir}/${prefix}"
     """
+    # pyvips reads TIFF strips in parallel by default; sequential TIFFs require
+    # single-threaded access to avoid "out of order read" errors.
+    export VIPS_CONCURRENCY=1
+
     valis-cli register \\
         ${reference_img} \\
         ${moving_imgs} \\

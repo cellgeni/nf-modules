@@ -34,6 +34,8 @@ process VALIS_WARP {
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_dir = "${prefix}_valis_warp"
     """
+    export VIPS_CONCURRENCY=1
+
     mkdir -p ${out_dir}
     valis-cli warp \\
         ${results_dir}/${prefix}/data/${prefix}_registrar.pickle \\

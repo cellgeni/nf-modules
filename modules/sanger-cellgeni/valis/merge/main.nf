@@ -34,6 +34,8 @@ process VALIS_MERGE {
     prefix                 = task.ext.prefix ?: "${meta.id}"
     def channel_names_arg  = (channel_names_json.name && channel_names_json.name != 'NO_FILE') ? "--channel-names-json ${channel_names_json}" : ''
     """
+    export VIPS_CONCURRENCY=1
+
     valis-cli merge \\
         ${results_dir}/${prefix}/data/${prefix}_registrar.pickle \\
         ${prefix}_merged.ome.tiff \\
