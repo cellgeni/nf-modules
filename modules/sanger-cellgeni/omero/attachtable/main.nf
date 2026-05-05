@@ -7,11 +7,11 @@ process OMERO_ATTACHTABLE {
         ? 'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE'
         : 'biocontainers/YOUR-TOOL-HERE'}"
 
-    input:
-    tuple val(meta), path(csv), val(image_id), val(roi_id), val(host), val(port)
-
     secret 'OMERO_USER'
     secret 'OMERO_PASSWORD'
+
+    input:
+    tuple val(meta), path(csv), val(image_id), val(roi_id), val(host), val(port)
 
     output:
     tuple val(meta), path("*.ann.csv"), emit: ann_csv
