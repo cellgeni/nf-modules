@@ -5,7 +5,9 @@ import argparse
 import inspect
 import json
 import logging
+import os
 import sys
+import tempfile
 from pathlib import Path
 
 try:
@@ -84,6 +86,23 @@ AUTO_ORDER = [
     "stereoseq",
 ]
 
+XENIUM_PARQUET_SCHEMAS = {
+    "nucleus_boundaries.parquet": {
+        "reader_flag": "nucleus_boundaries",
+        "cell_id": "string",
+        "vertex_x": "float32",
+        "vertex_y": "float32",
+        "label_id": "int64",
+    },
+    "cell_boundaries.parquet": {
+        "reader_flag": "cells_boundaries",
+        "cell_id": "string",
+        "vertex_x": "float32",
+        "vertex_y": "float32",
+        "label_id": "int64",
+    },
+}
+
 
 def _parse_val(s):
     if s.lower() in ("none", "null"):
@@ -107,6 +126,77 @@ def _call_reader(func, path, kwargs):
         else {k: v for k, v in kwargs.items() if k in sig.parameters}
     )
     return func(str(path), **filtered)
+
+
+def _prepare_xenium_bundle(input_path, kwargs):
+    if not input_path.is_dir():
+        return input_path, None
+
+    try:
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+    except ImportError:
+        LOGGER.warning(
+            "pyarrow is unavailable; skipping Xenium parquet schema preflight."
+        )
+        return input_path, None
+
+    parquet_fixes = []
+    for filename, expected_schema in XENIUM_PARQUET_SCHEMAS.items():
+        parquet_path = input_path / filename
+        if not parquet_path.exists():
+            continue
+        metadata = pq.ParquetFile(parquet_path).metadata
+        reader_flag = expected_schema["reader_flag"]
+        if metadata.num_rows == 0:
+            if kwargs.get(reader_flag, True):
+                kwargs[reader_flag] = False
+                LOGGER.warning(
+                    "Disabled Xenium reader option %s because %s is empty.",
+                    reader_flag,
+                    filename,
+                )
+            continue
+        schema = pq.read_schema(parquet_path)
+        null_columns = [
+            field.name for field in schema if pa.types.is_null(field.type)
+        ]
+        if null_columns:
+            parquet_fixes.append((filename, expected_schema, null_columns))
+
+    if not parquet_fixes:
+        return input_path, None
+
+    temp_dir = tempfile.TemporaryDirectory(
+        prefix=f".{input_path.name}.spatialdata_export_", dir="."
+    )
+    sanitized_path = Path(temp_dir.name)
+
+    for child in input_path.iterdir():
+        os.symlink(child.resolve(), sanitized_path / child.name)
+
+    for filename, expected_schema, null_columns in parquet_fixes:
+        source = input_path / filename
+        target = sanitized_path / filename
+        target.unlink()
+        table = pq.read_table(source)
+        schema = pa.schema(
+            [
+                pa.field(name, getattr(pa, type_name)())
+                for name, type_name in expected_schema.items()
+                if name != "reader_flag"
+            ]
+        )
+        table = table.select([field.name for field in schema]).cast(schema)
+        pq.write_table(table, target)
+        LOGGER.warning(
+            "Rewrote %s in a local sanitized Xenium bundle because columns %s "
+            "had Arrow null type.",
+            filename,
+            ", ".join(null_columns),
+        )
+
+    return sanitized_path, temp_dir
 
 
 def _load_sdata(input_path, reader_name, kwargs):
@@ -188,18 +278,25 @@ def main(argv=None):
     if args.threads is not None:
         kwargs.setdefault("n_jobs", args.threads)
 
+    temp_bundle = None
     try:
+        if reader_name == "xenium":
+            input_path, temp_bundle = _prepare_xenium_bundle(input_path, kwargs)
+
         sdata = _load_sdata(input_path, reader_name, kwargs)
     except Exception as exc:
         LOGGER.error("Failed to load: %s", exc)
         return 1
 
-    LOGGER.info("Writing to %s", output_path)
     try:
+        LOGGER.info("Writing to %s", output_path)
         sdata.write(str(output_path), overwrite=args.overwrite)
     except Exception as exc:
         LOGGER.error("Failed to write zarr: %s", exc)
         return 1
+    finally:
+        if temp_bundle is not None:
+            temp_bundle.cleanup()
 
     return 0
 

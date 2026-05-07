@@ -4,8 +4,8 @@ process SPATIALDATA_EXPORT {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/spatialdata-io:0.6.0'
-        : 'quay.io/cellgeni/spatialdata-io:0.6.0'}"
+        ? 'quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0'
+        : 'quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0'}"
 
     input:
     tuple val(meta), path(bundle)
