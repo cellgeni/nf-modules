@@ -1,8 +1,8 @@
-process SEGGER_EXPORTGEOJESON {
+process SEGGER_EXPORTGEOJSON {
     tag "${meta.id}"
     label 'process_medium'
 
-    container "cellgeni/segger:v2"
+    container "quay.io/cellgeni/segger:v2"
 
     input:
     tuple val(meta), path(zarr_zip)

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
-name: "segger_exportgeojeson"
+name: "segger_exportgeojson"
 description: Export polygon sets from a Xenium-style cells.zarr.zip file to GeoJSON
 keywords:
   - segmentation

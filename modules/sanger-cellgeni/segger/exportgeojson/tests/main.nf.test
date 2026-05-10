@@ -1,15 +1,15 @@
 nextflow_process {
 
-    name "Test Process SEGGER_EXPORTGEOJESON"
+    name "Test Process SEGGER_EXPORTGEOJSON"
     script "../main.nf"
-    process "SEGGER_EXPORTGEOJESON"
+    process "SEGGER_EXPORTGEOJSON"
     config "./nextflow.config"
 
     tag "modules"
     tag "modules_sanger-cellgeni"
     tag "modules_sangercellgeni"
     tag "segger"
-    tag "segger/exportgeojeson"
+    tag "segger/exportgeojson"
 
     test("cells zarr zip to geojson - stub") {
 
@@ -20,7 +20,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ],
-                    file("${new File('modules/sanger-cellgeni/segger/exportgeojeson/main.nf').absolutePath}", checkIfExists: true),
+                    file("${new File('modules/sanger-cellgeni/segger/exportgeojson/main.nf').absolutePath}", checkIfExists: true),
                 ]
                 """
             }
