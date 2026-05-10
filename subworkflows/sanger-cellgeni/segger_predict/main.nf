@@ -1,6 +1,6 @@
 include { SEGGER_SEGMENT      } from '../../../modules/sanger-cellgeni/segger/segment/main'
 include { SEGGER_EXPORT       } from '../../../modules/sanger-cellgeni/segger/export/main'
-include { SEGGER_XENIUMBUNDLE } from '../../../modules/sanger-cellgeni/segger/xeniumbundle/main'
+include { SEGGER_EXPORTGEOJSON } from '../../../modules/sanger-cellgeni/segger/exportgeojson/main'
 
 workflow SEGGER_PREDICT {
     take:
@@ -19,17 +19,16 @@ workflow SEGGER_PREDICT {
     SEGGER_EXPORT(ch_export)
     ch_versions = ch_versions.mix(SEGGER_EXPORT.out.versions.first())
 
-    // Join export_dir with original input_dir (xenium bundle), reordering to [ meta, xenium_dir, export_dir ]
-    def ch_bundle = SEGGER_EXPORT.out.export_dir
-        .join(ch_input, by: 0)
-        .map { meta, export_dir, xenium_dir -> [ meta, xenium_dir, export_dir ] }
+    // SEGGER_EXPORT writes Xenium-compatible output into export_dir; export the cell polygons to GeoJSON.
+    def ch_geojson = SEGGER_EXPORT.out.export_dir
+        .map { meta, export_dir -> [ meta, file("${export_dir}/seg_cells.zarr.zip") ] }
 
-    SEGGER_XENIUMBUNDLE(ch_bundle)
-    ch_versions = ch_versions.mix(SEGGER_XENIUMBUNDLE.out.versions.first())
+    SEGGER_EXPORTGEOJSON(ch_geojson)
+    ch_versions = ch_versions.mix(SEGGER_EXPORTGEOJSON.out.versions_export_zarr_polygons_to_geojson.first())
 
     emit:
     segmentation  = SEGGER_SEGMENT.out.segmentation        // channel: [ val(meta), path(parquet) ]
     export_dir    = SEGGER_EXPORT.out.export_dir           // channel: [ val(meta), path(export_dir) ]
-    xenium_bundle = SEGGER_XENIUMBUNDLE.out.xenium_bundle // channel: [ val(meta), path(xenium_bundle) ]
+    geojson       = SEGGER_EXPORTGEOJSON.out.geojson       // channel: [ val(meta), path(geojson) ]
     versions      = ch_versions                            // channel: [ versions.yml ]
 }

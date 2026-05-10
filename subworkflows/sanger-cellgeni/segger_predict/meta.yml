@@ -2,8 +2,8 @@
 name: "segger_predict"
 description: |
   Run segger cell segmentation end-to-end: trains and segments a spatial transcriptomics
-  dataset with SEGGER_SEGMENT, exports the results with SEGGER_EXPORT, then injects the
-  export files into a local copy of the original Xenium bundle with SEGGER_XENIUM_BUNDLE.
+  dataset with SEGGER_SEGMENT, exports the results with SEGGER_EXPORT, then exports
+  seg_cells.zarr.zip from the export directory to GeoJSON with SEGGER_EXPORTGEOJSON.
 keywords:
   - segmentation
   - spatial transcriptomics
@@ -12,6 +12,10 @@ keywords:
   - cosmx
   - graph neural network
   - export
+components:
+  - segger/segment
+  - segger/export
+  - segger/exportgeojson
 
 input:
   - meta:
@@ -43,13 +47,12 @@ output:
         anndata produces .h5ad files; spatialdata produces a .zarr store;
         merged produces transcripts_segmented.parquet.
       pattern: "*_segger_export"
-  - xenium_bundle:
-      type: directory
+  - geojson:
+      type: file
       description: |
-        Enriched Xenium bundle produced by SEGGER_XENIUM_BUNDLE: a local copy of the
-        original input_dir with all segger export files injected alongside the existing
-        bundle contents.
-      pattern: "*_xenium_segger"
+        GeoJSON FeatureCollection produced from SEGGER_EXPORT output file
+        seg_cells.zarr.zip.
+      pattern: "*.geojson"
   - versions:
       type: file
       description: File containing software versions

@@ -1,0 +1,39 @@
+nextflow_workflow {
+
+    name "Test Subworkflow SEGGER_PREDICT"
+    script "../main.nf"
+    workflow "SEGGER_PREDICT"
+
+    tag "subworkflows"
+    tag "subworkflows_sanger-cellgeni"
+    tag "subworkflows_sangercellgeni"
+    tag "subworkflows/segger_predict"
+    tag "segger/segment"
+    tag "segger/export"
+    tag "segger/exportgeojson"
+
+    test("segger_predict - local directory input - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test' ],
+                    file("${new File('subworkflows/sanger-cellgeni/segger_predict').absolutePath}", checkIfExists: true),
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.segmentation[0][1].toString().endsWith("segger_segmentation.parquet") },
+                { assert workflow.out.export_dir[0][1].toString().endsWith("test_segger_export") },
+                { assert workflow.out.geojson[0][1].toString().endsWith("test.geojson") }
+            )
+        }
+    }
+}
