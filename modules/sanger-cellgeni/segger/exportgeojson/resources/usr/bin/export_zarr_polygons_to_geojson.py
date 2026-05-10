@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export Xenium cells.zarr.zip polygon sets to validated GeoJSON."""
+"""Export Xenium cells.zarr.zip polygon sets to 10x-compatible GeoJSON."""
 
 from __future__ import annotations
 
@@ -10,15 +10,15 @@ import sys
 from pathlib import Path
 from typing import Any
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Export polygon_sets/<N> from a Xenium-style cells.zarr.zip file "
-            "as one GeoJSON FeatureCollection. Geometries are validated before "
-            "the output file is written."
+            "as one GeoJSON FeatureCollection with Polygon geometries. "
+            "Geometries are validated before the output file is written."
         )
     )
     parser.add_argument("zarr_zip", type=Path, help="Path to cells.zarr.zip")
@@ -27,12 +27,6 @@ def parse_args() -> argparse.Namespace:
         "--polygon-set",
         default="1",
         help="Polygon set to export. For Xenium/Segger cells.zarr.zip, 1 is cells and 0 is nuclei.",
-    )
-    parser.add_argument(
-        "--geometry-type",
-        choices=("MultiPolygon", "Polygon"),
-        default="MultiPolygon",
-        help="GeoJSON geometry type to write for each feature.",
     )
     parser.add_argument(
         "--allow-truncated",
@@ -106,10 +100,8 @@ def validate_ring(ring: list[list[float]]) -> str | None:
     return None
 
 
-def make_geometry(ring: list[list[float]], geometry_type: str) -> dict[str, Any]:
-    if geometry_type == "Polygon":
-        return {"type": "Polygon", "coordinates": [ring]}
-    return {"type": "MultiPolygon", "coordinates": [[[point for point in ring]]]}
+def make_geometry(ring: list[list[float]]) -> dict[str, Any]:
+    return {"type": "Polygon", "coordinates": [ring]}
 
 
 def validate_geojson_feature(feature: dict[str, Any]) -> str | None:
@@ -123,17 +115,12 @@ def validate_geojson_feature(feature: dict[str, Any]) -> str | None:
     geometry_type = geometry.get("type")
     coordinates = geometry.get("coordinates")
 
-    if geometry_type == "Polygon":
-        if not coordinates or not coordinates[0]:
-            return "empty polygon coordinates"
-        return validate_ring(coordinates[0])
+    if geometry_type != "Polygon":
+        return f"unsupported geometry type: {geometry_type!r}"
 
-    if geometry_type == "MultiPolygon":
-        if not coordinates or not coordinates[0] or not coordinates[0][0]:
-            return "empty multipolygon coordinates"
-        return validate_ring(coordinates[0][0])
-
-    return f"unsupported geometry type: {geometry_type!r}"
+    if not coordinates or not coordinates[0]:
+        return "empty polygon coordinates"
+    return validate_ring(coordinates[0])
 
 
 def feature_for_row(
@@ -145,7 +132,6 @@ def feature_for_row(
     num_vertices: Any,
     vertices: Any,
     polygon_set: str,
-    geometry_type: str,
 ) -> tuple[dict[str, Any] | None, str | None, bool]:
     ring, stored_pairs = ring_from_flat_vertices(vertices[row_index])
     reported_vertices = int(num_vertices[row_index])
@@ -170,7 +156,7 @@ def feature_for_row(
             "stored_coordinate_pairs": stored_pairs,
             "truncated_reported_vertices": truncated,
         },
-        "geometry": make_geometry(ring, geometry_type),
+        "geometry": make_geometry(ring),
     }
 
     return feature, validate_geojson_feature(feature), truncated
@@ -233,7 +219,6 @@ def main() -> int:
                 num_vertices=num_vertices,
                 vertices=vertices,
                 polygon_set=args.polygon_set,
-                geometry_type=args.geometry_type,
             )
 
             if truncated:
