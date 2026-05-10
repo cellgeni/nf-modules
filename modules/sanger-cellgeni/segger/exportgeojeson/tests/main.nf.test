@@ -1,0 +1,38 @@
+nextflow_process {
+
+    name "Test Process SEGGER_EXPORTGEOJESON"
+    script "../main.nf"
+    process "SEGGER_EXPORTGEOJESON"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "segger"
+    tag "segger/exportgeojeson"
+
+    test("cells zarr zip to geojson - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${new File('modules/sanger-cellgeni/segger/exportgeojeson/main.nf').absolutePath}", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.geojson[0][1].toString().endsWith("test.geojson") },
+                { assert new File(process.out.geojson[0][1].toString()).text.trim() == '{"type":"FeatureCollection","features":[]}' },
+                { assert process.out.versions_export_zarr_polygons_to_geojson[0][1] == 'export_zarr_polygons_to_geojson' }
+            )
+        }
+    }
+}

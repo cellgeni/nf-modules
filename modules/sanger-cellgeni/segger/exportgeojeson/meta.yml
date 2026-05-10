@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "segger_exportgeojeson"
+description: Export polygon sets from a Xenium-style cells.zarr.zip file to GeoJSON
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - zarr
+  - geojson
+tools:
+  - "export_zarr_polygons_to_geojson":
+      description: "Export polygon_sets from a Xenium-style cells.zarr.zip file as a validated GeoJSON FeatureCollection."
+      homepage: "https://github.com/cellgeni/nf-modules"
+      documentation: "https://github.com/cellgeni/nf-modules"
+      tool_dev_url: "https://github.com/cellgeni/nf-modules"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_zip:
+        type: file
+        description: |
+          Xenium-style cells.zarr.zip file containing cell_id and polygon_sets arrays.
+        pattern: "*.zarr.zip"
+
+output:
+  geojson:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.geojson":
+          type: file
+          description: GeoJSON FeatureCollection exported from the selected polygon set.
+          pattern: "*.geojson"
+
+  versions_export_zarr_polygons_to_geojson:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "export_zarr_polygons_to_geojson":
+          type: string
+          description: The name of the tool
+      - "export_zarr_polygons_to_geojson.py --version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - export_zarr_polygons_to_geojson:
+          type: string
+          description: The name of the tool
+      - export_zarr_polygons_to_geojson.py --version:
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
