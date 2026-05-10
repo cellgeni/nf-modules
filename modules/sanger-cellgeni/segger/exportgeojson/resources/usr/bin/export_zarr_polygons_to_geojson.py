@@ -169,12 +169,14 @@ def main() -> int:
         return 2
 
     import zarr
+    from zarr.storage import ZipStore
 
     features: list[dict[str, Any]] = []
     skipped: list[tuple[int, str]] = []
     truncated_rows = 0
 
-    store = zarr.ZipStore(str(args.zarr_zip), mode="r")
+    # store = zarr.ZipStore(str(args.zarr_zip), mode="r")
+    store = ZipStore(str(args.zarr_zip), mode="r")
     try:
         root = zarr.open(store, mode="r")
         if "cell_id" not in root:
@@ -185,7 +187,9 @@ def main() -> int:
         polygon_group = root["polygon_sets"][args.polygon_set]
         for required in ("cell_index", "method", "num_vertices", "vertices"):
             if required not in polygon_group:
-                raise KeyError(f"missing required array: polygon_sets/{args.polygon_set}/{required}")
+                raise KeyError(
+                    f"missing required array: polygon_sets/{args.polygon_set}/{required}"
+                )
 
         cell_ids = root["cell_id"][:]
         cell_index = polygon_group["cell_index"][:]
@@ -249,7 +253,9 @@ def main() -> int:
             print(f"SKIPPED row={row_index}: {reason}", file=sys.stderr)
         if len(skipped) > 20:
             print(f"... {len(skipped) - 20} more skipped rows", file=sys.stderr)
-        print("ERROR: skipped rows found and --fail-on-skipped was set", file=sys.stderr)
+        print(
+            "ERROR: skipped rows found and --fail-on-skipped was set", file=sys.stderr
+        )
         return 1
 
     geojson = {"type": "FeatureCollection", "features": features}
@@ -263,7 +269,9 @@ def main() -> int:
     print(f"wrote: {args.output_geojson}")
     print(f"features written: {len(features)}")
     print(f"rows skipped: {len(skipped)}")
-    print(f"rows with reported num_vertices > stored coordinate pairs: {truncated_rows}")
+    print(
+        f"rows with reported num_vertices > stored coordinate pairs: {truncated_rows}"
+    )
     if skipped:
         print("first skipped rows:", file=sys.stderr)
         for row_index, reason in skipped[:10]:
