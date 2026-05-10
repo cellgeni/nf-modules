@@ -145,6 +145,7 @@ def feature_for_row(
     cell_id_1 = int(cell_ids[row_index, 1])
     feature = {
         "type": "Feature",
+        "id": int(cell_index[row_index]),
         "properties": {
             "cell_id": f"{cell_id_0}_{cell_id_1}",
             "cell_id_0": cell_id_0,
