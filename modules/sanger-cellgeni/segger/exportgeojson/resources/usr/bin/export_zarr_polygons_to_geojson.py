@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export Xenium cells.zarr.zip polygon sets to 10x-compatible GeoJSON."""
+"""Export Xenium cells.zarr.zip polygon sets to Baysor-style GeoJSON."""
 
 from __future__ import annotations
 
@@ -10,14 +10,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Export polygon_sets/<N> from a Xenium-style cells.zarr.zip file "
-            "as one GeoJSON FeatureCollection with Polygon geometries. "
+            "as one GeoJSON GeometryCollection with Polygon geometries. "
             "Geometries are validated before the output file is written."
         )
     )
@@ -100,38 +100,31 @@ def validate_ring(ring: list[list[float]]) -> str | None:
     return None
 
 
-def make_geometry(ring: list[list[float]]) -> dict[str, Any]:
-    return {"type": "Polygon", "coordinates": [ring]}
+def make_geometry(ring: list[list[float]], cell: int) -> dict[str, Any]:
+    return {"type": "Polygon", "coordinates": [ring], "cell": cell}
 
 
-def validate_geojson_feature(feature: dict[str, Any]) -> str | None:
-    if feature.get("type") != "Feature":
-        return "feature type is not Feature"
-
-    geometry = feature.get("geometry")
-    if not isinstance(geometry, dict):
-        return "missing geometry"
-
+def validate_geojson_geometry(geometry: dict[str, Any]) -> str | None:
     geometry_type = geometry.get("type")
     coordinates = geometry.get("coordinates")
+    cell = geometry.get("cell")
 
     if geometry_type != "Polygon":
         return f"unsupported geometry type: {geometry_type!r}"
+    if isinstance(cell, bool) or not isinstance(cell, int):
+        return "cell is not an integer"
 
     if not coordinates or not coordinates[0]:
         return "empty polygon coordinates"
     return validate_ring(coordinates[0])
 
 
-def feature_for_row(
+def geometry_for_row(
     *,
     row_index: int,
-    cell_ids: Any,
     cell_index: Any,
-    method: Any,
     num_vertices: Any,
     vertices: Any,
-    polygon_set: str,
 ) -> tuple[dict[str, Any] | None, str | None, bool]:
     ring, stored_pairs = ring_from_flat_vertices(vertices[row_index])
     reported_vertices = int(num_vertices[row_index])
@@ -141,26 +134,9 @@ def feature_for_row(
     if reason is not None:
         return None, reason, truncated
 
-    cell_id_0 = int(cell_ids[row_index, 0])
-    cell_id_1 = int(cell_ids[row_index, 1])
-    feature = {
-        "type": "Feature",
-        "id": int(cell_index[row_index]),
-        "properties": {
-            "cell_id": f"{cell_id_0}_{cell_id_1}",
-            "cell_id_0": cell_id_0,
-            "cell_id_1": cell_id_1,
-            "cell_index": int(cell_index[row_index]),
-            "polygon_set": polygon_set,
-            "method": int(method[row_index]),
-            "reported_num_vertices": reported_vertices,
-            "stored_coordinate_pairs": stored_pairs,
-            "truncated_reported_vertices": truncated,
-        },
-        "geometry": make_geometry(ring),
-    }
+    geometry = make_geometry(ring, int(cell_index[row_index]))
 
-    return feature, validate_geojson_feature(feature), truncated
+    return geometry, validate_geojson_geometry(geometry), truncated
 
 
 def main() -> int:
@@ -172,7 +148,7 @@ def main() -> int:
     import zarr
     from zarr.storage import ZipStore
 
-    features: list[dict[str, Any]] = []
+    geometries: list[dict[str, Any]] = []
     skipped: list[tuple[int, str]] = []
     truncated_rows = 0
 
@@ -216,14 +192,11 @@ def main() -> int:
             )
 
         for row_index in range(row_count):
-            feature, reason, truncated = feature_for_row(
+            geometry, reason, truncated = geometry_for_row(
                 row_index=row_index,
-                cell_ids=cell_ids,
                 cell_index=cell_index,
-                method=method,
                 num_vertices=num_vertices,
                 vertices=vertices,
-                polygon_set=args.polygon_set,
             )
 
             if truncated:
@@ -240,12 +213,12 @@ def main() -> int:
             if reason is not None:
                 skipped.append((row_index, reason))
                 continue
-            if feature is not None:
-                features.append(feature)
+            if geometry is not None:
+                geometries.append(geometry)
     finally:
         store.close()
 
-    if not features:
+    if not geometries:
         print("ERROR: no valid polygons to write", file=sys.stderr)
         return 1
 
@@ -259,7 +232,7 @@ def main() -> int:
         )
         return 1
 
-    geojson = {"type": "FeatureCollection", "features": features}
+    geojson = {"type": "GeometryCollection", "geometries": geometries}
     args.output_geojson.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = args.output_geojson.with_suffix(args.output_geojson.suffix + ".tmp")
     with tmp_path.open("w") as handle:
@@ -268,7 +241,7 @@ def main() -> int:
     tmp_path.replace(args.output_geojson)
 
     print(f"wrote: {args.output_geojson}")
-    print(f"features written: {len(features)}")
+    print(f"geometries written: {len(geometries)}")
     print(f"rows skipped: {len(skipped)}")
     print(
         f"rows with reported num_vertices > stored coordinate pairs: {truncated_rows}"

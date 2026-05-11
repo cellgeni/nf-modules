@@ -27,6 +27,6 @@ process SEGGER_EXPORTGEOJSON {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    printf '%s\\n' '{"type":"FeatureCollection","features":[]}' > "${prefix}.geojson"
+    printf '%s\\n' '{"type":"GeometryCollection","geometries":[]}' > "${prefix}.geojson"
     """
 }
