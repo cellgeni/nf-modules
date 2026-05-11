@@ -50,7 +50,7 @@ output:
   - geojson:
       type: file
       description: |
-        GeoJSON FeatureCollection produced from SEGGER_EXPORT output file
+        GeoJSON GeometryCollection produced from SEGGER_EXPORT output file
         seg_cells.zarr.zip.
       pattern: "*.geojson"
   - versions:
