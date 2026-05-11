@@ -2,7 +2,7 @@ process SEGGER_EXPORTGEOJSON {
     tag "${meta.id}"
     label 'process_medium'
 
-    container "quay.io/cellgeni/segger:v2"
+    container "quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0"
 
     input:
     tuple val(meta), path(zarr_zip)
