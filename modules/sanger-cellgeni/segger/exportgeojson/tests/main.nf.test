@@ -30,7 +30,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.geojson[0][1].toString().endsWith("test.geojson") },
-                { assert new File(process.out.geojson[0][1].toString()).text.trim() == '{"type":"GeometryCollection","geometries":[]}' },
+                { assert new File(process.out.geojson[0][1].toString()).text.trim() == '{"type":"FeatureCollection","features":[]}' },
                 { assert process.out.versions_export_zarr_polygons_to_geojson[0][1] == 'export_zarr_polygons_to_geojson' }
             )
         }

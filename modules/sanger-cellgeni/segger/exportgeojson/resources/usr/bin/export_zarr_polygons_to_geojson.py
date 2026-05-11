@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export Xenium cells.zarr.zip polygon sets to Baysor-style GeoJSON."""
+"""Export Xenium cells.zarr.zip polygon sets to Xenium Ranger GeoJSON."""
 
 from __future__ import annotations
 
@@ -10,14 +10,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Export polygon_sets/<N> from a Xenium-style cells.zarr.zip file "
-            "as one GeoJSON GeometryCollection with Polygon geometries. "
+            "as one GeoJSON FeatureCollection with Polygon features. "
             "Geometries are validated before the output file is written."
         )
     )
@@ -100,19 +100,26 @@ def validate_ring(ring: list[list[float]]) -> str | None:
     return None
 
 
-def make_geometry(ring: list[list[float]], cell: int) -> dict[str, Any]:
-    return {"type": "Polygon", "coordinates": [ring], "cell": cell}
+def make_feature(ring: list[list[float]], cell: int) -> dict[str, Any]:
+    return {
+        "type": "Feature",
+        "id": str(cell),
+        "properties": {"objectType": "cell"},
+        "geometry": {"type": "Polygon", "coordinates": [ring]},
+    }
 
 
-def validate_geojson_geometry(geometry: dict[str, Any]) -> str | None:
+def validate_geojson_feature(feature: dict[str, Any]) -> str | None:
+    geometry = feature.get("geometry")
+    if not isinstance(geometry, dict):
+        return "feature geometry is not an object"
+
     geometry_type = geometry.get("type")
     coordinates = geometry.get("coordinates")
-    cell = geometry.get("cell")
-
     if geometry_type != "Polygon":
         return f"unsupported geometry type: {geometry_type!r}"
-    if isinstance(cell, bool) or not isinstance(cell, int):
-        return "cell is not an integer"
+    if not feature.get("id"):
+        return "feature id is missing"
 
     if not coordinates or not coordinates[0]:
         return "empty polygon coordinates"
@@ -134,9 +141,9 @@ def geometry_for_row(
     if reason is not None:
         return None, reason, truncated
 
-    geometry = make_geometry(ring, int(cell_index[row_index]))
+    feature = make_feature(ring, int(cell_index[row_index]))
 
-    return geometry, validate_geojson_geometry(geometry), truncated
+    return feature, validate_geojson_feature(feature), truncated
 
 
 def main() -> int:
@@ -148,7 +155,7 @@ def main() -> int:
     import zarr
     from zarr.storage import ZipStore
 
-    geometries: list[dict[str, Any]] = []
+    features: list[dict[str, Any]] = []
     skipped: list[tuple[int, str]] = []
     truncated_rows = 0
 
@@ -192,7 +199,7 @@ def main() -> int:
             )
 
         for row_index in range(row_count):
-            geometry, reason, truncated = geometry_for_row(
+            feature, reason, truncated = geometry_for_row(
                 row_index=row_index,
                 cell_index=cell_index,
                 num_vertices=num_vertices,
@@ -213,12 +220,12 @@ def main() -> int:
             if reason is not None:
                 skipped.append((row_index, reason))
                 continue
-            if geometry is not None:
-                geometries.append(geometry)
+            if feature is not None:
+                features.append(feature)
     finally:
         store.close()
 
-    if not geometries:
+    if not features:
         print("ERROR: no valid polygons to write", file=sys.stderr)
         return 1
 
@@ -232,7 +239,7 @@ def main() -> int:
         )
         return 1
 
-    geojson = {"type": "GeometryCollection", "geometries": geometries}
+    geojson = {"type": "FeatureCollection", "features": features}
     args.output_geojson.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = args.output_geojson.with_suffix(args.output_geojson.suffix + ".tmp")
     with tmp_path.open("w") as handle:
@@ -241,7 +248,7 @@ def main() -> int:
     tmp_path.replace(args.output_geojson)
 
     print(f"wrote: {args.output_geojson}")
-    print(f"geometries written: {len(geometries)}")
+    print(f"features written: {len(features)}")
     print(f"rows skipped: {len(skipped)}")
     print(
         f"rows with reported num_vertices > stored coordinate pairs: {truncated_rows}"

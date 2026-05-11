@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "segger_exportgeojson"
-description: Export polygon sets from a Xenium-style cells.zarr.zip file to Baysor-style GeoJSON
+description: Export polygon sets from a Xenium-style cells.zarr.zip file to Xenium Ranger GeoJSON
 keywords:
   - segmentation
   - spatial transcriptomics
@@ -9,7 +9,7 @@ keywords:
   - geojson
 tools:
   - "export_zarr_polygons_to_geojson":
-      description: "Export polygon_sets from a Xenium-style cells.zarr.zip file as a validated GeoJSON GeometryCollection with integer cell identifiers."
+      description: "Export polygon_sets from a Xenium-style cells.zarr.zip file as a validated GeoJSON FeatureCollection with cell feature identifiers."
       homepage: "https://github.com/cellgeni/nf-modules"
       documentation: "https://github.com/cellgeni/nf-modules"
       tool_dev_url: "https://github.com/cellgeni/nf-modules"
@@ -35,7 +35,7 @@ output:
             e.g. `[ id:'sample1' ]`
       - "${prefix}.geojson":
           type: file
-          description: GeoJSON GeometryCollection exported from the selected polygon set.
+          description: GeoJSON FeatureCollection exported from the selected polygon set.
           pattern: "*.geojson"
 
   versions_export_zarr_polygons_to_geojson:
