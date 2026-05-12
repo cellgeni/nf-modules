@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "localmirror"
+description: Copy a staged file or directory into a mirrored output directory so the output path differs from the input name.
+keywords:
+  - copy
+  - mirror
+  - local
+  - utility
+tools:
+  - "coreutils":
+      description: "GNU core utilities, using cp to mirror a file or directory."
+      homepage: "https://www.gnu.org/software/coreutils/"
+      documentation: "https://www.gnu.org/software/coreutils/manual/coreutils.html"
+      tool_dev_url: "https://git.savannah.gnu.org/cgit/coreutils.git"
+      licence:
+        - "GPL-3.0-or-later"
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - input_data:
+        type: file
+        description: File or directory to copy into the mirrored output directory.
+
+output:
+  mirrored:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "mirrored/${mirror_name}":
+          type: file
+          description: Mirrored file or directory copied under the mirrored directory.
+          pattern: "mirrored/${mirror_name}"
+
+  versions_localmirror:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "coreutils":
+          type: string
+          description: The name of the tool
+      - "cp --version | head -n 1 | sed 's/^cp (GNU coreutils) //'":
+          type: eval
+          description: The expression to obtain the GNU coreutils cp version
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - coreutils:
+          type: string
+          description: The name of the tool
+      - cp --version | head -n 1 | sed 's/^cp (GNU coreutils) //':
+          type: eval
+          description: The expression to obtain the GNU coreutils cp version
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
