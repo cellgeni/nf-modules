@@ -15,6 +15,8 @@ from stardist.models import StarDist2D
 
 logging.basicConfig(level="INFO", format="[%(asctime)s][%(levelname)s] %(message)s")
 
+DEFAULT_MODEL_NAME = "2D_versatile_fluo"
+
 
 def _select_plane(array: np.ndarray, channel: int, z: int) -> np.ndarray:
     image = np.asarray(array)
@@ -94,7 +96,7 @@ def segment(
     channel: int = 0,
     z: int = 0,
     resolution_level: int = 0,
-    model_name: str = "2D_versatile_fluo",
+    model_name: str = DEFAULT_MODEL_NAME,
 ):
     logging.info("Loading full image plane from '%s'", image_path)
     image = load_image_plane(
@@ -104,8 +106,7 @@ def segment(
         resolution_level=resolution_level,
     )
 
-    logging.info("Loading StarDist2D model '%s'", model_name)
-    model = StarDist2D.from_pretrained(model_name)
+    model = download_model(model_name=model_name)
 
     labels, details = model.predict_instances(normalize(image, 1, 99.8, axis=(0, 1)))
     coord = details["coord"]
@@ -130,8 +131,14 @@ def segment(
         json.dump(geojson, handle, separators=(",", ":"))
 
 
+def download_model(model_name: str = DEFAULT_MODEL_NAME, **_ignored):
+    logging.info("Downloading/loading StarDist2D model '%s'", model_name)
+    return StarDist2D.from_pretrained(model_name)
+
+
 if __name__ == "__main__":
     options = {
+        "download-model": download_model,
         "run": segment,
         "version": "0.0.1",
     }

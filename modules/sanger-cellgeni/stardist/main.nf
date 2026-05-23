@@ -4,8 +4,8 @@ process STARDIST {
 
     // conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/tiled_stardist:0.9.1-0.0.2'
-        : 'quay.io/cellgeni/tiled_stardist:0.9.1-0.0.2'}"
+        ? 'quay.io/cellgeni/stardist:0.9.2-tileprocessor-0.2.1'
+        : 'quay.io/cellgeni/stardist:0.9.2-tileprocessor-0.2.1'}"
 
     input:
     tuple val(meta), path(image)
@@ -22,6 +22,9 @@ process STARDIST {
     prefix = task.ext.prefix ?: "${meta.id}"
     output_name = "${prefix}_sd_outlines.geojson"
     """
+    stardist_full_image_helper.py download-model \\
+        ${args}
+
     stardist_full_image_helper.py run \\
         --image-path "${image}" \\
         --output-name "${output_name}" \\
