@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "stardist"
+description: Segment nuclei in a full image plane using StarDist
+keywords:
+  - segmentation
+  - image analysis
+  - StarDist
+  - geojson
+tools:
+  - "stardist":
+      description: "Object detection with star-convex shapes"
+      homepage: "https://github.com/stardist/stardist"
+      documentation: "https://stardist.net/"
+      tool_dev_url: "https://github.com/stardist/stardist"
+      doi: "10.48550/arXiv.1806.03535"
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:stardist
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - image:
+        type: file
+        description: "Image file. Channel 0 and z-plane 0 are used by default."
+        pattern: "*.{pgm,png,jpg,jpeg,tif,tiff,ome.tif,ome.tiff}"
+
+output:
+  geojson:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${output_name}":
+          type: file
+          description: GeoJSON FeatureCollection containing StarDist polygon outlines
+          pattern: "*.geojson"
+
+  versions_stardist:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "stardist":
+          type: string
+          description: The name of the tool
+      - "stardist_full_image_helper.py version":
+          type: eval
+          description: The expression to obtain the helper version
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - stardist:
+          type: string
+          description: The name of the tool
+      - stardist_full_image_helper.py version:
+          type: eval
+          description: The expression to obtain the helper version
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
