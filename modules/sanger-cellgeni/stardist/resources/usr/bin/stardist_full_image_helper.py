@@ -46,6 +46,7 @@ def load_image_plane(
     image_path: str,
     channel: int = 0,
     z: int = 0,
+    timepoint: int = 0,
     resolution_level: int = 0,
 ) -> np.ndarray:
     path = Path(image_path)
@@ -58,7 +59,7 @@ def load_image_plane(
 
         image = AICSImage(path)
         return np.squeeze(
-            image.get_image_data("YX", C=channel, Z=z, T=0, S=resolution_level)
+            image.get_image_data("YX", C=channel, Z=z, T=timepoint, S=resolution_level)
         )
     except Exception as error:
         logging.info("Falling back to tifffile reader: %s", error)
@@ -67,6 +68,8 @@ def load_image_plane(
 
     with tifffile.TiffFile(path) as tif:
         series = tif.series[min(resolution_level, len(tif.series) - 1)]
+        if series.pages:
+            return _select_plane(series.pages[0].asarray(), channel=channel, z=z)
         return _select_plane(series.asarray(), channel=channel, z=z)
 
 
@@ -95,20 +98,34 @@ def segment(
     output_name: str,
     channel: int = 0,
     z: int = 0,
+    timepoint: int = 0,
     resolution_level: int = 0,
     model_name: str = DEFAULT_MODEL_NAME,
+    tile_size: int = 2048,
 ):
-    logging.info("Loading full image plane from '%s'", image_path)
+    logging.info(
+        "Loading image plane from '%s' with timepoint=%s, channel=%s, z=%s",
+        image_path,
+        timepoint,
+        channel,
+        z,
+    )
     image = load_image_plane(
         image_path,
         channel=channel,
         z=z,
+        timepoint=timepoint,
         resolution_level=resolution_level,
     )
 
     model = download_model(model_name=model_name)
 
-    labels, details = model.predict_instances(normalize(image, 1, 99.8, axis=(0, 1)))
+    n_tiles = tuple(max(1, int(np.ceil(size / tile_size))) for size in image.shape[:2])
+    logging.info("Running StarDist prediction with n_tiles=%s", n_tiles)
+    labels, details = model.predict_instances(
+        normalize(image, 1, 99.8, axis=(0, 1)),
+        n_tiles=n_tiles,
+    )
     coord = details["coord"]
 
     logging.info("Converting outlines to GeoJSON format")
@@ -121,6 +138,7 @@ def segment(
                     "type": "Feature",
                     "properties": {"object_id": object_id},
                     "geometry": mapping(Polygon(flat_coords)),
+                    "cell_id": object_id,
                 }
             )
     else:
