@@ -4,6 +4,7 @@
 
 import json
 import logging
+import uuid
 from pathlib import Path
 
 import fire
@@ -16,6 +17,7 @@ from stardist.models import StarDist2D
 logging.basicConfig(level="INFO", format="[%(asctime)s][%(levelname)s] %(message)s")
 
 DEFAULT_MODEL_NAME = "2D_versatile_fluo"
+DETERMINISTIC_FEATURE_NAMESPACE = uuid.UUID("df0c588a-4c4b-5f72-80be-f39cc4d4ba6e")
 
 
 def _select_plane(array: np.ndarray, channel: int, z: int) -> np.ndarray:
@@ -136,9 +138,13 @@ def segment(
             features.append(
                 {
                     "type": "Feature",
-                    "properties": {"object_id": object_id},
+                    "properties": None,
                     "geometry": mapping(Polygon(flat_coords)),
                     "cell_id": object_id,
+                    "id": uuid.uuid5(
+                        DETERMINISTIC_FEATURE_NAMESPACE,
+                        f"{object_id}:{flat_coords}",
+                    ),
                 }
             )
     else:
