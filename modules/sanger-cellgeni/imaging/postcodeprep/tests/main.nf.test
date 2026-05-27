@@ -4,6 +4,7 @@ nextflow_process {
     name "Test Process IMAGING_POSTCODEPREP"
     script "../main.nf"
     process "IMAGING_POSTCODEPREP"
+    config "./nextflow.config"
 
     tag "modules"
     tag "modules_sangercellgeni"
