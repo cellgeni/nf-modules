@@ -3,6 +3,7 @@ nextflow_workflow {
     name "Test Subworkflow POSTCODE_DECODING"
     script "../main.nf"
     workflow "POSTCODE_DECODING"
+    config "./nextflow.config"
 
     tag "subworkflows"
     tag "subworkflows_sangercellgeni"
