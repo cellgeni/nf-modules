@@ -9,7 +9,6 @@ nextflow_workflow {
     tag "subworkflows_sangercellgeni"
     tag "subworkflows/postcode_decoding"
     tag "postcode_decoding"
-    tag "imaging"
     tag "postcode"
 
 

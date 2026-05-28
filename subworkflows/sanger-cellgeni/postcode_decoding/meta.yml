@@ -7,8 +7,9 @@ keywords:
   - postcode
   - probabilistic decoding
 components:
-  - imaging/postcodeprep
-  - imaging/postcode
+  - postcode/preprocess
+  - postcode/decode
+  - postcode/postprocess
 input:
   - ch_profile:
       type: file

@@ -1,6 +1,6 @@
-include { IMAGING_POSTCODE } from '../../../modules/sanger-cellgeni/imaging/postcode/main'
-include { IMAGING_POSTCODEPREP } from '../../../modules/sanger-cellgeni/imaging/postcodeprep/main'
-include { IMAGING_POSTCODEPOST } from '../../../modules/sanger-cellgeni/imaging/postcodepost/main'
+include { POSTCODE_DECODE } from '../../../modules/sanger-cellgeni/postcode/decode/main'
+include { POSTCODE_PREPROCESS } from '../../../modules/sanger-cellgeni/postcode/preprocess/main'
+include { POSTCODE_POSTPROCESS } from '../../../modules/sanger-cellgeni/postcode/postprocess/main'
 
 workflow POSTCODE_DECODING {
     take:
@@ -27,18 +27,18 @@ workflow POSTCODE_DECODING {
 
     // for_decoding.view()
 
-    IMAGING_POSTCODEPREP(for_decoding)
-    ch_versions = ch_versions.mix(IMAGING_POSTCODEPREP.out.versions.first())
-    // IMAGING_POSTCODEPREP.out.for_decoding.combine(ch_loc, by: 0).view()
+    POSTCODE_PREPROCESS(for_decoding)
+    ch_versions = ch_versions.mix(POSTCODE_PREPROCESS.out.versions.first())
+    // POSTCODE_PREPROCESS.out.for_decoding.combine(ch_loc, by: 0).view()
 
-    IMAGING_POSTCODE(IMAGING_POSTCODEPREP.out.for_decoding.combine(ch_loc, by: 0))
-    ch_versions = ch_versions.mix(IMAGING_POSTCODEPREP.out.versions.first())
+    POSTCODE_DECODE(POSTCODE_PREPROCESS.out.for_decoding.combine(ch_loc, by: 0))
+    ch_versions = ch_versions.mix(POSTCODE_DECODE.out.versions.first())
 
-    IMAGING_POSTCODEPOST(IMAGING_POSTCODE.out.model_params_and_losses.combine(ch_loc, by: 0))
-    ch_versions = ch_versions.mix(IMAGING_POSTCODEPOST.out.versions.first())
+    POSTCODE_POSTPROCESS(POSTCODE_DECODE.out.model_params_and_losses.combine(ch_loc, by: 0))
+    ch_versions = ch_versions.mix(POSTCODE_POSTPROCESS.out.versions.first())
 
     emit:
-    processed_profiles = IMAGING_POSTCODEPREP.out.for_decoding // channel: [ val(meta), [ pixel/cell ] ]
-    decoded_profiles = IMAGING_POSTCODEPOST.out.decoded_profile // channel: [ val(meta), [ decoded_profile ] ]
+    processed_profiles = POSTCODE_PREPROCESS.out.for_decoding // channel: [ val(meta), [ pixel/cell ] ]
+    decoded_profiles = POSTCODE_POSTPROCESS.out.decoded_profile // channel: [ val(meta), [ decoded_profile ] ]
     versions = ch_versions // channel: [ versions.yml ]
 }
