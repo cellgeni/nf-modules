@@ -8,7 +8,7 @@ process BIOFORMATS2RAWCOMPANION {
         : 'community.wave.seqera.io/library/bioformats2raw:0.9.4--3eec45888b3759e5'}"
 
     input:
-    tuple val(meta), path(master), path(images)
+    tuple val(meta), path(master_file), path(master_file_parent)
 
     output:
     tuple val(meta), path("*.ome.zarr"), emit: ome_zarr
@@ -23,7 +23,7 @@ process BIOFORMATS2RAWCOMPANION {
     """
     bioformats2raw \\
         ${args} \\
-        ${master} \\
+        ${master_file_parent}/${master_file.name} \\
         --max_workers ${task.cpus} \\
         ${prefix}.ome.zarr \\
     """
