@@ -4,8 +4,8 @@ process OMERO_ATTACHTABLE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE'
-        : 'biocontainers/YOUR-TOOL-HERE'}"
+        ? 'quay.io/cellgeni/omero2pandas:latest'
+        : 'quay.io/cellgeni/omero2pandas:latest'}"
 
     secret 'OMERO_USER'
     secret 'OMERO_PASSWORD'
