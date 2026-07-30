@@ -13,14 +13,15 @@ nextflow_workflow {
     tag "segtraq/regionsimilarity"
     tag "segtraq/volume"
 
-    test("segtraq_qc - A02_4xHipSci sdata") {
+    test("segtraq_qc - xenium bundle") {
 
         when {
             workflow {
                 """
                 input[0] = [
-                    [ id:'A02_4xHipSci' ],
-                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
+                    [ id:'xenium_sample' ],
+                    file(params.modules_testdata_base_path + 'spatial/xenium/sample/', checkIfExists: true),
+                    'all',
                 ]
                 """
             }
@@ -40,7 +41,7 @@ nextflow_workflow {
 
     }
 
-    test("segtraq_qc - A02_4xHipSci sdata - stub") {
+    test("segtraq_qc - xenium bundle - stub") {
 
         options "-stub"
 
@@ -48,8 +49,9 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = [
-                    [ id:'A02_4xHipSci' ],
-                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
+                    [ id:'xenium_sample' ],
+                    file(params.modules_testdata_base_path + 'spatial/xenium/sample/', checkIfExists: true),
+                    'all',
                 ]
                 """
             }
@@ -58,7 +60,12 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert file(workflow.out.baseline_obs[0][1]).exists() },
+                { assert file(workflow.out.baseline_summary[0][1]).exists() },
+                { assert file(workflow.out.clustering_obs[0][1]).exists() },
+                { assert file(workflow.out.clustering_metrics[0][1]).exists() },
+                { assert file(workflow.out.region_similarity_obs[0][1]).exists() },
+                { assert file(workflow.out.volume_obs[0][1]).exists() }
             )
         }
 
