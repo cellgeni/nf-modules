@@ -1,0 +1,77 @@
+name: "tangram"
+description: Map scRNA-seq cell types onto Xenium spatial transcriptomics data using Tangram deep-learning deconvolution.
+keywords:
+    - tangram
+    - spatial
+    - deconvolution
+    - scRNA-seq
+    - xenium
+tools:
+    - "tangram":
+          description: Deep-learning tool for spatially-resolved single-cell analysis.
+          homepage: "https://github.com/broadinstitute/Tangram"
+          documentation: "https://tangram-sc.readthedocs.io/"
+          licence: ["BSD-2-Clause"]
+input:
+    - - meta:
+            type: map
+            description: |
+                Groovy Map containing sample information.
+                e.g. `[ id:'sample1' ]`
+      - sc_data:
+            type: file
+            description: Single-cell reference h5ad file.
+            pattern: "*.h5ad"
+      - sp_data:
+            type: file
+            description: Spatial transcriptomics h5ad file (Xenium).
+            pattern: "*.h5ad"
+      - markers:
+            type: file
+            description: Optional markers TSV file; pass an empty file when not used.
+            pattern: "*.tsv"
+output:
+    - mapped:
+          - - meta:
+                  type: map
+                  description: Groovy Map containing sample information.
+            - "tangram_aligned.h5ad":
+                  type: file
+                  description: Spatially-aligned h5ad with Tangram gene projections.
+                  pattern: "tangram_aligned.h5ad"
+    - geneproj:
+          - - meta:
+                  type: map
+                  description: Groovy Map containing sample information.
+            - "tangram_gene_proj.h5ad":
+                  type: file
+                  description: Gene projection h5ad from Tangram mapping.
+                  pattern: "tangram_gene_proj.h5ad"
+    - spatial_ct:
+          - - meta:
+                  type: map
+                  description: Groovy Map containing sample information.
+            - "spatial_with_tangram_celltypes.h5ad":
+                  type: file
+                  description: Spatial h5ad enriched with Tangram-predicted cell types.
+                  pattern: "spatial_with_tangram_celltypes.h5ad"
+    - figures:
+          - "figures/*.png":
+                type: file
+                description: Optional training-score plots.
+                pattern: "figures/*.png"
+    - log:
+          - "tangram.log":
+                type: file
+                description: Tangram run log.
+                pattern: "tangram.log"
+    - versions:
+          - versions:
+                type: string
+                description: Tool versions emitted by the module.
+authors:
+    - "Keerthi Priya Chakala <kc28@sanger.ac.uk>"
+    - "Stanislaw Makarchuk <sm57@sanger.ac.uk>"
+    - "@tl10"
+maintainers:
+    - "@tl10"

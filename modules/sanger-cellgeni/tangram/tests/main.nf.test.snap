@@ -1,0 +1,87 @@
+{
+    "tangram - cells mode - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "tangram_aligned.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "tangram_gene_proj.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "spatial_with_tangram_celltypes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    
+                ],
+                "4": [
+                    "tangram.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "5": [
+                    [
+                        "TANGRAM",
+                        "tangram",
+                        "1.0.4"
+                    ]
+                ],
+                "figures": [
+                    
+                ],
+                "geneproj": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "tangram_gene_proj.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log": [
+                    "tangram.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "mapped": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "tangram_aligned.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spatial_ct": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "spatial_with_tangram_celltypes.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    [
+                        "TANGRAM",
+                        "tangram",
+                        "1.0.4"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-30T18:21:35.986897619",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}
