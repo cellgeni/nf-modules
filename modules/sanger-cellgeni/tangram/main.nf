@@ -1,6 +1,6 @@
 process TANGRAM {
     tag "${meta.id}"
-    label 'process_gpu'
+    label params.tangram_use_gpu ? 'process_gpu' : 'process_normal'
 
     container "quay.io/cellgeni/tangram:1.0.4"
 
