@@ -3,7 +3,6 @@ process SEGTRAQ_QC {
     label 'process_high'
 
     container "quay.io/cellgeni/segtraq:0.0.4"
-    // conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(meta), path(xenium_dir), val(metrics)

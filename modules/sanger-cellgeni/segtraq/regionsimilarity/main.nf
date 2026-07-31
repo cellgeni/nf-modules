@@ -3,7 +3,6 @@ process SEGTRAQ_REGIONSIMILARITY {
     label 'process_medium'
 
     container "quay.io/cellgeni/segtraq:latest"
-    // conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(meta), path(zarr_dir)

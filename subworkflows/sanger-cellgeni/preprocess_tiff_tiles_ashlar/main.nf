@@ -1,13 +1,13 @@
-include { PE2OMETIF } from "../../../modules/sanger-cellgeni/pe2ometif/main"
-include { IMAGING_ASHLARCOMPANION } from "../../../modules/sanger-cellgeni/imaging/ashlarcompanion/main"
+include { PE2OMETIF                          } from "../../../modules/sanger-cellgeni/pe2ometif/main"
+include { IMAGING_ASHLARCOMPANION            } from "../../../modules/sanger-cellgeni/imaging/ashlarcompanion/main"
 include { IMAGING_GENERATECOMPANIONFROMFILES } from "../../../modules/sanger-cellgeni/imaging/generatecompanionfromfiles/main"
 
 workflow PREPROCESS_TIFF_TILES_ASHLAR {
     take:
-    ch_input    // channel: [ val(meta{id, round_index}), path(image_dir), val(index_name) ]
-    dfp_folder  // path or []
-    ffp_folder  // path or []
-    is_plate    // boolean
+    ch_input // channel: [ val(meta{id, round_index}), path(image_dir), val(index_name) ]
+    dfp_folder // path or []
+    ffp_folder // path or []
+    is_plate // boolean
 
     main:
     ch_versions = channel.empty()
@@ -20,36 +20,32 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
         .transpose()
         .map { meta, companion ->
             def well = (companion.name =~ /_([A-Z]{1,2}\d+)\.companion\.ome$/)[0][1]
-            [ [id: meta.id, well: well], meta.round_index, companion ]
+            [[id: meta.id, well: well], meta.round_index, companion]
         }
         .groupTuple(by: 0)
         .map { meta, rounds, companions ->
             def sorted = [rounds, companions].transpose().sort { a, b -> a[0] <=> b[0] }
-            [ meta, sorted.collect { pair -> pair[1] } ]
+            [meta, sorted.collect { pair -> pair[1] }]
         }
 
     // 3. Collect all tif files per sample across rounds, in round order
     tifs_by_sample = PE2OMETIF.out.ome_tif
         .map { meta, tifs ->
-            [ [id: meta.id], meta.round_index, tifs instanceof List ? tifs : [tifs] ]
+            [[id: meta.id], meta.round_index, tifs instanceof List ? tifs : [tifs]]
         }
         .groupTuple(by: 0)
         .map { meta, rounds, tifs_per_round ->
             def sorted = [rounds, tifs_per_round].transpose().sort { a, b -> a[0] <=> b[0] }
-            [ meta, sorted.collect { pair -> pair[1] }.flatten() ]
+            [meta, sorted.collect { pair -> pair[1] }.flatten()]
         }
 
     // 4. Pair each well's ordered companions with all tifs for that sample
     //    ASHLAR reads the per-well companion to determine which tiles belong to each well.
     multi_cycle_well = per_well_grouped
-        .map { meta, companions -> [ [id: meta.id], meta.well, companions ] }
+        .map { meta, companions -> [[id: meta.id], meta.well, companions] }
         .combine(tifs_by_sample, by: 0)
         .map { id_meta, well, companions, tifs ->
-            [
-                [ id: "${id_meta.id}_${well}", sample_id: id_meta.id, well: well ],
-                companions,
-                tifs
-            ]
+            [[id: "${id_meta.id}_${well}", sample_id: id_meta.id, well: well], companions, tifs]
         }
 
     // 5. Stitch and register each well across all cycles with ASHLAR
@@ -58,7 +54,7 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
 
     // 6. Collect all per-well stitched images per sample; generate master companion
     stitched_by_sample = IMAGING_ASHLARCOMPANION.out.tif
-        .map { meta, tif -> [ [id: meta.sample_id], tif ] }
+        .map { meta, tif -> [[id: meta.sample_id], tif] }
         .groupTuple()
 
     IMAGING_GENERATECOMPANIONFROMFILES(
@@ -67,7 +63,7 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
     ch_versions = ch_versions.mix(IMAGING_GENERATECOMPANIONFROMFILES.out.versions.first())
 
     emit:
-    stitched_tif = IMAGING_ASHLARCOMPANION.out.tif                  // channel: [ val(meta{id, sample_id, well}), path(tif) ]
-    companion    = IMAGING_GENERATECOMPANIONFROMFILES.out.companion  // channel: [ val(meta{id=sample_id}), path(companion) ]
-    versions     = ch_versions                                       // channel: [ path(versions.yml) ]
+    stitched_tif = IMAGING_ASHLARCOMPANION.out.tif // channel: [ val(meta{id, sample_id, well}), path(tif) ]
+    companion    = IMAGING_GENERATECOMPANIONFROMFILES.out.companion // channel: [ val(meta{id=sample_id}), path(companion) ]
+    versions     = ch_versions // channel: [ path(versions.yml) ]
 }

@@ -3,7 +3,6 @@ process SEGTRAQ_LABELTRANSFER {
     label 'process_high'
 
     container "quay.io/cellgeni/segtraq:latest"
-    // conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(meta), path(zarr_dir), path(ref_h5ad)

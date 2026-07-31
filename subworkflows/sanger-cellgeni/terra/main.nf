@@ -1,4 +1,4 @@
-include { SPATIAL_TERRA } from '../../../modules/sanger-cellgeni/spatial/terra/main'
+include { SPATIAL_TERRA       } from '../../../modules/sanger-cellgeni/spatial/terra/main'
 include { SPATIAL_CONCATH5ADS } from '../../../modules/sanger-cellgeni/spatial/concath5ads/main'
 
 workflow TERRA {
@@ -18,5 +18,5 @@ workflow TERRA {
     emit:
     processed_anndata = SPATIAL_TERRA.out.processed_anndata // channel: [ val(meta), [ processed_anndata ] ]
     concatenated_h5ad = SPATIAL_CONCATH5ADS.out.concatenated_h5ad // channel: [ val(meta), [ concatenated_h5ad ] ]
-    versions = ch_versions // channel: [ versions.yml ]
+    versions          = ch_versions // channel: [ versions.yml ]
 }

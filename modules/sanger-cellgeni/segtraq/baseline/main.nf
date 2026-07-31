@@ -3,13 +3,12 @@ process SEGTRAQ_BASELINE {
     label 'process_medium'
 
     container "quay.io/cellgeni/segtraq:latest"
-    // conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(meta), path(zarr_dir)
 
     output:
-    tuple val(meta), path("${prefix}_baseline_obs.csv"),     emit: obs
+    tuple val(meta), path("${prefix}_baseline_obs.csv"), emit: obs
     tuple val(meta), path("${prefix}_baseline_summary.json"), emit: summary
     tuple val("${task.process}"), val('segtraq'), eval('pip show segtraq | grep "^Version" | sed \'s/Version: //\''), emit: versions, topic: versions
 

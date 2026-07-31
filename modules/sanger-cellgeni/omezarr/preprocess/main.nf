@@ -20,7 +20,6 @@ process OMEZARR_PREPROCESS {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     process.py run \\
         --root_folder ${root_folder} \\
@@ -32,7 +31,6 @@ process OMEZARR_PREPROCESS {
 
     stub:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo ${args}
     

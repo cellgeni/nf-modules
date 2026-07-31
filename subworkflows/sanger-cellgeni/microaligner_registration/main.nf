@@ -1,13 +1,33 @@
 #!/usr/bin/env/ nextflow
 
-include { IMAGING_MICROALIGNER } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
-
-params.referece_channel = "DAPI"
-params.reference_cycle = 1
-
-params.debug = true
+include { IMAGING_MICROALIGNER                            } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
 
 include { IMAGING_MICROALIGNER as MICROALIGNER_FEATREG ; IMAGING_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
+
+params.referece_channel = "DAPI"
+params.reference_cycle  = 1
+
+params.debug            = true
+
+
+workflow MICRO_ALIGNER_REGISTRATION {
+    take:
+    images
+
+    main:
+
+    ch_versions = channel.empty()
+    GENERATE_FEAT_REG_YAML(images)
+    GENERATE_OPTFLOW_REG_YAML(images)
+    MICROALIGNER_FEATREG(GENERATE_FEAT_REG_YAML.out.combine(images, by: 0), "feature")
+    ch_versions = ch_versions.mix(MICROALIGNER_FEATREG.out.versions.first())
+    MICROALIGNER_OPTFLOWREG(GENERATE_OPTFLOW_REG_YAML.out.combine(MICROALIGNER_FEATREG.out.registered_image, by: 0), "optflow")
+    ch_versions = ch_versions.mix(MICROALIGNER_OPTFLOWREG.out.versions.first())
+
+    emit:
+    image    = MICROALIGNER_OPTFLOWREG.out.registered_image // channel: [ val(meta), [ image ] ]
+    versions = ch_versions // channel: [ versions.yml ]
+}
 
 
 process GENERATE_FEAT_REG_YAML {
@@ -123,24 +143,4 @@ process GENERATE_OPTFLOW_REG_YAML {
             UseFullResImage: true
             UseDOG: false" >> ./${meta.id}_optflow_reg.yaml
     """
-}
-
-
-workflow MICRO_ALIGNER_REGISTRATION {
-    take:
-    images
-
-    main:
-
-    ch_versions = channel.empty()
-    GENERATE_FEAT_REG_YAML(images)
-    GENERATE_OPTFLOW_REG_YAML(images)
-    MICROALIGNER_FEATREG(GENERATE_FEAT_REG_YAML.out.combine(images, by: 0), "feature")
-    ch_versions = ch_versions.mix(MICROALIGNER_FEATREG.out.versions.first())
-    MICROALIGNER_OPTFLOWREG(GENERATE_OPTFLOW_REG_YAML.out.combine(MICROALIGNER_FEATREG.out.registered_image, by: 0), "optflow")
-    ch_versions = ch_versions.mix(MICROALIGNER_OPTFLOWREG.out.versions.first())
-
-    emit:
-    image = MICROALIGNER_OPTFLOWREG.out.registered_image // channel: [ val(meta), [ image ] ]
-    versions = ch_versions // channel: [ versions.yml ]
 }

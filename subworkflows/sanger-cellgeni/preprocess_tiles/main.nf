@@ -1,4 +1,4 @@
-include { IMAGING_PREPROCESS } from "../../../modules/sanger-cellgeni/imaging/preprocess"
+include { IMAGING_PREPROCESS        } from "../../../modules/sanger-cellgeni/imaging/preprocess"
 include { IMAGING_GENERATECOMPANION } from "../../../modules/sanger-cellgeni/imaging/generatecompanion"
 
 workflow PREPROCESS_TILES {
@@ -22,5 +22,5 @@ workflow PREPROCESS_TILES {
 
     emit:
     companion_tiles = IMAGING_GENERATECOMPANION.out.companion.combine(IMAGING_PREPROCESS.out.fovs, by: 0).groupTuple(by: [0, 1]) // [ meta, companion, [fovs] ]
-    versions = ch_versions // channel: [ versions.yml ]
+    versions        = ch_versions // channel: [ versions.yml ]
 }

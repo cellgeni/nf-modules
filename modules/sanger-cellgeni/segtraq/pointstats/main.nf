@@ -3,7 +3,6 @@ process SEGTRAQ_POINTSTATS {
     label 'process_medium'
 
     container "quay.io/cellgeni/segtraq:latest"
-    // conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(meta), path(zarr_dir), path(labeled_h5ad)
