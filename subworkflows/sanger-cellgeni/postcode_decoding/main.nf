@@ -1,5 +1,5 @@
-include { POSTCODE_DECODE } from '../../../modules/sanger-cellgeni/postcode/decode/main'
-include { POSTCODE_PREPROCESS } from '../../../modules/sanger-cellgeni/postcode/preprocess/main'
+include { POSTCODE_DECODE      } from '../../../modules/sanger-cellgeni/postcode/decode/main'
+include { POSTCODE_PREPROCESS  } from '../../../modules/sanger-cellgeni/postcode/preprocess/main'
 include { POSTCODE_POSTPROCESS } from '../../../modules/sanger-cellgeni/postcode/postprocess/main'
 
 workflow POSTCODE_DECODING {
@@ -39,6 +39,6 @@ workflow POSTCODE_DECODING {
 
     emit:
     processed_profiles = POSTCODE_PREPROCESS.out.for_decoding // channel: [ val(meta), [ pixel/cell ] ]
-    decoded_profiles = POSTCODE_POSTPROCESS.out.decoded_profile // channel: [ val(meta), [ decoded_profile ] ]
-    versions = ch_versions // channel: [ versions.yml ]
+    decoded_profiles   = POSTCODE_POSTPROCESS.out.decoded_profile // channel: [ val(meta), [ decoded_profile ] ]
+    versions           = ch_versions // channel: [ versions.yml ]
 }
