@@ -11,7 +11,7 @@ process PE2OMETIF {
     tuple val(meta), path(image_dir), val(index_name)
 
     output:
-    tuple val(meta), path("${prefix}/${prefix}*.ome.tif"),      emit: ome_tif
+    tuple val(meta), path("${prefix}/${prefix}*.ome.tif"), emit: ome_tif
     tuple val(meta), path("${prefix}/${prefix}.companion.ome"), emit: master_companion
     tuple val(meta), path("${prefix}/${prefix}_*.companion.ome"), emit: per_well_companions
     tuple val(meta), path("${prefix}/${prefix}_ch*_ffp.tiff"), optional: true, emit: ffp_maps

@@ -10,7 +10,7 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
     is_plate    // boolean
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     // 1. Convert PerkinElmer tiles to OME-TIFFs and per-well companion files
     PE2OMETIF(ch_input)
@@ -25,7 +25,7 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
         .groupTuple(by: 0)
         .map { meta, rounds, companions ->
             def sorted = [rounds, companions].transpose().sort { a, b -> a[0] <=> b[0] }
-            [ meta, sorted.collect { it[1] } ]
+            [ meta, sorted.collect { pair -> pair[1] } ]
         }
 
     // 3. Collect all tif files per sample across rounds, in round order
@@ -36,7 +36,7 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
         .groupTuple(by: 0)
         .map { meta, rounds, tifs_per_round ->
             def sorted = [rounds, tifs_per_round].transpose().sort { a, b -> a[0] <=> b[0] }
-            [ meta, sorted.collect { it[1] }.flatten() ]
+            [ meta, sorted.collect { pair -> pair[1] }.flatten() ]
         }
 
     // 4. Pair each well's ordered companions with all tifs for that sample

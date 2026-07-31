@@ -12,12 +12,12 @@ workflow NICHECOMPASS {
 
     // Carry the four mandatory AnnData keys alongside the split step;
     // sample_key is reused as the obs column to split on
-    def ch_keys = ch_input.map { meta, h5ad, cell_type_key, sample_key, counts_key, spatial_key ->
+    def ch_keys = ch_input.map { meta, _h5ad, cell_type_key, sample_key, counts_key, spatial_key ->
         [meta, cell_type_key, sample_key, counts_key, spatial_key]
     }
 
     SCRAFT_SPLITH5AD(
-        ch_input.map { meta, h5ad, cell_type_key, sample_key, counts_key, spatial_key ->
+        ch_input.map { meta, h5ad, _cell_type_key, sample_key, _counts_key, _spatial_key ->
             [meta, h5ad, sample_key]
         }
     )

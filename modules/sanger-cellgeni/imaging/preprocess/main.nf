@@ -36,8 +36,6 @@ process IMAGING_PREPROCESS {
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     out_img_name = "${image_id}.tif"
     """
     touch ${out_img_name}

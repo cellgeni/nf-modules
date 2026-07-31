@@ -37,7 +37,6 @@ process IMAGING_GENERATECOMPANION {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}_image${round}"
     out_csv_name = "${prefix}_image_tiles.csv"
     out_companion = "${prefix}_image.companion.ome"

@@ -23,7 +23,7 @@ process GENERATE_FEAT_REG_YAML {
 
     script:
     def cycles_str = ""
-    cycle_paths = images.eachWithIndex { img, i ->
+    images.eachWithIndex { img, i ->
         cycles_str += "        Cycle ${i + 1}: ./${img}\n    "
     }
     """
@@ -132,7 +132,7 @@ workflow MICRO_ALIGNER_REGISTRATION {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
     GENERATE_FEAT_REG_YAML(images)
     GENERATE_OPTFLOW_REG_YAML(images)
     MICROALIGNER_FEATREG(GENERATE_FEAT_REG_YAML.out.combine(images, by: 0), "feature")

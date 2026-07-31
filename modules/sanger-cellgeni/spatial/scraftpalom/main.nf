@@ -18,7 +18,6 @@ process SPATIAL_SCRAFTPALOM {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     output_img_name = "aligned_" + moving.baseName.replaceFirst(/\.ome\.tif$/, '') + ".ome.tif"
     """
     scraft registration palom \\

@@ -10,7 +10,7 @@ workflow SPATIALDATA2VITESSCE {
     http_base_url  // val: base HTTP URL for vitessce to serve the zarr
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     SPATIALDATA_EXPORT(ch_input)
     ch_versions = ch_versions.mix(SPATIALDATA_EXPORT.out.versions.first())
