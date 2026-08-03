@@ -4,11 +4,6 @@ include { IMAGING_MICROALIGNER                            } from '../../../modul
 
 include { IMAGING_MICROALIGNER as MICROALIGNER_FEATREG ; IMAGING_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
 
-params.reference_channel = "DAPI"
-params.reference_cycle   = 1
-
-params.debug             = true
-
 
 workflow MICRO_ALIGNER_REGISTRATION {
     take:
