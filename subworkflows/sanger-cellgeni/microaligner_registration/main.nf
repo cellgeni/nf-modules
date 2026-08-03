@@ -4,10 +4,10 @@ include { IMAGING_MICROALIGNER                            } from '../../../modul
 
 include { IMAGING_MICROALIGNER as MICROALIGNER_FEATREG ; IMAGING_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger-cellgeni/imaging/microaligner/main'
 
-params.referece_channel = "DAPI"
-params.reference_cycle  = 1
+params.reference_channel = "DAPI"
+params.reference_cycle   = 1
 
-params.debug            = true
+params.debug             = true
 
 
 workflow MICRO_ALIGNER_REGISTRATION {
@@ -56,7 +56,7 @@ process GENERATE_FEAT_REG_YAML {
         InputImagePaths:
     ${cycles_str}
         ReferenceCycle: ${params.reference_cycle}
-        ReferenceChannel: ${params.referece_channel}
+        ReferenceChannel: ${params.reference_channel}
 
     # Output
     # Images will be saved to a directory
@@ -110,7 +110,7 @@ process GENERATE_OPTFLOW_REG_YAML {
         InputImagePaths:
             CycleStack: ${meta.id}_feature_reg_result_stack.tif
         ReferenceCycle: ${params.reference_cycle}
-        ReferenceChannel: ${params.referece_channel}
+        ReferenceChannel: ${params.reference_channel}
 
     # Output
     # Images will be saved to a directory
