@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "raw2features"
+description: Extract foundation-model patch embeddings from a single OME-Zarr whole-slide image
+keywords:
+  - foundation model
+  - embeddings
+  - whole slide imaging
+  - pathology
+  - ome-zarr
+tools:
+  - "raw2features":
+      description: "raw2features extracts foundation-model patch embeddings from OME-Zarr whole-slide images, tiling tissue into patches and encoding them with pathology/scale-agnostic feature extractors (e.g. resnet50, CONCH, TITAN)."
+      homepage: "https://github.com/CraigMyles/raw2features"
+      documentation: "https://github.com/CraigMyles/raw2features"
+      tool_dev_url: "https://github.com/CraigMyles/raw2features"
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - slide:
+        type: directory
+        description: Path to an OME-Zarr store containing the whole-slide image to embed
+        pattern: "*.ome.zarr"
+
+output:
+  embeddings:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.embeddings.zarr":
+          type: directory
+          description: Zarr store containing patch coordinates, tissue mask, and extracted patch embeddings
+          pattern: "*.embeddings.zarr"
+  versions_raw2features:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "raw2features":
+          type: string
+          description: The name of the tool
+      - "raw2features version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - raw2features:
+          type: string
+          description: The name of the tool
+      - raw2features version:
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@bioinfotongli"
+maintainers:
+  - "@bioinfotongli"
