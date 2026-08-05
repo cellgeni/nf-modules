@@ -10,8 +10,22 @@ import re
 
 
 def to_starfish_codebook(
-    codebook: pd.DataFrame, target_col: str, code_col: str, is_merfish: bool = False
+    codebook: pd.DataFrame,
+    target_col: str,
+    code_col: str,
+    is_merfish: bool = False,
+    n_channel: int = None,
 ) -> Codebook:
+    """Build a starfish Codebook from a tabular (gene, code, ...) codebook.
+
+    n_channel: number of real channels per round. For a non-MERFISH, multi-
+        channel codebook (code digit selects which of n_channel channels is
+        active per round), this MUST be passed explicitly - it cannot be
+        reliably inferred from the code string's digit range alone, since e.g.
+        a 2-channel selector code and a single-channel binary-presence code
+        both only ever use digits {0, 1}. When not passed, falls back to the
+        old max-digit-based heuristic (only correct for single-channel codes).
+    """
     all_codes = codebook[code_col]
     all_codes_lengths = [len(str(code)) for code in all_codes]
     n_round = max(all_codes_lengths)
@@ -22,9 +36,11 @@ def to_starfish_codebook(
     all_codes_str = "".join(all_codes)
     max_digit = max(int(digit) for digit in all_codes_str)
     min_digit = min(int(digit) for digit in all_codes_str)
-    print(f"Largest digit in the set: {max_digit}")
     is_zero_based = min_digit == 0
-    print(f"Is zero based: {is_zero_based}")
+    if is_merfish:
+        n_channel = 1
+    elif n_channel is None:
+        n_channel = max_digit if is_zero_based else max_digit + 1
     mappings = []
     for _, row in codebook.iterrows():
         mapping = {}
@@ -32,28 +48,24 @@ def to_starfish_codebook(
         codeward = []
         for r, c in enumerate(str(row[code_col])):
             if is_merfish:
-                codeward.append(
-                    {Axes.ROUND.value: r, Axes.CH.value: 0, Features.CODE_VALUE: c}
-                )
+                # single channel per round; the digit itself is the presence value
+                code_value = c
             else:
-                codeward.append(
-                    {
-                        Axes.ROUND.value: r,
-                        Axes.CH.value: 0 if max_digit == 1 else int(c),
-                        Features.CODE_VALUE: c if is_zero_based else int(c) + 1,
-                    }
-                )
+                # digit selects which channel is active this round - the digit's
+                # numeric value is a channel index, not an intensity, so the
+                # active channel is always marked present (1), regardless of
+                # which digit (e.g. "0") happened to select it.
+                code_value = 1
+            codeward.append(
+                {
+                    Axes.ROUND.value: r,
+                    Axes.CH.value: 0 if is_merfish else int(c),
+                    Features.CODE_VALUE: code_value,
+                }
+            )
         mapping[Features.CODEWORD] = codeward
         mappings.append(mapping)
-    if is_merfish:
-        return Codebook.from_code_array(mappings, n_round=n_round, n_channel=1)
-    else:
-        # print(mappings)
-        return Codebook.from_code_array(
-            mappings,
-            n_round=n_round,
-            n_channel=max_digit if is_zero_based else max_digit + 1,
-        )
+    return Codebook.from_code_array(mappings, n_round=n_round, n_channel=n_channel)
 
 
 def filter_columns_by_regex(df: pd.DataFrame, pattern: str) -> pd.DataFrame:

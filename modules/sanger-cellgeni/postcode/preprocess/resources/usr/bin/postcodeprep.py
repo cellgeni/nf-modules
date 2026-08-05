@@ -9,7 +9,12 @@ from avg_spot_profile import main as average_spot_profiles
 import logging
 
 import os
-from codebook_qc import load_tabular_codebook, qc_codebook, to_starfish_codebook
+from codebook_qc import (
+    load_tabular_codebook,
+    qc_codebook,
+    to_starfish_codebook,
+    filter_columns_by_regex,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -101,11 +106,27 @@ def decode(
     is_merfish = readouts_csv and os.path.getsize(readouts_csv) != 0
     codebook = load_tabular_codebook(tabular_codebook, codebook_code_col)
     qc_codebook(codebook, codebook_code_col, coding_col_prefix)
+
+    # Channels per round can't be inferred from the code digits alone (e.g. a
+    # 2-channel selector code and a single-channel binary-presence code both
+    # only ever use digits {0, 1}) - derive it from the codebook's own coding
+    # columns instead, the same ones qc_codebook already validated against.
+    n_channel = None
+    if not is_merfish:
+        n_round = codebook[codebook_code_col].str.len().max()
+        n_coding_cols = filter_columns_by_regex(codebook, coding_col_prefix).shape[1]
+        assert n_coding_cols % n_round == 0, (
+            f"Number of coding columns ({n_coding_cols}) is not a multiple of "
+            f"the code length ({n_round}) - cannot infer channels per round."
+        )
+        n_channel = n_coding_cols // n_round
+
     starfish_book = to_starfish_codebook(
         codebook,
         target_col=codebook_targer_col,
         code_col=codebook_code_col,
         is_merfish=is_merfish,
+        n_channel=n_channel,
     )
     starfish_book.to_json(out_starfish_codebook)
 
