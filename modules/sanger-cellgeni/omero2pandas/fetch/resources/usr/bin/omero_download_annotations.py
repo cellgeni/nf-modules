@@ -8,14 +8,11 @@ import getpass
 import os
 from pathlib import Path
 
-import pandas as pd
-
 os.environ.setdefault("OMERO_TMPDIR", "/tmp")
 os.environ.setdefault("TMPDIR", "/tmp")
 
 import omero2pandas
 from omero.gateway import BlitzGateway
-
 
 DEFAULT_HOST = "wsi-omero-prod-02.internal.sanger.ac.uk"
 
