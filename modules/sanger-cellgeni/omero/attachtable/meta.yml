@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "omero_attachtable"
 description: Attach a CSV table to an OMERO image and ROI and emit an annotation-id CSV. Requires secrets `OMERO_USER` and `OMERO_PASSWORD`.
 keywords:

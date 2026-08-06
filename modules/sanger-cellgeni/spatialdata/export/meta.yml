@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "spatialdata_export"
 description: Export SpatialData-IO supported datasets to a legacy AnnData h5ad file.
 keywords:

@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "imaging_postcodeprep"
 description: Preprocess both profile to be decoded and the corresponding codebook for PoSTCode decoding
 keywords:

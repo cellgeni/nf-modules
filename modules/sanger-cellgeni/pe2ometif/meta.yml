@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "pe2ometif"
 description: Convert PerkinElmer Columbus/Harmony plate acquisitions to per-field OME-TIFF with optional Z-projection and plate companion OME XML output.
 keywords:
