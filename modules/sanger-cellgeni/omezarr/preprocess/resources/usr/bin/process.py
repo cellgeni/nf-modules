@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-import fire
-
-# from aicsimageio.writers.ome_tiff_writer import OmeTiffWriter
-from bioio_ome_tiff.writers import OmeTiffWriter
-import numpy as np
-import tifffile as tf
+import logging
 import time  # Import the time module
-from clij2fft.richardson_lucy import richardson_lucy_nc, richardson_lucy
 
 # from cucim.skimage.restoration import richardson_lucy
 # from skimage.restoration import richardson_lucy
 from pathlib import Path
-import pyopencl as cl
-import logging
-from ngio import open_ome_zarr_plate
 
-from bioio import PhysicalPixelSizes
+import fire
+
+# from aicsimageio.writers.ome_tiff_writer import OmeTiffWriter
+# from bioio_ome_tiff.writers import OmeTiffWriter
+import numpy as np
+import pyopencl as cl
+import tifffile as tf
+from clij2fft.richardson_lucy import richardson_lucy, richardson_lucy_nc
+from ngio import open_ome_zarr_container, open_ome_zarr_plate
 
 # Set up logging
 logging.basicConfig(
@@ -25,6 +23,45 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+
+def prepare_output_array(array_data):
+    """
+    Materialize lazy arrays and convert to uint16 without collapsing low-range float data to zeros.
+    """
+    if hasattr(array_data, "compute"):
+        array_data = array_data.compute()
+
+    array_data = np.asarray(array_data)
+    logger.info(
+        "Output stats before cast: dtype=%s min=%s max=%s",
+        array_data.dtype,
+        float(np.min(array_data)),
+        float(np.max(array_data)),
+    )
+
+    if np.issubdtype(array_data.dtype, np.integer):
+        return np.clip(array_data, 0, np.iinfo(np.uint16).max).astype(np.uint16)
+
+    finite_mask = np.isfinite(array_data)
+    if not np.any(finite_mask):
+        logger.warning("Output contains no finite values; writing zeros.")
+        return np.zeros(array_data.shape, dtype=np.uint16)
+
+    valid_values = array_data[finite_mask]
+    data_min = float(np.min(valid_values))
+    data_max = float(np.max(valid_values))
+
+    if 0.0 <= data_min and data_max <= 1.0:
+        logger.info(
+            "Detected normalized float output in [0,1]; scaling to uint16 range."
+        )
+        scaled = array_data * np.iinfo(np.uint16).max
+    else:
+        scaled = array_data
+
+    scaled = np.nan_to_num(scaled, nan=0.0, posinf=np.iinfo(np.uint16).max, neginf=0.0)
+    return np.clip(scaled, 0, np.iinfo(np.uint16).max).astype(np.uint16)
 
 
 def load_and_process_psf(z_stack, psf_file, original_z_step, psf_z_step=0.1):
@@ -56,7 +93,7 @@ def load_and_process_psf(z_stack, psf_file, original_z_step, psf_z_step=0.1):
 
 def main(
     root_folder,
-    out_img_name,
+    out_zarr,
     iterations=100,
     psf_folder="psfs",
     z_project=True,
@@ -85,9 +122,16 @@ def main(
     start_time = time.time()
     cursor = start_time
 
-    plate = open_ome_zarr_plate(root_folder)
-    row, column, fov = hcs_path.split("/")
-    img = plate.get_image(row=row, column=column, image_path=fov).get_image()
+    if hcs_path:
+        row, column, fov = hcs_path.split("/")
+        img = (
+            open_ome_zarr_plate(root_folder)
+            .get_image(row=row, column=column, image_path=fov)
+            .get_image()
+        )
+    else:
+        row = column = fov = None
+        img = open_ome_zarr_container(root_folder).get_image()
     pixelsize = img.pixel_size
     print(f"Time taken to load the image: {time.time() - cursor} seconds")
     cursor = time.time()
@@ -118,22 +162,24 @@ def main(
                 z_stack = cz_stack[c]
             if z_project:
                 z_stack = z_stack.max(axis=0).compute()
+            elif hasattr(z_stack, "compute"):
+                z_stack = z_stack.compute()
             c_stack.append(z_stack)
         processed_hyper_stack.append(c_stack)
         logger.info(f"Took {time.time() - cursor} seconds to process time point {t}.")
     processed_hyper_stack = np.array(processed_hyper_stack)
     cursor = time.time()
     new_dim_order = "TCYX" if z_project else "TCZYX"
-    OmeTiffWriter.save(
-        processed_hyper_stack.astype(np.uint16),
-        f"{out_img_name}",
-        dim_order=new_dim_order,
-        channel_names=img.channel_labels,
-        image_names=out_img_name.replace(".ome.tif", ""),
-        physical_pixel_sizes=PhysicalPixelSizes(
-            X=pixelsize.x, Y=pixelsize.y, Z=pixelsize.z
-        ),
-    )
+    output_data = prepare_output_array(processed_hyper_stack)
+
+    if hcs_path:
+        out_container = open_ome_zarr_plate(out_zarr).get_image(
+            row=row, column=column, image_path=fov
+        )
+    else:
+        out_container = open_ome_zarr_container(out_zarr)
+    out_container.get_image().set_array(output_data, axes_order=new_dim_order)
+    out_container.consolidate()
     print(f"Elapsed time for saving the image: {time.time() - cursor} seconds")
 
 

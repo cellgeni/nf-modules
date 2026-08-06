@@ -1,14 +1,13 @@
 name: "omezarr_preprocess"
-description: Preprocess an OME-Zarr image path and export a TIFF image.
+description: Preprocess an OME-Zarr image path (plate FOV or whole-slide image) and write the result into an output OME-Zarr store.
 keywords:
   - ome-zarr
   - microscopy
   - image-processing
   - deconvolution
-  - tiff
 tools:
   - "omezarr_preprocess":
-      description: "CLI wrapper script for OME-Zarr preprocessing and TIFF export."
+      description: "CLI wrapper script for OME-Zarr preprocessing, writing results back into an OME-Zarr store."
       homepage: "https://github.com/cellgeni/nf-modules"
       documentation: "https://github.com/cellgeni/nf-modules"
       tool_dev_url: "https://github.com/cellgeni/nf-modules"
@@ -31,7 +30,18 @@ input:
         description: Image identifier from the source metadata.
     - hcs_path:
         type: string
-        description: HCS image path key inside the OME-Zarr plate.
+        description: |
+          HCS image path key (row/column/image_path) inside the input OME-Zarr plate.
+          Leave empty/null when root_folder is a standalone whole-slide OME-Zarr image
+          rather than an HCS plate.
+    - out_zarr:
+        type: string
+        description: |
+          Path to the pre-existing output OME-Zarr store that this task writes its
+          result into (an HCS plate when hcs_path is set, otherwise a single-image
+          OME-Zarr). Passed as a plain value, not staged by Nextflow, so it must
+          already exist on storage shared with all sibling tasks writing to the
+          same store.
   - - psf_folder:
         type: file
         description: Folder containing per-channel PSF TIFF files.
@@ -44,10 +54,12 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.tif":
-          type: file
-          description: Preprocessed TIFF image export.
-          pattern: "*.tif"
+      - out_zarr:
+          type: string
+          description: Path to the output OME-Zarr store the result was written into.
+      - image_id:
+          type: string
+          description: Image identifier of the FOV/image that was written.
   versions_omezarr_preprocess:
     - - "${task.process}":
           type: string

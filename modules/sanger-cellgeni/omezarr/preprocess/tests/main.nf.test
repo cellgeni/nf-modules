@@ -19,6 +19,7 @@ nextflow_process {
                     file('.'),
                     'image_0',
                     'A/1/0',
+                    "${outputDir}/test.ome.zarr",
                 ]
                 input[1] = file('.')
                 """
@@ -49,6 +50,7 @@ nextflow_process {
                     file('.'),
                     'image_0',
                     'A/1/0',
+                    "${outputDir}/test.ome.zarr",
                 ]
                 input[1] = file('.')
                 """
