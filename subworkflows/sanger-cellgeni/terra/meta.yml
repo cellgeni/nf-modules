@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "terra"
 ## TODO nf-core: Add a description of the subworkflow and list keywords
 description: Sort SAM/BAM/CRAM file

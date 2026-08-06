@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "preprocess_ome_zarr_tiles"
 description: Generate companion OME-XML metadata and preprocess OME-Zarr tiles into TIFF FOV images.
 keywords:
