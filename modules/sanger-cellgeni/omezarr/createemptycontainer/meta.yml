@@ -1,0 +1,81 @@
+name: "omezarr_createemptycontainer"
+description: |
+  Pre-create the output OME-Zarr store for a dataset (an HCS plate, or a
+  standalone whole-slide image when no tile carries an hcs_path), with one
+  correctly-shaped empty image slot per tile, so that OMEZARR_PREPROCESS tasks
+  can later write into it concurrently without racing on shared zarr
+  group/plate metadata.
+keywords:
+  - ome-zarr
+  - microscopy
+  - image-processing
+  - hcs plate
+  - whole-slide image
+tools:
+  - "omezarr_createemptycontainer":
+      description: "CLI wrapper script that pre-creates empty OME-Zarr image slots ahead of parallel writes."
+      homepage: "https://github.com/cellgeni/nf-modules"
+      documentation: "https://github.com/cellgeni/nf-modules"
+      tool_dev_url: "https://github.com/cellgeni/nf-modules"
+      doi: ""
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - tiles_json:
+        type: string
+        description: |
+          JSON-encoded list of `[image_id, hcs_path]` pairs for every tile that
+          will be preprocessed for this dataset. `hcs_path` is empty/null for a
+          standalone whole-slide image (at most one such tile is supported per
+          out_zarr).
+    - root_folder:
+        type: file
+        description: Root path of the input OME-Zarr dataset (HCS plate or whole-slide image).
+        pattern: "*"
+
+output:
+  out_zarr:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.ome.zarr":
+          type: file
+          description: |
+            Freshly created OME-Zarr store (an HCS plate when any tile has an
+            hcs_path, otherwise a single-image whole-slide store) with every
+            expected image slot pre-allocated at its final post-processing shape.
+          pattern: "*.ome.zarr"
+  versions_omezarr_createemptycontainer:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "omezarr_createemptycontainer":
+          type: string
+          description: The name of the tool
+      - "create_empty_container.py version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - omezarr_createemptycontainer:
+          type: string
+          description: The name of the tool
+      - create_empty_container.py version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

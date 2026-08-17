@@ -60,6 +60,12 @@ output:
       - image_id:
           type: string
           description: Image identifier of the FOV/image that was written.
+      - hcs_path:
+          type: string
+          description: |
+            HCS image path key (row/column/image_path) that was written, echoed back
+            from the input so downstream validation can locate the image without
+            re-deriving it. Empty/null for standalone whole-slide images.
   versions_omezarr_preprocess:
     - - "${task.process}":
           type: string

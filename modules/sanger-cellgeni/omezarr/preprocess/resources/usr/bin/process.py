@@ -115,7 +115,7 @@ def main(
             logger.info(
                 f"Device has {device.get_info(cl.device_info.GLOBAL_MEM_SIZE)} mem available."
             )
-    except:
+    except:  # noqa: E722
         logger.warning("Could not find a valid open cl platform. Fall back to CPU.")
 
     # Start the timer
@@ -178,8 +178,9 @@ def main(
         )
     else:
         out_container = open_ome_zarr_container(out_zarr)
-    out_container.get_image().set_array(output_data, axes_order=new_dim_order)
-    out_container.consolidate()
+    out_image = out_container.get_image()
+    out_image.set_array(output_data, axes_order=new_dim_order)
+    out_image.consolidate()
     print(f"Elapsed time for saving the image: {time.time() - cursor} seconds")
 
 

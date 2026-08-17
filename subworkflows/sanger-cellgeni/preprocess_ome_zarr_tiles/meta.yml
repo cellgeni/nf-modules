@@ -1,21 +1,31 @@
 name: "preprocess_ome_zarr_tiles"
-description: Generate companion OME-XML metadata and preprocess OME-Zarr tiles into TIFF FOV images.
+description: |
+  Convert a raw tiled acquisition to OME-Zarr (skipped if the input is already
+  an OME-Zarr store), pre-create an empty output OME-Zarr store shaped for the
+  expected result, preprocess every tile in parallel directly into that store,
+  then validate the finished store once all tiles are written. Works for
+  either an HCS plate or a standalone whole-slide image.
 keywords:
   - ome-zarr
   - microscopy
   - image-processing
   - deconvolution
-  - tiff
   - companion
 components:
+  - sanger-cellgeni/bioformats2rawcompanion
   - sanger-cellgeni/imaging/generatecompanion
+  - sanger-cellgeni/omezarr/createemptycontainer
   - sanger-cellgeni/omezarr/preprocess
+  - sanger-cellgeni/omezarr/validate
 input:
   - master_file_ch:
       type: file
       description: |
         Channel containing master file metadata required to build tile manifests and companion XML.
         Structure: [ val(meta), val(round), path(image_root_folder), val(master_file_name) ]
+        If image_root_folder is a directory whose name ends in ".zarr", it is
+        treated as an already-converted OME-Zarr store and the
+        bioformats2raw conversion step is skipped for that item.
       pattern: "*"
   - psf_folder:
       type: file
@@ -27,9 +37,11 @@ output:
   - companion_tiles:
       type: file
       description: |
-        Channel containing generated companion XML and grouped preprocessed TIFF FOV tiles.
-        Structure: [ val(meta), path(companion), [ path(fov_tifs) ] ]
-      pattern: "*.{ome,tif,tiff}"
+        Channel containing generated companion XML paired with the single, validated
+        output OME-Zarr store for that dataset (an HCS plate when tiles carry an
+        hcs_path, otherwise a single-image store).
+        Structure: [ val(meta), path(companion), val(out_zarr) ]
+      pattern: "*.ome"
   - versions:
       type: file
       description: |

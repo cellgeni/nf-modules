@@ -1,0 +1,75 @@
+name: "omezarr_validate"
+description: |
+  Validate that every tile expected in an output OME-Zarr store actually has
+  data written, once all parallel OMEZARR_PREPROCESS tasks for the dataset
+  have completed. Acts as a final completeness gate before the store is
+  considered done.
+keywords:
+  - ome-zarr
+  - microscopy
+  - image-processing
+  - quality-control
+tools:
+  - "omezarr_validate":
+      description: "CLI wrapper script that checks completeness of a preprocessed OME-Zarr store."
+      homepage: "https://github.com/cellgeni/nf-modules"
+      documentation: "https://github.com/cellgeni/nf-modules"
+      tool_dev_url: "https://github.com/cellgeni/nf-modules"
+      doi: ""
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - out_zarr:
+        type: string
+        description: |
+          Path to the output OME-Zarr store to validate (an HCS plate when any
+          tile has an hcs_path, otherwise a single-image OME-Zarr). Passed as
+          a plain value, not staged by Nextflow.
+    - tiles_json:
+        type: string
+        description: |
+          JSON-encoded list of `[image_id, hcs_path]` pairs for every tile that
+          was expected to be written into out_zarr.
+
+output:
+  out_zarr:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - out_zarr:
+          type: string
+          description: Path to the validated output OME-Zarr store, echoed back unchanged.
+  versions_omezarr_validate:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "omezarr_validate":
+          type: string
+          description: The name of the tool
+      - "validate.py version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - omezarr_validate:
+          type: string
+          description: The name of the tool
+      - validate.py version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

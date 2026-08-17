@@ -29,10 +29,8 @@ nextflow_process {
         then {
             assert process.success
             assertAll(
-                { assert snapshot(
-                    process.out,
-                    path(process.out.versions[0]).yaml
-                ).match() }
+                { assert process.out.versions_omezarr_preprocess[0][1] == 'omezarr_preprocess' },
+                { assert snapshot(process.out).match() }
             )
         }
 
@@ -60,10 +58,8 @@ nextflow_process {
         then {
             assert process.success
             assertAll(
-                { assert snapshot(
-                    process.out,
-                    path(process.out.versions[0]).yaml
-                ).match() }
+                { assert process.out.versions_omezarr_preprocess[0][1] == 'omezarr_preprocess' },
+                { assert snapshot(process.out).match() }
             )
         }
 

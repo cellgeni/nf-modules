@@ -9,10 +9,11 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_sangercellgeni"
     tag "subworkflows/preprocess_ome_zarr_tiles"
-    // TODO nf-core: Add tags for all modules used within this subworkflow. Example:
-    tag "samtools"
-    tag "samtools/sort"
-    tag "samtools/index"
+    tag "bioformats2rawcompanion"
+    tag "imaging/generatecompanion"
+    tag "omezarr/createemptycontainer"
+    tag "omezarr/preprocess"
+    tag "omezarr/validate"
 
 
     // TODO nf-core: Change the test name preferably indicating the test-data and file-format used

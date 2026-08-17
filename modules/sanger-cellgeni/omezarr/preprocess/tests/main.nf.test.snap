@@ -1,0 +1,47 @@
+{
+    "omezarr preprocess - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "/home/ubuntu/Documents/nf-modules/.nf-test/tests/84302c301840c771b01616d8c58122b2/output/test.ome.zarr",
+                        "image_0",
+                        "A/1/0"
+                    ]
+                ],
+                "1": [
+                    [
+                        "OMEZARR_PREPROCESS",
+                        "omezarr_preprocess",
+                        "0.1.0"
+                    ]
+                ],
+                "fovs": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "/home/ubuntu/Documents/nf-modules/.nf-test/tests/84302c301840c771b01616d8c58122b2/output/test.ome.zarr",
+                        "image_0",
+                        "A/1/0"
+                    ]
+                ],
+                "versions_omezarr_preprocess": [
+                    [
+                        "OMEZARR_PREPROCESS",
+                        "omezarr_preprocess",
+                        "0.1.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-14T09:40:26.026383368",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

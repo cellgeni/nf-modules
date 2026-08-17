@@ -1,0 +1,43 @@
+{
+    "omezarr validate - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "/home/ubuntu/Documents/nf-modules/.nf-test/tests/f2de5ab95b9d2960648765c2dcbc81ae/output/test.ome.zarr"
+                    ]
+                ],
+                "1": [
+                    [
+                        "OMEZARR_VALIDATE",
+                        "omezarr_validate",
+                        "0.1.0"
+                    ]
+                ],
+                "out_zarr": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "/home/ubuntu/Documents/nf-modules/.nf-test/tests/f2de5ab95b9d2960648765c2dcbc81ae/output/test.ome.zarr"
+                    ]
+                ],
+                "versions_omezarr_validate": [
+                    [
+                        "OMEZARR_VALIDATE",
+                        "omezarr_validate",
+                        "0.1.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-14T09:40:36.598231818",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}
