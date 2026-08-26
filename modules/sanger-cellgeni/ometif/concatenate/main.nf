@@ -1,16 +1,17 @@
-process SPATIAL_SCRAFTPALOM {
+process OMETIF_CONCATENATE {
     tag "${meta.id}"
-    label 'process_medium'
+    label 'process_high'
+    label 'process_high_memory'
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/scraft:latest'
         : 'quay.io/cellgeni/scraft:latest'}"
 
     input:
-    tuple val(meta), path(ref), path(moving)
+    tuple val(meta), path(images)
 
     output:
-    tuple val(meta), path("${output_img_name}"), emit: aligned_moving_image
+    tuple val(meta), path("${prefix}_hyperstack.ome.tif"), emit: hyperstack
     path "versions.yml", emit: versions
 
     when:
@@ -18,31 +19,30 @@ process SPATIAL_SCRAFTPALOM {
 
     script:
     def args = task.ext.args ?: ''
-    output_img_name = "aligned_" + moving.baseName.replaceFirst(/\.ome\.tif$/, '') + ".ome.tif"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
-    scraft registration palom \\
-        ${ref} ${moving} \\
-        ${args} \\
-
-    mv palom_aligned.ome.tif "${output_img_name}"
+    concat_ome_tiffs.py \\
+        ${images.join(' ')} \\
+        --output ${prefix}_hyperstack.ome.tif \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        scraft: \$(scraft info)
+        concat_ome_tiffs: \$(concat_ome_tiffs.py --version)
     END_VERSIONS
     """
 
     stub:
     def args = task.ext.args ?: ''
-    output_img_name = "aligned_" + moving.baseName.replaceFirst(/\.ome\.tif$/, '') + ".ome.tif"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo ${args}
 
-    touch ${output_img_name}
+    touch ${prefix}_hyperstack.ome.tif
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        scraft: \$(scraft info)
+        concat_ome_tiffs: \$(concat_ome_tiffs.py --version)
     END_VERSIONS
     """
 }

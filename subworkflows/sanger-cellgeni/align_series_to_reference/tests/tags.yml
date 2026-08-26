@@ -1,0 +1,4 @@
+subworkflows/align_series_to_reference:
+  - subworkflows/sanger-cellgeni/align_series_to_reference/**
+  - modules/sanger-cellgeni/spatial/scraftpalom/**
+  - modules/sanger-cellgeni/ometif/concatenate/**

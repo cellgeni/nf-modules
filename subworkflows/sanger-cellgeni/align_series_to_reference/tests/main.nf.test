@@ -1,0 +1,69 @@
+nextflow_workflow {
+
+    name "Test Subworkflow ALIGN_SERIES_TO_REFERENCE"
+    script "../main.nf"
+    workflow "ALIGN_SERIES_TO_REFERENCE"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_sangercellgeni"
+    tag "subworkflows/align_series_to_reference"
+    tag "spatial/scraftpalom"
+    tag "ometif/concatenate"
+
+    test("scraftpalom - ref + two moving images - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.modules_testdata_base_path + 'ref_image.ome.tif', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'moving_image.ome.tif', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'moving_image.tif', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                // one aligned output per moving image (the ref is excluded from alignment)
+                { assert workflow.out.aligned.size() == 2 },
+                // one hyperstack per sample, combining the reference + both aligned images
+                { assert workflow.out.hyperstack.size() == 1 },
+                { assert snapshot(workflow.out.reference, workflow.out.aligned, workflow.out.hyperstack, workflow.out.versions).match() }
+            )
+        }
+    }
+
+    test("unsupported alignment method errors out") {
+
+        when {
+            params {
+                alignment_method = "not_a_real_method"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.modules_testdata_base_path + 'ref_image.ome.tif', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'moving_image.ome.tif', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assert !workflow.success
+            assert workflow.stdout.join("\n").contains("Unsupported alignment method")
+        }
+    }
+}

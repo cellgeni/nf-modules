@@ -1,5 +1,5 @@
 {
-    "register - tif - stub": {
+    "concat - two single-channel tifs - stub": {
         "content": [
             {
                 "0": [
@@ -7,32 +7,32 @@
                         {
                             "id": "test"
                         },
-                        "aligned_moving_image.ome.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_hyperstack.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,6eebc86ec417420d34750d3c6edcebe3"
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
                 ],
-                "aligned_moving_image": [
+                "hyperstack": [
                     [
                         {
                             "id": "test"
                         },
-                        "aligned_moving_image.ome.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_hyperstack.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,6eebc86ec417420d34750d3c6edcebe3"
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
                 ]
             }
         ],
-        "timestamp": "2026-08-17T16:47:53.886954833",
+        "timestamp": "2026-08-17T16:53:04.191214349",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
         }
     },
-    "register - tif": {
+    "concat - two single-channel tifs onto a new channel axis": {
         "content": [
             {
                 "0": [
@@ -40,29 +40,29 @@
                         {
                             "id": "test"
                         },
-                        "palom_aligned.ome.tif:md5,c2b985b9ca930862537b3071a192bd51"
+                        "test_hyperstack.ome.tif:md5,82dc758bd1b5676065334e32ac165f25"
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,1880b243b6eeab6c7be12ddc8e69d106"
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
                 ],
-                "bam": [
+                "hyperstack": [
                     [
                         {
                             "id": "test"
                         },
-                        "palom_aligned.ome.tif:md5,c2b985b9ca930862537b3071a192bd51"
+                        "test_hyperstack.ome.tif:md5,82dc758bd1b5676065334e32ac165f25"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,1880b243b6eeab6c7be12ddc8e69d106"
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
                 ]
             }
         ],
+        "timestamp": "2026-08-17T16:52:56.425642862",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
-        },
-        "timestamp": "2025-12-05T21:43:53.994714219"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

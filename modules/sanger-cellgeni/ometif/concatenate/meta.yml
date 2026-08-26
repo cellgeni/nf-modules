@@ -1,0 +1,62 @@
+name: "ometif_concatenate"
+description: |
+  Concatenate a series of OME-TIFF images into a single OME-TIFF hyperstack,
+  by default along the channel axis. When concatenating along the channel
+  axis, every channel name is prefixed with its 1-based position in the input
+  series (e.g. "cycle_1_cy3", "cycle_2_cy3") so the series order is preserved
+  and traceable in the output channel names.
+keywords:
+  - ome-tiff
+  - hyperstack
+  - concatenate
+  - tifffile
+tools:
+  - "tifffile":
+      description: "Read and write TIFF and OME-TIFF files, used here to build a multi-dimensional OME-TIFF hyperstack."
+      homepage: "https://github.com/cgohlke/tifffile"
+      documentation: "https://github.com/cgohlke/tifffile"
+      tool_dev_url: "https://github.com/cgohlke/tifffile"
+      licence: ["BSD-3-Clause"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information.
+          `meta.id` is used as the default output prefix.
+          e.g. `[ id:'sample1' ]`
+    - images:
+        type: file
+        description: |
+          Two or more OME-TIFF images to concatenate, in order. All images must
+          share the same axes order (e.g. all "CYX" or all "ZCYX"); use
+          `task.ext.args = "--axis <C|Z|T>"` to concatenate along an axis other
+          than the default channel axis. Order matters: each image's position
+          in this list becomes its 1-based "cycle" number when the channel
+          axis is concatenated.
+        pattern: "*.{ome.tif,ome.tiff}"
+
+output:
+  hyperstack:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_hyperstack.ome.tif":
+          type: file
+          description: Single OME-TIFF hyperstack with all input images concatenated along the chosen axis.
+          pattern: "*_hyperstack.ome.tif"
+
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
