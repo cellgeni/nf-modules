@@ -5,8 +5,8 @@ process SPATIAL_TERRA {
     conda "${moduleDir}/environment.yml"
     // ? '/nfs/cellgeni/singularity/images/terra.sif'
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? '/nfs/cellgeni/singularity/images/terra.sif'
-        : '/nfs/cellgeni/singularity/images/terra.sif'}"
+        ? 'quay.io/cellgeni/terra:0.1.13'
+        : 'quay.io/cellgeni/terra:0.1.13'}"
 
     input:
     tuple val(meta), path(anndata)
@@ -39,6 +39,7 @@ process SPATIAL_TERRA {
 
     stub:
     def args = task.ext.args ?: ''
+    baseName = anndata.baseName
     out_folder = "${anndata.baseName}"
     """
     echo ${args}
