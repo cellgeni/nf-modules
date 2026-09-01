@@ -347,7 +347,10 @@ def predict(
     # Convert codebook_arr to the form of barcodes_0123_str
     codebook_barcodes = ["".join(map(str, row.flatten())) for row in codebook_arr]
     spot_locations = pd.read_csv(spot_locations_path)
-    Y, X = spot_locations.max().values
+    # Named lookup, not positional unpacking - spot_locations may carry extra columns
+    # (e.g. a real z_int for a 3D caller) that .max().values would otherwise include,
+    # breaking the fixed (Y, X) = 2-tuple this line assumes.
+    Y, X = spot_locations[["y_int", "x_int"]].max().values
     probs = fit(model_file_path)
     other_types = [
         "infeasible",
@@ -360,7 +363,11 @@ def predict(
         probs, df_class_names, df_class_codes
     )
     decoded_df_s = pd.concat([decoded_spots_df, spot_locations.reset_index()], axis=1)
-    if append_Z:
+    if append_Z and "z_int" not in decoded_df_s.columns:
+        # Only fill in a placeholder when spot_locations didn't already carry a real
+        # z_int column (true 2D callers of this module) - previously this unconditionally
+        # overwrote a real z_int with 0 whenever the caller's spot_locations file did
+        # include one (e.g. a 3D pipeline), silently discarding real z data.
         decoded_df_s["z_int"] = 0
     decoded_df_s.to_csv(decoded_spots_df_path, index=False)
 
