@@ -19,10 +19,18 @@ import itertools
 
 def e_step(data, w, theta, sigma, N, K, print_training_progress):
     # data = torch.clamp(data, min=0)  # Ensure no negative values before log10
+    # A spot with a NaN feature (e.g. from an edge case in upstream normalization)
+    # would otherwise crash log_prob's strict support check before the "nan" class
+    # handling below ever runs. Swap in a dummy finite row to compute through, then
+    # re-NaN that spot's probabilities so it's still correctly routed to "nan".
+    nan_rows = torch.isnan(data).any(dim=1)
+    safe_data = torch.where(nan_rows.unsqueeze(1), torch.zeros_like(data), data)
     class_probs = torch.ones(N, K)
     for k in tqdm(range(K), disable=not print_training_progress):
         dist = MultivariateNormal(theta[k], sigma)
-        class_probs[:, k] = w[k] * torch.exp(dist.log_prob(data))
+        class_probs[:, k] = w[k] * torch.exp(dist.log_prob(safe_data))
+    if nan_rows.any():
+        class_probs[nan_rows, :] = float("nan")
     class_prob_norm = class_probs.div(torch.sum(class_probs, dim=1, keepdim=True))
     # class_prob_norm[torch.isnan(class_prob_norm)] = 0
     return class_prob_norm
@@ -330,6 +338,7 @@ def predict(
     decoded_spots_df_path,
     decoded_spots_ome_tif_path=None,
     seed: int = 1,
+    append_Z: bool = True,
 ):
     pyro.set_rng_seed(seed)
     starfish_book = Codebook.open_json(starfish_codebook_path)
@@ -338,7 +347,10 @@ def predict(
     # Convert codebook_arr to the form of barcodes_0123_str
     codebook_barcodes = ["".join(map(str, row.flatten())) for row in codebook_arr]
     spot_locations = pd.read_csv(spot_locations_path)
-    Y, X = spot_locations.max().values
+    # Named lookup, not positional unpacking - spot_locations may carry extra columns
+    # (e.g. a real z_int for a 3D caller) that .max().values would otherwise include,
+    # breaking the fixed (Y, X) = 2-tuple this line assumes.
+    Y, X = spot_locations[["y_int", "x_int"]].max().values
     probs = fit(model_file_path)
     other_types = [
         "infeasible",
@@ -351,6 +363,12 @@ def predict(
         probs, df_class_names, df_class_codes
     )
     decoded_df_s = pd.concat([decoded_spots_df, spot_locations.reset_index()], axis=1)
+    if append_Z and "z_int" not in decoded_df_s.columns:
+        # Only fill in a placeholder when spot_locations didn't already carry a real
+        # z_int column (true 2D callers of this module) - previously this unconditionally
+        # overwrote a real z_int with 0 whenever the caller's spot_locations file did
+        # include one (e.g. a 3D pipeline), silently discarding real z data.
+        decoded_df_s["z_int"] = 0
     decoded_df_s.to_csv(decoded_spots_df_path, index=False)
 
     if decoded_spots_ome_tif_path is not None:
