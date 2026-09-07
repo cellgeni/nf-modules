@@ -1,0 +1,188 @@
+{
+    "baysor - csv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "segmentation.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_cell_stats.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_counts.loom:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_log.log:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_params.dump.toml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_polygons_2d.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "10": [
+                    [
+                        "BAYSOR_RUN",
+                        "baysor",
+                        "0.8.2"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_cell_stats.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_counts.loom:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_polygons_2d.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "5": [
+                    
+                ],
+                "6": [
+                    
+                ],
+                "7": [
+                    
+                ],
+                "8": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_params.dump.toml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_log.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "cell_stats": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_cell_stats.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "counts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_counts.loom:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_log.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "molecules": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "outdir": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "segmentation.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_cell_stats.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_counts.loom:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_log.log:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_params.dump.toml:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "segmentation_polygons_2d.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "params": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_params.dump.toml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "plot": [
+                    
+                ],
+                "polygons_2d": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "segmentation_polygons_2d.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "polygons_3d": [
+                    
+                ],
+                "report": [
+                    
+                ],
+                "versions_baysor_run": [
+                    [
+                        "BAYSOR_RUN",
+                        "baysor",
+                        "0.8.2"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-07T11:20:57.691601024",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "baysor - csv - no prior": {
+        "content": [
+            [
+                [
+                    "BAYSOR_RUN",
+                    "baysor",
+                    "0.8.2"
+                ]
+            ],
+            "cell,x,y,z,cluster,n_transcripts,density,elongation,area,avg_confidence,avg_assignment_confidence,max_cluster_frac,lifespan"
+        ],
+        "timestamp": "2026-09-07T11:20:37.124743602",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

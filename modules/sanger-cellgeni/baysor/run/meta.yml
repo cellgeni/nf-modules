@@ -1,0 +1,183 @@
+name: "baysor_run"
+description: Bayesian cell segmentation of imaging-based spatial transcriptomics data from a molecule table, optionally guided by a prior segmentation
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - merfish
+  - cosmx
+  - bayesian
+tools:
+  - "baysor":
+      description: "Baysor performs cell body segmentation of imaging-based spatial transcriptomics data using a Bayesian mixture model over molecule positions and expression, with optional guidance from a prior (e.g. nuclear) segmentation."
+      homepage: "https://kharchenkolab.github.io/Baysor/"
+      documentation: "https://kharchenkolab.github.io/Baysor/"
+      tool_dev_url: "https://github.com/kharchenkolab/Baysor"
+      doi: "10.1038/s41587-021-01044-w"
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - coordinates:
+        type: file
+        description: |
+          Molecule table with one row per detected transcript, as CSV or Parquet, or a Xenium
+          `experiment.xenium` manifest. Column names are declared through `ext.args`
+          (`-x`/`-y`/`-z`/`-g`/`--qv-column`) and default to `x`, `y`, `z`, `gene`, `qv`.
+        pattern: "*.{csv,csv.gz,parquet,xenium}"
+    - prior_segmentation:
+        type: file
+        description: |
+          Optional prior segmentation used to seed the model: a label image mask, or a cell
+          boundary table as CSV/Parquet. Pass `[]` to segment without a prior. The alternative
+          `:column_name` form, which points at a cell-id column already present in the molecule
+          table, is not a file and must be given via `ext.prior` instead.
+        pattern: "*.{csv,parquet,tif,tiff,png}"
+  - - config:
+        type: file
+        description: |
+          Optional TOML configuration file (`--config`) holding Baysor parameters. Pass `[]` to
+          configure the run entirely through `ext.args`.
+        pattern: "*.toml"
+
+output:
+  outdir:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}":
+          type: directory
+          description: |
+            The complete Baysor output bundle. Emit this when a downstream tool consumes the
+            directory as a whole rather than individual files.
+          pattern: "*_baysor"
+  molecules:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation.csv,molecules.parquet}":
+          type: file
+          description: |
+            Segmented molecule table: the input molecules annotated with their assigned
+            `cell` id, assignment `confidence` and cluster. `segmentation.csv` in the default
+            `legacy` output style, `molecules.parquet` under `--output-style parquet`.
+          pattern: "*_baysor/{segmentation.csv,molecules.parquet}"
+  cell_stats:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation_cell_stats.csv,cells.parquet}":
+          type: file
+          description: |
+            Per-cell statistics: centroid, area, molecule count, average assignment confidence
+            and elongation. `segmentation_cell_stats.csv` in `legacy` style, `cells.parquet`
+            under `--output-style parquet`.
+          pattern: "*_baysor/{segmentation_cell_stats.csv,cells.parquet}"
+  counts:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation_counts.loom,segmentation_counts.tsv,feature_matrix.h5}":
+          type: file
+          description: |
+            Cell-by-gene count matrix. In `legacy` style this follows
+            `--count-matrix-format` (`segmentation_counts.loom` by default, or
+            `segmentation_counts.tsv`); `--output-style parquet` always writes
+            `feature_matrix.h5`.
+          pattern: "*_baysor/{segmentation_counts.loom,segmentation_counts.tsv,feature_matrix.h5}"
+  polygons_2d:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation_polygons_2d.json,cell_boundaries.parquet}":
+          type: file
+          description: |
+            2D cell boundary polygons. GeoJSON in `legacy` style, Parquet under
+            `--output-style parquet`. Absent when `--polygon-format none` is set.
+          pattern: "*_baysor/{segmentation_polygons_2d.json,cell_boundaries.parquet}"
+  polygons_3d:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation_polygons_3d.json,cell_boundaries_3d.parquet}":
+          type: file
+          description: |
+            Per-z-layer cell boundary polygons. Only written for 3D input, so absent when the
+            molecule table has no z column or when `--force-2d` / `--polygon-format none` is set.
+          pattern: "*_baysor/{segmentation_polygons_3d.json,cell_boundaries_3d.parquet}"
+  plot:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/segmentation_plot.html":
+          type: file
+          description: Interactive HTML plot of the segmentation. Only written with `--plot`.
+          pattern: "*_baysor/segmentation_plot.html"
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/diagnostic_report.html":
+          type: file
+          description: HTML diagnostic run report. Only written with `--plot`.
+          pattern: "*_baysor/diagnostic_report.html"
+  params:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation_params.dump.toml,run_params.toml}":
+          type: file
+          description: |
+            TOML dump of the fully resolved parameters used for the run, including values
+            estimated from the data. Reusable as the `config` input of a later run.
+          pattern: "*_baysor/{segmentation_params.dump.toml,run_params.toml}"
+  log:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/{segmentation_log.log,run.log}":
+          type: file
+          description: Baysor run log, including per-iteration convergence diagnostics.
+          pattern: "*_baysor/{segmentation_log.log,run.log}"
+  versions_baysor_run:
+    - "${task.process}":
+        type: string
+        description: Name of the process emitting the version
+    - "baysor":
+        type: string
+        description: Name of the tool
+    - "0.8.2":
+        type: string
+        description: |
+          Baysor version. The `baysor` C++ binary exposes no version flag, so this is pinned
+          to the version in the container tag and must be updated alongside the container.
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

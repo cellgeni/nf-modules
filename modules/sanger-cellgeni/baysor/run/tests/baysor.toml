@@ -1,0 +1,12 @@
+# Minimal Baysor configuration exercising the --config input.
+[molecules]
+x = "x"
+y = "y"
+z = "z"
+gene = "gene"
+min_molecules_per_cell = 20
+
+[segmentation]
+scale = 5
+n_clusters = 3
+iters = 30
