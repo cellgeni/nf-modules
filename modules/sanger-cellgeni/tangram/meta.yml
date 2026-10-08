@@ -56,15 +56,21 @@ output:
                   description: Spatial h5ad enriched with Tangram-predicted cell types.
                   pattern: "spatial_with_tangram_celltypes.h5ad"
     - figures:
-          - "figures/*.png":
-                type: file
-                description: Optional training-score plots.
-                pattern: "figures/*.png"
+          - - meta:
+                  type: map
+                  description: Groovy Map containing sample information.
+            - "figures/*.png":
+                  type: file
+                  description: Optional training-score plots.
+                  pattern: "figures/*.png"
     - log:
-          - "tangram.log":
-                type: file
-                description: Tangram run log.
-                pattern: "tangram.log"
+          - - meta:
+                  type: map
+                  description: Groovy Map containing sample information.
+            - "tangram.log":
+                  type: file
+                  description: Tangram run log.
+                  pattern: "tangram.log"
     - versions:
           - versions:
                 type: string

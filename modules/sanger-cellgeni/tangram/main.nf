@@ -11,8 +11,8 @@ process TANGRAM {
     tuple val(meta), path("tangram_aligned.h5ad"), emit: mapped
     tuple val(meta), path("tangram_gene_proj.h5ad"), emit: geneproj
     tuple val(meta), path("spatial_with_tangram_celltypes.h5ad"), emit: spatial_ct
-    path "figures/*.png", optional: true, emit: figures
-    path "tangram.log", emit: log
+    tuple val(meta), path("figures/*.png"), optional: true, emit: figures
+    tuple val(meta), path("tangram.log"), emit: log
     tuple val("${task.process}"), val('tangram'), eval('python3 -c "import tangram; print(tangram.__version__)"'), topic: versions, emit: versions
 
     when:

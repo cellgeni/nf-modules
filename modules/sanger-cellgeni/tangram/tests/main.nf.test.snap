@@ -30,7 +30,12 @@
                     
                 ],
                 "4": [
-                    "tangram.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "tangram.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "5": [
                     [
@@ -51,7 +56,12 @@
                     ]
                 ],
                 "log": [
-                    "tangram.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "tangram.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "mapped": [
                     [
@@ -78,7 +88,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-30T18:21:35.986897619",
+        "timestamp": "2026-10-08T15:10:11.644034221",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
