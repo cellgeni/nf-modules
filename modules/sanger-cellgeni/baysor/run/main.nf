@@ -2,7 +2,7 @@ process BAYSOR_RUN {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/baysor:cpp-0.8.2"
+    container "quay.io/cellgeni/baysor:cpp-0.9.0"
 
     input:
     tuple val(meta), path(coordinates), path(prior_segmentation)
@@ -19,7 +19,7 @@ process BAYSOR_RUN {
     tuple val(meta), path("${out_dir}/diagnostic_report.html")                                              , optional: true, emit: report
     tuple val(meta), path("${out_dir}/{segmentation_params.dump.toml,run_params.toml}")                                    , emit: params
     tuple val(meta), path("${out_dir}/{segmentation_log.log,run.log}")                                                     , emit: log
-    tuple val("${task.process}"), val('baysor'), val('0.8.2'), topic: versions, emit: versions_baysor_run
+    tuple val("${task.process}"), val('baysor'), val('0.9.0'), topic: versions, emit: versions_baysor_run
 
     when:
     task.ext.when == null || task.ext.when

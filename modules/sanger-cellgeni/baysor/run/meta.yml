@@ -171,7 +171,7 @@ output:
     - "baysor":
         type: string
         description: Name of the tool
-    - "0.8.2":
+    - "0.9.0":
         type: string
         description: |
           Baysor version. The `baysor` C++ binary exposes no version flag, so this is pinned

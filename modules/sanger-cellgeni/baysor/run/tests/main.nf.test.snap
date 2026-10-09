@@ -29,7 +29,7 @@
                     [
                         "BAYSOR_RUN",
                         "baysor",
-                        "0.8.2"
+                        "0.9.0"
                     ]
                 ],
                 "2": [
@@ -157,7 +157,7 @@
                     [
                         "BAYSOR_RUN",
                         "baysor",
-                        "0.8.2"
+                        "0.9.0"
                     ]
                 ]
             }
@@ -174,7 +174,7 @@
                 [
                     "BAYSOR_RUN",
                     "baysor",
-                    "0.8.2"
+                    "0.9.0"
                 ]
             ],
             "cell,x,y,z,cluster,n_transcripts,density,elongation,area,avg_confidence,avg_assignment_confidence,max_cluster_frac,lifespan"

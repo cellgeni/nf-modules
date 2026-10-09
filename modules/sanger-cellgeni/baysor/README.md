@@ -19,12 +19,12 @@ Add them as `preview/` and `segfree/` alongside `run/` if needed.
 
 ## Container
 
-`quay.io/cellgeni/baysor:cpp-0.8.2` — the **C++ port** of Baysor
-([`cpp-0.8.2`](https://github.com/kharchenkolab/Baysor/tree/cpp-0.8.2) upstream), not the original
+`quay.io/cellgeni/baysor:cpp-0.9.0` — the **C++ port** of Baysor
+([`cpp-0.9.0`](https://github.com/kharchenkolab/Baysor/tree/cpp-0.9.0) upstream), not the original
 Julia implementation. This matters: the CLI and the output file names differ from Julia Baysor
 ≤ 0.7.1. See [Migrating from the Julia-era module](#migrating-from-the-julia-era-module).
 
-The `baysor` binary exposes **no version flag**, so `BAYSOR_RUN` reports a hardcoded `0.8.2` on the
+The `baysor` binary exposes **no version flag**, so `BAYSOR_RUN` reports a hardcoded `0.9.0` on the
 `versions` topic. Update that literal in `run/main.nf` whenever the container tag is bumped.
 
 ## Threading
@@ -121,7 +121,7 @@ process {
 
 ## Key `ext.args` flags
 
-Full list via `docker run --rm quay.io/cellgeni/baysor:cpp-0.8.2 baysor run --help`.
+Full list via `docker run --rm quay.io/cellgeni/baysor:cpp-0.9.0 baysor run --help`.
 
 | Flag                              | Default        | Description                                                                       |
 | --------------------------------- | -------------- | --------------------------------------------------------------------------------- |
