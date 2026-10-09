@@ -1,0 +1,63 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PROSEG_PRESET_PROSEG2BAYSOR"
+    config "./nextflow.config"
+    script "../main.nf"
+    workflow "PROSEG_PRESET_PROSEG2BAYSOR"
+
+    tag "subworkflows"
+    tag "subworkflows_sanger-cellgeni"
+    tag "subworkflows/proseg_preset_proseg2baysor"
+    tag "proseg/proseg"
+    tag "proseg/proseg_to_baysor"
+    tag "geojson/featurecollection"
+
+    test("proseg_preset_proseg2baysor - transcripts.parquet") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([[id: 'test_run_proseg'], []])
+                input[1] = channel.of([
+                    [id: 'test_run_proseg'],
+                    file(params.modules_testdata_base_path + 'spatial_omics/xenium/homo_sapiens/transcripts.parquet', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert file(workflow.out.proseg_sd_zarr[0][1]).isDirectory() },
+                { assert file(workflow.out.xr_polygons[0][1]).text.contains("FeatureCollection") },
+                { assert file(workflow.out.xr_metadata[0][1]).readLines()[0].startsWith("transcript_id,cell") },
+                { assert workflow.out.coordinate_space[0] == "microns" }
+            )
+        }
+    }
+
+    test("proseg_preset_proseg2baysor - transcripts.parquet - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([[id: 'test_run_proseg'], []])
+                input[1] = channel.of([
+                    [id: 'test_run_proseg'],
+                    file(params.modules_testdata_base_path + 'spatial_omics/xenium/homo_sapiens/transcripts.parquet', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out.coordinate_space, workflow.out.versions).match() }
+            )
+        }
+    }
+}

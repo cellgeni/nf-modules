@@ -1,0 +1,19 @@
+{
+    "proseg_preset_proseg2baysor - transcripts.parquet - stub": {
+        "content": [
+            [
+                "microns"
+            ],
+            [
+                "versions.yml:md5,3838056c4d48552d66227ecfb86fe6b4",
+                "versions.yml:md5,b1ea0924e9565f0e755244e0a0dda1b4",
+                "convert_geojson_featurecollection.py\t1.0.0"
+            ]
+        ],
+        "timestamp": "2026-10-09T18:38:48.921358279",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}
