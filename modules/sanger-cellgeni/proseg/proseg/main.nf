@@ -26,9 +26,6 @@ process PROSEG {
     tuple val(meta), path("*cell-voxels.{csv,csv.gz,parquet}"), emit: cell_voxels, optional: true
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def preset = mode ? "--${mode}" : ''
     def args = task.ext.args ?: ''

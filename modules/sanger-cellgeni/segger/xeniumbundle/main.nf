@@ -11,9 +11,6 @@ process SEGGER_XENIUMBUNDLE {
     tuple val(meta), path("${out_dir}"), emit: xenium_bundle
     tuple val("${task.process}"), val('segger'), eval('pip show segger | grep "^Version" | sed \'s/Version: //\''), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_dir = "${prefix}_xenium_segger"

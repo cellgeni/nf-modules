@@ -14,9 +14,6 @@ process BIOFORMATS2RAWCOMPANION {
     tuple val(meta), path("*.ome.zarr"), emit: ome_zarr
     tuple val("${task.process}"), val('bioformats2rawcompanion'), eval("bioformats2raw --version"), topic: versions, emit: versions_bioformats2rawcompanion
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

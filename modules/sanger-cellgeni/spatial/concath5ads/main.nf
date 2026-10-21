@@ -14,9 +14,6 @@ process SPATIAL_CONCATH5ADS {
     tuple val(meta), path("${prefix}_concatenated.h5ad"), emit: concatenated_h5ad
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

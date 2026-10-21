@@ -13,9 +13,6 @@ process SPATIAL_SCRAFTPALOM {
     tuple val(meta), path("${output_img_name}"), emit: aligned_moving_image
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     output_img_name = "aligned_" + moving.baseName.replaceFirst(/\.ome\.tif$/, '') + ".ome.tif"

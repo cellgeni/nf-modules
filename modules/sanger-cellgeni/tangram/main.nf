@@ -15,9 +15,6 @@ process TANGRAM {
     tuple val(meta), path("tangram.log"), emit: log
     tuple val("${task.process}"), val('tangram'), eval('python3 -c "import tangram; print(tangram.__version__)"'), topic: versions, emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def markers_arg = markers.name != 'NO_FILE' && markers.size() > 0 ? "--markers ${markers}" : ""

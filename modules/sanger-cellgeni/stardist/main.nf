@@ -14,9 +14,6 @@ process STARDIST {
     tuple val(meta), path("${output_name}"), emit: geojson
     tuple val("${task.process}"), val('stardist'), eval("stardist_full_image_helper.py version"), topic: versions, emit: versions_stardist
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

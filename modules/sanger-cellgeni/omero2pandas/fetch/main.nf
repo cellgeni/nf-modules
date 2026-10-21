@@ -17,9 +17,6 @@ process OMERO2PANDAS_FETCH {
     tuple val(meta), path("${task.ext.prefix ?: meta.id}/annotation_*.csv"), emit: annotations
     tuple val("${task.process}"), val('omero2pandas_fetch'), eval("omero_download_annotations.py --version"), topic: versions, emit: versions_omero2pandas_fetch
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

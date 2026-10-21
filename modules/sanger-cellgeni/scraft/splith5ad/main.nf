@@ -14,9 +14,6 @@ process SCRAFT_SPLITH5AD {
     tuple val(meta), path("${prefix}/*.h5ad"), emit: h5ad_splits
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

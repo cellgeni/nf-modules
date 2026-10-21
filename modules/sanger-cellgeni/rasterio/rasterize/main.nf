@@ -12,9 +12,6 @@ process RASTERIO_RASTERIZE {
     tuple val(meta), path("${prefix}_labels.tif"), emit: label_image
     tuple val("${task.process}"), val('rasterio'), eval('rio --version | sed "s/rio, version //"'), topic: versions, emit: versions_rasterio_rasterize
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

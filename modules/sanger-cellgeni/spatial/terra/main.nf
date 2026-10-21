@@ -16,9 +16,6 @@ process SPATIAL_TERRA {
     tuple val(meta), path("${out_folder}/${baseName}_tokenized_data/*"), emit: tokenized_data, optional: true
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     baseName = anndata.baseName

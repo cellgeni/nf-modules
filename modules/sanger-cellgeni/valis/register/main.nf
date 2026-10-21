@@ -31,9 +31,6 @@ process VALIS_REGISTER {
     tuple val(meta), path("${reg_dir}/data/*_transforms.json"), emit: transforms
     tuple val("${task.process}"), val('valis'), eval('pip show valis | grep "^Version" | sed \'s/Version: //\''), topic: versions, emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

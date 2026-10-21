@@ -12,9 +12,6 @@ process SPATIAL_NICHECOMPASSTRAINING {
     tuple val(meta), path("${out_name}/artifacts/figure"), emit: nichecompass_figure, optional: true
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

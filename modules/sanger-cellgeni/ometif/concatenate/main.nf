@@ -14,9 +14,6 @@ process OMETIF_CONCATENATE {
     tuple val(meta), path("${prefix}_hyperstack.ome.tif"), emit: hyperstack
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

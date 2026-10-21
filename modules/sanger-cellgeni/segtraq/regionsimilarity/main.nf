@@ -11,9 +11,6 @@ process SEGTRAQ_REGIONSIMILARITY {
     tuple val(meta), path("${prefix}_region_similarity_obs.csv"), emit: obs
     tuple val("${task.process}"), val('segtraq'), eval('pip show segtraq | grep "^Version" | sed \'s/Version: //\''), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

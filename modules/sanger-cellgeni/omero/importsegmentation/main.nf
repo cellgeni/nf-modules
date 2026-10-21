@@ -15,9 +15,6 @@ process OMERO_IMPORTSEGMENTATION {
     tuple val(meta), path("*.importsegmentation.done.txt"), emit: done
     tuple val("${task.process}"), val('ROI_Converter_NGFF'), val('0.6.2'), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

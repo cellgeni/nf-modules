@@ -12,9 +12,6 @@ process DOTPY {
     tuple val(meta), path("*_annotations.csv"), emit: annotations
     tuple val("${task.process}"), val('dotpy'), eval('python -c "import dotpy; print(dotpy.__version__)"'), topic: versions, emit: versions_dotpy
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

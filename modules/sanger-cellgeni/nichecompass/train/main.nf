@@ -12,9 +12,6 @@ process NICHECOMPASS_TRAIN {
     tuple val(meta), path("${out_name}/artifacts/figures"), emit: nichecompass_figures, optional: true
     tuple val("${task.process}"), val('nichecompass'), eval('pip show nichecompass | grep "^Version" | sed \'s/Version: //\''), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

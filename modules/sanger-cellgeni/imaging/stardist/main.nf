@@ -14,9 +14,6 @@ process IMAGING_STARDIST {
     tuple val(meta), path("${output_name}"), emit: wkts
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}_${x_min}_${y_min}_${x_max}_${y_max}"

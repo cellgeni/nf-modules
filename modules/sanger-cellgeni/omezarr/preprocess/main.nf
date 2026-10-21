@@ -15,9 +15,6 @@ process OMEZARR_PREPROCESS {
     tuple val(meta), val(out_zarr), val(image_id), val(hcs_path), emit: fovs
     tuple val("${task.process}"), val('omezarr_preprocess'), eval("process.py version"), topic: versions, emit: versions_omezarr_preprocess
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     """

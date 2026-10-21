@@ -15,9 +15,6 @@ process SPATIAL_DOT {
     tuple val(meta), path("${prefix}/DOT_plotdata/DOT_plotting_${stem}.csv"), emit: dot_plotdata
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

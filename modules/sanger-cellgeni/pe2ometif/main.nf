@@ -18,9 +18,6 @@ process PE2OMETIF {
     tuple val(meta), path("${prefix}/${prefix}_ch*_dfp.tiff"), optional: true, emit: dfp_maps
     tuple val("${task.process}"), val('pe2ometif'), eval("python --version | sed 's/Python //'"), topic: versions, emit: versions_pe2ometif
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def round_index = meta.round_index ? "_${meta.round_index}" : "_1"

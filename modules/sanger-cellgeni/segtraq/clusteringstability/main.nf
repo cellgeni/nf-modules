@@ -12,9 +12,6 @@ process SEGTRAQ_CLUSTERINGSTABILITY {
     tuple val(meta), path("${prefix}_clustering_stability_metrics.json"), emit: metrics
     tuple val("${task.process}"), val('segtraq'), eval('pip show segtraq | grep "^Version" | sed \'s/Version: //\''), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"

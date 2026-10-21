@@ -9,9 +9,6 @@ process LOCALMIRROR {
     tuple val(meta), path("mirrored/${mirror_name}"), emit: mirrored
     tuple val("${task.process}"), val('coreutils'), eval("cp --version | head -n 1 | sed 's/^cp (GNU coreutils) //'"), topic: versions, emit: versions_localmirror
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     mirror_name = task.ext.prefix ?: input_data.getName()
     """

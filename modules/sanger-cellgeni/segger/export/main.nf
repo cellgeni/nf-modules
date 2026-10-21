@@ -11,9 +11,6 @@ process SEGGER_EXPORT {
     tuple val(meta), path("${out_dir}"), emit: export_dir
     tuple val("${task.process}"), val('segger'), eval('pip show segger | grep "^Version" | sed \'s/Version: //\''), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

@@ -14,9 +14,6 @@ process IMAGING_PARSEMANIFEST {
     tuple val(meta), path("${out_json}"), emit: manifest
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

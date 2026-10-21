@@ -9,9 +9,6 @@ process GEOJSON_FEATURECOLLECTION {
     tuple val(meta), path("${prefix}.geojson"), emit: geojson
     eval("python3 ${moduleDir}/resources/usr/bin/convert_geojson_featurecollection.py --version"), emit: versions, topic: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: meta.id

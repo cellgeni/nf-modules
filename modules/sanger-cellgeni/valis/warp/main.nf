@@ -29,9 +29,6 @@ process VALIS_WARP {
     tuple val(meta), path("${out_dir}"), emit: registered_slides
     tuple val("${task.process}"), val('valis'), eval('pip show valis | grep "^Version" | sed \'s/Version: //\''), topic: versions, emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

@@ -21,9 +21,6 @@ process BAYSOR_RUN {
     tuple val(meta), path("${out_dir}/{segmentation_log.log,run.log}")                                                     , emit: log
     tuple val("${task.process}"), val('baysor'), val('0.9.0'), topic: versions, emit: versions_baysor_run
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

@@ -12,9 +12,6 @@ process IMAGING_POSTCODEPREP {
     tuple val(meta), path(reformatted_profile), path(starfish_codebook), emit: for_decoding
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

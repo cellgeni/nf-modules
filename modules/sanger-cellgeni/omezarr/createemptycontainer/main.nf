@@ -14,9 +14,6 @@ process OMEZARR_CREATEEMPTYCONTAINER {
     tuple val(meta), path("${out_zarr_name}"), emit: out_zarr
     tuple val("${task.process}"), val('omezarr_createemptycontainer'), eval("create_empty_container.py version"), topic: versions, emit: versions_omezarr_createemptycontainer
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

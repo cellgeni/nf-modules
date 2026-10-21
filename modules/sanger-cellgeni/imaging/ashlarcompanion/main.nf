@@ -17,9 +17,6 @@ process IMAGING_ASHLARCOMPANION {
     tuple val(meta), path("${expected_output}"), emit: tif
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
