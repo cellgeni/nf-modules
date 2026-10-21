@@ -1,0 +1,113 @@
+{
+    "phenix icechunk - single well - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_zmax_field_shifts.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_A1_zmax_qc.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
+                        "MULTIVIEWSTITCHER",
+                        "multiview-stitcher",
+                        "0.1.62"
+                    ]
+                ],
+                "5": [
+                    [
+                        "MULTIVIEWSTITCHER",
+                        "phenix-icechunk",
+                        "0.3.1"
+                    ]
+                ],
+                "icechunk": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "ome_zarr": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "qc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_A1_zmax_qc.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "shifts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_zmax_field_shifts.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_multiviewstitcher": [
+                    [
+                        "MULTIVIEWSTITCHER",
+                        "multiview-stitcher",
+                        "0.1.62"
+                    ]
+                ],
+                "versions_phenixicechunk": [
+                    [
+                        "MULTIVIEWSTITCHER",
+                        "phenix-icechunk",
+                        "0.3.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T19:12:46.397163541",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}
