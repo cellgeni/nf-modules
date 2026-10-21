@@ -66,6 +66,18 @@ output:
           pattern: "*.summary.json"
           ontologies:
             - edam: "http://edamontology.org/format_3464" # JSON
+  wells:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.wells.txt":
+          type: file
+          description: Wells of the plate, one per line (e.g. A1, B12), for per-well fan-out.
+          pattern: "*.wells.txt"
+          ontologies:
+            - edam: "http://edamontology.org/format_2330" # Textual format
   ome_tiff:
     - - meta:
           type: map

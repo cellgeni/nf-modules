@@ -25,14 +25,22 @@
                         {
                             "id": "test"
                         },
-                        "test_A01.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.wells.txt:md5,fe6975a937016c20b43b17540e6c6246"
                     ]
                 ],
                 "3": [
                     [
+                        {
+                            "id": "test"
+                        },
+                        "test_A1.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
                         "PHENIXICECHUNK",
                         "phenix-icechunk",
-                        "0.2.0"
+                        "0.3.1"
                     ]
                 ],
                 "ome_tiff": [
@@ -40,7 +48,7 @@
                         {
                             "id": "test"
                         },
-                        "test_A01.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_A1.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "repo": [
@@ -65,12 +73,20 @@
                     [
                         "PHENIXICECHUNK",
                         "phenix-icechunk",
-                        "0.2.0"
+                        "0.3.1"
+                    ]
+                ],
+                "wells": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.wells.txt:md5,fe6975a937016c20b43b17540e6c6246"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-10-21T08:58:05.694099351",
+        "timestamp": "2026-10-21T20:49:58.769322554",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
