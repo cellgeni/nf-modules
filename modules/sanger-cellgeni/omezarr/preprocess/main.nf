@@ -3,7 +3,7 @@ process OMEZARR_PREPROCESS {
     label 'process_medium'
 
     // conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/clij2:0.30'
         : 'quay.io/cellgeni/clij2:0.30'}"
 

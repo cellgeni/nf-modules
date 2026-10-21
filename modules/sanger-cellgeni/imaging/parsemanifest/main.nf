@@ -3,7 +3,7 @@ process IMAGING_PARSEMANIFEST {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? '/nfs/cellgeni/singularity/images/stitching_processing.sif'
         : 'biocontainers/YOUR-TOOL-HERE'}"
 

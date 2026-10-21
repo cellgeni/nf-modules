@@ -2,7 +2,9 @@ process SEGGER_XENIUMBUNDLE {
     tag "${meta.id}"
     label 'process_medium'
 
-    container "quay.io/cellgeni/segger:v2"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/segger:v2'
+        : 'quay.io/cellgeni/segger:v2'}"
 
     input:
     tuple val(meta), path(xenium_dir), path(export_dir)

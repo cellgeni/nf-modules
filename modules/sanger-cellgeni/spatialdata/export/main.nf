@@ -3,7 +3,7 @@ process SPATIALDATA_EXPORT {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0'
         : 'quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0'}"
 

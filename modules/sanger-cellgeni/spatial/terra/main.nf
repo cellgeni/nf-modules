@@ -4,7 +4,7 @@ process SPATIAL_TERRA {
 
     conda "${moduleDir}/environment.yml"
     // ? '/nfs/cellgeni/singularity/images/terra.sif'
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/terra:0.1.13'
         : 'quay.io/cellgeni/terra:0.1.13'}"
 

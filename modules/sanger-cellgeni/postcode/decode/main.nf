@@ -1,7 +1,9 @@
 process POSTCODE_DECODE {
     tag "${meta.id}"
 
-    container "quay.io/cellgeni/postcode:0.2.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/postcode:0.2.0'
+        : 'quay.io/cellgeni/postcode:0.2.0'}"
 
     input:
     tuple val(meta), file(profile), file(starfish_codebook), file(spot_loc)

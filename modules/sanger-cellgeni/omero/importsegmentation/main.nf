@@ -4,7 +4,9 @@ process OMERO_IMPORTSEGMENTATION {
     cpus 30
 
     // conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/roi_convert_ngff:0.6.2"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/roi_convert_ngff:0.6.2'
+        : 'quay.io/cellgeni/roi_convert_ngff:0.6.2'}"
     secret 'OMERO_USER'
     secret 'OMERO_PASSWORD'
 

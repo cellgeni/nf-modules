@@ -3,7 +3,9 @@ process VALIS_REGISTER {
     label 'process_high'
 
     // conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/valis:1.2.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/valis:1.2.0'
+        : 'quay.io/cellgeni/valis:1.2.0'}"
 
     // Singularity: VALIS writes to bf_formats.txt inside the Python env (read-only in Singularity).
     // A writable copy is created in the work dir and bind-mounted to the expected container path.

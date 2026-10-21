@@ -2,7 +2,9 @@ process SPATIAL_NICHECOMPASSANALYSIS {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/nichecompass:0.3.1"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/nichecompass:0.3.1'
+        : 'quay.io/cellgeni/nichecompass:0.3.1'}"
 
     stageInMode 'copy'
 

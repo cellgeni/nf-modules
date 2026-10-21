@@ -3,7 +3,9 @@ process RASTERIO_RASTERIZE {
     label 'process_medium'
 
     // conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/rasterio:1.5.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/rasterio:1.5.0'
+        : 'quay.io/cellgeni/rasterio:1.5.0'}"
 
     input:
     tuple val(meta), path(geojson), path(reference_image)

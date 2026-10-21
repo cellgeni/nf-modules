@@ -2,7 +2,7 @@ process RAW2FEATURES {
     tag "${meta.id}"
     label 'process_gpu'
 
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/raw2features:0.2.0'
         : 'quay.io/cellgeni/raw2features:0.2.0'}"
 

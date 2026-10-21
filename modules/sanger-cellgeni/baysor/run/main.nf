@@ -2,7 +2,9 @@ process BAYSOR_RUN {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/baysor:cpp-0.9.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/baysor:cpp-0.9.0'
+        : 'quay.io/cellgeni/baysor:cpp-0.9.0'}"
 
     input:
     tuple val(meta), path(coordinates), path(prior_segmentation)

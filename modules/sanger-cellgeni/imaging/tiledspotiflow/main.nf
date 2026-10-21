@@ -4,7 +4,7 @@ process IMAGING_TILEDSPOTIFLOW {
     label "gpu_single"
     label "medium_mem"
 
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? "quay.io/cellgeni/tiled_spotiflow:0.6.4"
         : "quay.io/cellgeni/tiled_spotiflow:0.6.4"}"
 

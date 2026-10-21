@@ -3,7 +3,9 @@ process IMAGING_GENERATECOMPANION {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/imagetileprocessor:0.1.17"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/imagetileprocessor:0.1.17'
+        : 'quay.io/cellgeni/imagetileprocessor:0.1.17'}"
 
     input:
     tuple val(meta), val(round), path(image_root_folder), val(master_file_name)

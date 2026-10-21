@@ -2,7 +2,9 @@ process IMAGING_POSTCODEPOST {
     tag "${meta.id}"
     label 'process_single'
 
-    container "quay.io/cellgeni/postcode:0.2.1"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/postcode:0.2.1'
+        : 'quay.io/cellgeni/postcode:0.2.1'}"
 
     input:
     tuple val(meta), path(model_params_and_losses_path), path(starfish_codebook_path), path(spot_loc_path)

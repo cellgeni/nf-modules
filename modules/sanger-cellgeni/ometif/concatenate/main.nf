@@ -3,7 +3,7 @@ process OMETIF_CONCATENATE {
     label 'process_high'
     label 'process_high_memory'
 
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/scraft:latest'
         : 'quay.io/cellgeni/scraft:latest'}"
 

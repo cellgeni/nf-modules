@@ -3,7 +3,9 @@ process IMAGING_PREPROCESS {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/clij2:0.28"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/clij2:0.28'
+        : 'quay.io/cellgeni/clij2:0.28'}"
 
     input:
     tuple val(meta), path(root_folder), val(master_file_name), val(image_id), val(index)

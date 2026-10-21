@@ -2,7 +2,9 @@ process SPATIAL_NICHECOMPASSTRAINING {
     tag "${meta.id}"
     label 'process_gpu'
 
-    container "quay.io/cellgeni/nichecompass:0.3.1"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/nichecompass:0.3.1'
+        : 'quay.io/cellgeni/nichecompass:0.3.1'}"
 
     input:
     tuple val(meta), path(h5ad, stageAs: "inputs/*")

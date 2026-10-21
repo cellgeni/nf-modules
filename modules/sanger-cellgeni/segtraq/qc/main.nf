@@ -2,7 +2,9 @@ process SEGTRAQ_QC {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/segtraq:0.0.4"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/segtraq:0.0.4'
+        : 'quay.io/cellgeni/segtraq:0.0.4'}"
 
     input:
     tuple val(meta), path(xenium_dir), val(metrics)

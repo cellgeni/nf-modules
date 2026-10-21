@@ -3,7 +3,7 @@ process IMAGING_EXTRACTPEAKPROFILE {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? "quay.io/cellgeni/extract_peak_profile:0.1.0"
         : "quay.io/cellgeni/extract_peak_profile:0.1.0"}"
     publishDir params.out_dir + "/peak_profiles/"

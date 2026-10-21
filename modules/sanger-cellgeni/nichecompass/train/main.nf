@@ -2,7 +2,9 @@ process NICHECOMPASS_TRAIN {
     tag "${meta.id}"
     label 'process_gpu'
 
-    container "quay.io/cellgeni/nichecompass:0.3.1"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/nichecompass:0.3.1'
+        : 'quay.io/cellgeni/nichecompass:0.3.1'}"
 
     input:
     tuple val(meta), path(preprocessed_h5ad), path(nichecompass_data)

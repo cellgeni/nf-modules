@@ -3,7 +3,7 @@ process SPATIAL_DOT {
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/dot:latest'
         : 'quay.io/cellgeni/dot:latest'}"
 

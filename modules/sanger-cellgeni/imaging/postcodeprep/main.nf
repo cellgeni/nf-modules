@@ -3,7 +3,9 @@ process IMAGING_POSTCODEPREP {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/postcode:0.2.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/postcode:0.2.0'
+        : 'quay.io/cellgeni/postcode:0.2.0'}"
 
     input:
     tuple val(meta), path(profile), path(tabular_codebook), path(readout_file), val(R)

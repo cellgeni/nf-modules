@@ -3,7 +3,7 @@ process STARDIST {
     label 'process_medium'
 
     // conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/stardist:0.9.2-tileprocessor-0.2.1'
         : 'quay.io/cellgeni/stardist:0.9.2-tileprocessor-0.2.1'}"
 

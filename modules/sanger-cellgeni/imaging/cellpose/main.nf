@@ -4,7 +4,7 @@ process IMAGING_CELLPOSE {
     label "medium_mem"
     label "gpu_single"
 
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? "quay.io/cellgeni/tiled_cellpose:v4.1.1-cu12.9.1"
         : "quay.io/cellgeni/tiled_cellpose:v4.1.1-cu12.9.1"}"
 

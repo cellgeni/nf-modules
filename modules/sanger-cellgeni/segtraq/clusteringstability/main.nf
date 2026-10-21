@@ -2,7 +2,9 @@ process SEGTRAQ_CLUSTERINGSTABILITY {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/segtraq:latest"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/segtraq:latest'
+        : 'quay.io/cellgeni/segtraq:latest'}"
 
     input:
     tuple val(meta), path(zarr_dir)

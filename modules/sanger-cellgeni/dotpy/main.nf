@@ -2,7 +2,9 @@ process DOTPY {
     tag "${meta.id}"
     label params.dotpy_use_gpu ? 'process_gpu' : 'process_normal'
 
-    container "quay.io/cellgeni/dotpy:latest"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/dotpy:latest'
+        : 'quay.io/cellgeni/dotpy:latest'}"
 
     input:
     tuple val(meta), path(sc_adata), path(sp_adata)
