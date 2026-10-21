@@ -1,80 +1,58 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "preprocess_phenix_icechunk"
 description: |
-  Convert Opera Phenix / Harmony measurements into icechunk repositories, then stitch every well
-  either in 2D with ASHLAR across all measurements ordered by round_index (stitching + registration),
-  or in 3D with multiview-stitcher, one task per round and well so the wells run in parallel.
-  The stitched wells of each sample are finally collected into one OME-Zarr HCS plate in a new
-  icechunk repository, which carries a metadata-only copy of each round's raw-data provenance
-  (Index.xml contents, per-plane TIFF table) so every well stays traceable to its raw TIFFs.
-
-  ASHLAR is the nf-core module, shipped in this repo at modules/nf-core/ashlar so the subworkflow installs.
+  Convert Opera Phenix / Harmony measurements into icechunk repositories, stitch every round and
+  well as a 3D stack with multiview-stitcher (one task per round and well, so the wells run in
+  parallel; rounds are not registered to each other), then collect the stitched wells of each
+  sample into one OME-Zarr HCS plate in a new icechunk repository, each round an acquisition.
+  The plate carries a metadata-only copy of each round's raw-data provenance (Index.xml contents,
+  per-plane TIFF table) so every well stays traceable to its raw TIFFs.
 
   Expected module configuration:
-  - 2D: PHENIXICECHUNK ext.args with `--zproject max --ome-tiff .` (ASHLAR needs the z projected OME-TIFFs)
-  - 3D: MULTIVIEWSTITCHER ext.args = { "--projection none --wells ${meta.well}" }, so each task
-    stitches its own well as a 3D stack; PHENIXICECHUNK needs no `--ome-tiff`
+  MULTIVIEWSTITCHER ext.args = { "--projection none --wells ${meta.well}" }, so each task
+  stitches its own well as a 3D stack.
 keywords:
   - microscopy
   - opera phenix
   - icechunk
-  - ome-tiff
   - ome-zarr
   - stitching
-  - registration
   - 3d
   - hcs
 components:
   - sanger-cellgeni/phenixicechunk
   - sanger-cellgeni/multiviewstitcher
   - sanger-cellgeni/icechunk/stitchedplate
-  - ashlar
 input:
   - measurements_ch:
       type: file
       description: |
         Channel with one entry per measurement (imaging round).
         Structure: [ val(meta), path(image_dir), val(index_name) ], meta: [ id, round_index ]
-  - stitch_3d:
-      type: boolean
-      description: |
-        true: stitch the 3D stacks of every round and well with multiview-stitcher, without
-        registration across rounds. false: stitch and register every well across rounds with ASHLAR.
-  - dfp_folder:
-      type: file
-      description: Optional ASHLAR dark field profile(s), [] if none (2D only)
-  - ffp_folder:
-      type: file
-      description: Optional ASHLAR flat field profile(s), [] if none (2D only)
 output:
   - repo:
       type: directory
       description: |
         Icechunk repo per measurement.
         Structure: [ val(meta), path(repo.icechunk) ], meta: [ id, sample, round_index ]
-  - cycles:
-      type: file
-      description: |
-        Per-well OME-TIFFs of all measurements, ordered by round_index; empty when stitch_3d.
-        Structure: [ val(meta), [ path(ome.tiff) ] ], meta: [ id, sample, well, rounds ]
   - stitched:
-      type: file
+      type: directory
       description: |
-        2D: ASHLAR stitched and registered image per well, [ val(meta), path(ome.tif) ].
-        3D: multiview-stitcher 3D stack per round and well, [ val(meta), path(ome.zarr) ].
+        multiview-stitcher 3D stack per round and well.
+        Structure: [ val(meta), path(ome.zarr) ], meta: [ id, sample, round_index, well ]
   - qc:
       type: file
       description: |
-        multiview-stitcher QC plot per round and well; empty unless stitch_3d.
+        multiview-stitcher QC plot per round and well.
         Structure: [ val(meta), path(qc.png) ]
   - plate:
       type: directory
       description: |
         Icechunk repo per sample holding all stitched wells as an OME-Zarr 0.5 HCS plate with the
-        source plate layout. 2D: one registered image per well. 3D: one image per round, each round
-        a plate acquisition. /sources/r<round> holds each round's raw-data provenance (Index.xml
-        contents, per-plane TIFF table, OME-XML); every image points to it and records the source
-        snapshot, Index.xml and measurement directory of its rounds.
+        source plate layout, one image per round, each round a plate acquisition.
+        /sources/r<round> holds each round's raw-data provenance (Index.xml contents, per-plane
+        TIFF table, OME-XML); every image points to it and records the source snapshot,
+        Index.xml and measurement directory of its round.
         Structure: [ val(meta), path(<sample>_stitched.icechunk) ], meta: [ id ]
 authors:
   - "@BioinfoTongLI"
