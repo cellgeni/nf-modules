@@ -1,0 +1,93 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PREPROCESS_PHENIX_ICECHUNK"
+    script "../main.nf"
+    workflow "PREPROCESS_PHENIX_ICECHUNK"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_sangercellgeni"
+    tag "subworkflows/preprocess_phenix_icechunk"
+    tag "phenixicechunk"
+    tag "ashlar"
+    tag "multiviewstitcher"
+    tag "icechunk/stitchedplate"
+
+    // Stub tests only, see modules/sanger-cellgeni/phenixicechunk/tests/main.nf.test.
+    // Rounds are given out of order to check they are sorted by round_index.
+
+    test("two rounds - 2D ashlar - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                stitch_3d = false
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [ [ id:'test', round_index:'2' ], file('.'), 'Index.xml' ],
+                    [ [ id:'test', round_index:'1' ], file('.'), 'Index.xml' ],
+                )
+                input[1] = false
+                input[2] = []
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.repo.size() == 2 },
+                { assert workflow.out.cycles.size() == 1 },
+                { assert workflow.out.cycles[0][0] == [ id:'test_A1', sample:'test', well:'A1', rounds:[ '1', '2' ] ] },
+                { assert workflow.out.cycles[0][1].collect { file(it).name } == [ 'test_r1_A1.ome.tiff', 'test_r2_A1.ome.tiff' ] },
+                { assert workflow.out.stitched.size() == 1 },
+                { assert file(workflow.out.stitched[0][1]).name == 'test_A1.ome.tif' },
+                { assert workflow.out.qc.size() == 0 },
+                { assert workflow.out.plate.size() == 1 },
+                { assert workflow.out.plate[0][0] == [ id:'test' ] },
+                { assert file(workflow.out.plate[0][1]).name == 'test_stitched.icechunk' },
+            )
+        }
+    }
+
+    test("two rounds - 3D multiview-stitcher - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                stitch_3d = true
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [ [ id:'test', round_index:'2' ], file('.'), 'Index.xml' ],
+                    [ [ id:'test', round_index:'1' ], file('.'), 'Index.xml' ],
+                )
+                input[1] = true
+                input[2] = []
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.cycles.size() == 0 },
+                { assert workflow.out.stitched.size() == 2 },
+                { assert workflow.out.stitched.collect { it[0] }.sort { it.id } == [
+                    [ id:'test_r1_A1', round_index:'1', sample:'test', well:'A1' ],
+                    [ id:'test_r2_A1', round_index:'2', sample:'test', well:'A1' ],
+                ] },
+                { assert workflow.out.qc.size() == 2 },
+                { assert workflow.out.plate.size() == 1 },
+                { assert workflow.out.plate[0][0] == [ id:'test' ] },
+            )
+        }
+    }
+}
