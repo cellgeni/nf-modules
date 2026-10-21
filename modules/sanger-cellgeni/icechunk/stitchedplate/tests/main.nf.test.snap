@@ -1,0 +1,63 @@
+{
+    "two rounds - registered and per-round images - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_stitched.summary.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "2": [
+                    [
+                        "ICECHUNK_STITCHEDPLATE",
+                        "phenix-icechunk",
+                        "0.3.1"
+                    ]
+                ],
+                "repo": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "summary": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_stitched.summary.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "versions_phenixicechunk": [
+                    [
+                        "ICECHUNK_STITCHEDPLATE",
+                        "phenix-icechunk",
+                        "0.3.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T20:49:52.996569106",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

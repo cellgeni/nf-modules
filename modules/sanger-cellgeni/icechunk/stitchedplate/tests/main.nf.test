@@ -1,0 +1,42 @@
+nextflow_process {
+
+    name "Test Process ICECHUNK_STITCHEDPLATE"
+    script "../main.nf"
+    process "ICECHUNK_STITCHEDPLATE"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "icechunk"
+    tag "icechunk/stitchedplate"
+
+    // Stub test only: the inputs are phenix-icechunk repos and their stitched wells, see
+    // modules/sanger-cellgeni/phenixicechunk/tests/main.nf.test.
+
+    test("two rounds - registered and per-round images - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    [ file('a.ome.tif'), file('r1/b.ome.zarr'), file('r2/b.ome.zarr') ],
+                    [ [ well:'A1', rounds:[ '1', '2' ] ], [ well:'B12', rounds:[ '1' ] ], [ well:'B12', rounds:[ '2' ] ] ],
+                    [ file('r1.icechunk'), file('r2.icechunk') ],
+                    [ '1', '2' ],
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}
