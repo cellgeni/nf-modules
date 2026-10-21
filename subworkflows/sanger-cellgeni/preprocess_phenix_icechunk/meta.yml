@@ -8,7 +8,7 @@ description: |
   icechunk repository, which carries a metadata-only copy of each round's raw-data provenance
   (Index.xml contents, per-plane TIFF table) so every well stays traceable to its raw TIFFs.
 
-  ASHLAR is the nf-core module, expected at modules/nf-core/ashlar in the pipeline.
+  ASHLAR is the nf-core module, shipped in this repo at modules/nf-core/ashlar so the subworkflow installs.
 
   Expected module configuration:
   - 2D: PHENIXICECHUNK ext.args with `--zproject max --ome-tiff .` (ASHLAR needs the z projected OME-TIFFs)
