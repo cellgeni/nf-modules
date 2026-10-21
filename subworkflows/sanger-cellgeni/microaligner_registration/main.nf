@@ -18,9 +18,10 @@ workflow MICRO_ALIGNER_REGISTRATION {
     ch_versions = ch_versions.mix(MICROALIGNER_FEATREG.out.versions.first())
     MICROALIGNER_OPTFLOWREG(GENERATE_OPTFLOW_REG_YAML.out.combine(MICROALIGNER_FEATREG.out.registered_image, by: 0), "optflow")
     ch_versions = ch_versions.mix(MICROALIGNER_OPTFLOWREG.out.versions.first())
+    ch_image = MICROALIGNER_OPTFLOWREG.out.registered_image
 
     emit:
-    image    = MICROALIGNER_OPTFLOWREG.out.registered_image // channel: [ val(meta), [ image ] ]
+    image    = ch_image // channel: [ val(meta), [ image ] ]
     versions = ch_versions // channel: [ versions.yml ]
 }
 

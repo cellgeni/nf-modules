@@ -56,10 +56,13 @@ workflow ALIGN_SERIES_TO_REFERENCE {
 
     OMETIF_CONCATENATE(ch_aligned_series)
     ch_versions = ch_versions.mix(OMETIF_CONCATENATE.out.versions.first())
+    ch_reference = ch_ref_moving.map { meta, ref, _moving -> tuple(meta, ref) }
+    ch_aligned = ch_aligned_ordered.map { meta, _order, img -> tuple(meta, img) }
+    ch_hyperstack = OMETIF_CONCATENATE.out.hyperstack
 
     emit:
-    reference  = ch_ref_moving.map { meta, ref, _moving -> tuple(meta, ref) } // channel: [ val(meta), path(reference_image) ]
-    aligned    = ch_aligned_ordered.map { meta, _order, img -> tuple(meta, img) } // channel: [ val(meta), path(aligned_image) ] one entry per moving image
-    hyperstack = OMETIF_CONCATENATE.out.hyperstack // channel: [ val(meta), path(hyperstack.ome.tif) ] reference + aligned images concatenated in original series order, channel names prefixed with their 1-based cycle position
+    reference  = ch_reference // channel: [ val(meta), path(reference_image) ]
+    aligned    = ch_aligned // channel: [ val(meta), path(aligned_image) ] one entry per moving image
+    hyperstack = ch_hyperstack // channel: [ val(meta), path(hyperstack.ome.tif) ] reference + aligned images concatenated in original series order, channel names prefixed with their 1-based cycle position
     versions   = ch_versions // channel: [ versions.yml ]
 }

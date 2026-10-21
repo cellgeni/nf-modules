@@ -61,9 +61,11 @@ workflow PREPROCESS_TIFF_TILES_ASHLAR {
         stitched_by_sample.combine(channel.of("*.ome.tif"))
     )
     ch_versions = ch_versions.mix(IMAGING_GENERATECOMPANIONFROMFILES.out.versions.first())
+    ch_stitched_tif = IMAGING_ASHLARCOMPANION.out.tif
+    ch_companion = IMAGING_GENERATECOMPANIONFROMFILES.out.companion
 
     emit:
-    stitched_tif = IMAGING_ASHLARCOMPANION.out.tif // channel: [ val(meta{id, sample_id, well}), path(tif) ]
-    companion    = IMAGING_GENERATECOMPANIONFROMFILES.out.companion // channel: [ val(meta{id=sample_id}), path(companion) ]
+    stitched_tif = ch_stitched_tif // channel: [ val(meta{id, sample_id, well}), path(tif) ]
+    companion    = ch_companion // channel: [ val(meta{id=sample_id}), path(companion) ]
     versions     = ch_versions // channel: [ path(versions.yml) ]
 }

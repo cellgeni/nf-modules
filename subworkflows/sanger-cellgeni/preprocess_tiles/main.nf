@@ -19,8 +19,9 @@ workflow PREPROCESS_TILES {
         }
     IMAGING_PREPROCESS(tiles, psf_folder)
     ch_versions = ch_versions.mix(IMAGING_PREPROCESS.out.versions.first())
+    ch_companion_tiles = IMAGING_GENERATECOMPANION.out.companion.combine(IMAGING_PREPROCESS.out.fovs, by: 0).groupTuple(by: [0, 1])
 
     emit:
-    companion_tiles = IMAGING_GENERATECOMPANION.out.companion.combine(IMAGING_PREPROCESS.out.fovs, by: 0).groupTuple(by: [0, 1]) // [ meta, companion, [fovs] ]
+    companion_tiles = ch_companion_tiles // [ meta, companion, [fovs] ]
     versions        = ch_versions // channel: [ versions.yml ]
 }

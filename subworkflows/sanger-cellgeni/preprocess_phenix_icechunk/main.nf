@@ -12,31 +12,34 @@ workflow PREPROCESS_PHENIX_ICECHUNK {
     measurements = measurements_ch.map { meta, image_dir, index_name ->
         [meta + [id: "${meta.id}_r${meta.round_index}".toString(), sample: meta.id], image_dir, index_name]
     }
-    PHENIXICECHUNK(measurements)
+    phenix = PHENIXICECHUNK(measurements)
+    ch_repo = phenix.repo
 
     // One task per round and well, so the wells are stitched in parallel. Rounds are not
     // registered to each other. stitch_wells.py gets the well and keeps the 3D stacks
     // through ext.args: { "--projection none --wells ${meta.well}" }
-    well_repos = PHENIXICECHUNK.out.repo
-        .join(PHENIXICECHUNK.out.wells)
+    well_repos = ch_repo
+        .join(phenix.wells)
         .flatMap { meta, repo, wells_txt ->
             wells_txt.readLines().collect { line -> line.trim() }.findAll { well -> well }.collect { well ->
                 [meta + [id: "${meta.id}_${well}".toString(), well: well], repo]
             }
         }
-    MULTIVIEWSTITCHER(well_repos)
+    stitcher = MULTIVIEWSTITCHER(well_repos)
+    ch_stitched = stitcher.ome_zarr
+    ch_qc = stitcher.qc
 
     // Collect every stitched well of a sample, with the source repos of all its rounds,
     // into one plate, each round an acquisition. Sorted so the task inputs, and therefore
     // -resume, are stable.
-    source_repos = PHENIXICECHUNK.out.repo
+    source_repos = ch_repo
         .map { meta, repo -> [meta.sample, meta.round_index, repo] }
         .groupTuple(by: 0)
         .map { sample, rounds, repos ->
             def ordered = [rounds, repos].transpose().sort { a, b -> (a[0] as Integer) <=> (b[0] as Integer) }
             [sample, ordered.collect { round_repo -> round_repo[1] }, ordered.collect { round_repo -> round_repo[0] }]
         }
-    plate_input = MULTIVIEWSTITCHER.out.ome_zarr
+    plate_input = ch_stitched
         .map { meta, ome_zarr -> [meta.sample, ome_zarr, [well: meta.well, rounds: [meta.round_index]]] }
         .groupTuple(by: 0)
         .map { sample, images, layout ->
@@ -45,11 +48,11 @@ workflow PREPROCESS_PHENIX_ICECHUNK {
         }
         .join(source_repos)
         .map { sample, images, layout, repos, rounds -> [[id: sample], images, layout, repos, rounds] }
-    ICECHUNK_STITCHEDPLATE(plate_input)
+    ch_plate = ICECHUNK_STITCHEDPLATE(plate_input).repo
 
     emit:
-    repo     = PHENIXICECHUNK.out.repo // channel: [ val(meta), path(repo.icechunk) ], one per measurement
-    stitched = MULTIVIEWSTITCHER.out.ome_zarr // channel: [ val(meta), path(ome.zarr) ], 3D stack per round and well
-    qc       = MULTIVIEWSTITCHER.out.qc // channel: [ val(meta), path(qc.png) ], per round and well
-    plate    = ICECHUNK_STITCHEDPLATE.out.repo // channel: [ val(meta), path(stitched.icechunk) ], one HCS plate per sample
+    repo     = ch_repo     // channel: [ val(meta), path(repo.icechunk) ], one per measurement
+    stitched = ch_stitched // channel: [ val(meta), path(ome.zarr) ], 3D stack per round and well
+    qc       = ch_qc       // channel: [ val(meta), path(qc.png) ], per round and well
+    plate    = ch_plate    // channel: [ val(meta), path(stitched.icechunk) ], one HCS plate per sample
 }

@@ -33,11 +33,14 @@ workflow PROSEG_PRESET_PROSEG2BAYSOR {
 
     GEOJSON_FEATURECOLLECTION(PROSEG_TO_BAYSOR.out.cell_polygons)
     ch_versions = ch_versions.mix(GEOJSON_FEATURECOLLECTION.out.versions)
+    ch_proseg_sd_zarr = PROSEG.out.sd_zarr
+    ch_xr_polygons = GEOJSON_FEATURECOLLECTION.out.geojson
+    ch_xr_metadata = PROSEG_TO_BAYSOR.out.transcript_metadata
 
     emit:
-    proseg_sd_zarr   = PROSEG.out.sd_zarr // channel: [ val(meta), [ "cell-polygons.geojson.gz" ] ]
-    xr_polygons      = GEOJSON_FEATURECOLLECTION.out.geojson // channel: [ val(meta), [ "xr-cell-polygons.geojson" ] ]
-    xr_metadata      = PROSEG_TO_BAYSOR.out.transcript_metadata // channel: [ [ "xr-transcript-metadata.csv" ] ]
+    proseg_sd_zarr   = ch_proseg_sd_zarr // channel: [ val(meta), [ "cell-polygons.geojson.gz" ] ]
+    xr_polygons      = ch_xr_polygons // channel: [ val(meta), [ "xr-cell-polygons.geojson" ] ]
+    xr_metadata      = ch_xr_metadata // channel: [ [ "xr-transcript-metadata.csv" ] ]
     coordinate_space = ch_coordinate_space // channel: [ "microns" ]
     versions         = ch_versions // channel: [ versions.yml ]
 }

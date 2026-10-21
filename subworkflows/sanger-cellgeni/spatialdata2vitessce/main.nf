@@ -19,9 +19,11 @@ workflow SPATIALDATA2VITESSCE {
         SPATIALDATA_EXPORT.out.zarr.combine(raw_name).combine(label_name).combine(table_name).combine(http_base_url)
     )
     ch_versions = ch_versions.mix(SPATIAL_GENERATEVITESSCECONFIG.out.versions.first())
+    ch_zarr = SPATIALDATA_EXPORT.out.zarr
+    ch_vitessce_config = SPATIAL_GENERATEVITESSCECONFIG.out.vitessce_config
 
     emit:
-    zarr            = SPATIALDATA_EXPORT.out.zarr // channel: [ val(meta), path(*.zarr) ]
-    vitessce_config = SPATIAL_GENERATEVITESSCECONFIG.out.vitessce_config // channel: [ val(meta), path(*_vitessce_config.json) ]
+    zarr            = ch_zarr // channel: [ val(meta), path(*.zarr) ]
+    vitessce_config = ch_vitessce_config // channel: [ val(meta), path(*_vitessce_config.json) ]
     versions        = ch_versions // channel: [ versions.yml ]
 }

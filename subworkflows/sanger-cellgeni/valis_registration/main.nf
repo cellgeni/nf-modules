@@ -33,12 +33,17 @@ workflow VALIS_REGISTRATION {
 
     VALIS_MERGE(ch_merge_input)
     ch_versions = ch_versions.mix(VALIS_MERGE.out.versions.first())
+    ch_results_dir = VALIS_REGISTER.out.results_dir
+    ch_registrar = VALIS_REGISTER.out.registrar
+    ch_transforms = VALIS_REGISTER.out.transforms
+    ch_registered_slides = VALIS_WARP.out.registered_slides
+    ch_merged = VALIS_MERGE.out.merged
 
     emit:
-    results_dir       = VALIS_REGISTER.out.results_dir // channel: [ val(meta), path(results_dir) ]
-    registrar         = VALIS_REGISTER.out.registrar // channel: [ val(meta), path(*_registrar.pickle) ]
-    transforms        = VALIS_REGISTER.out.transforms // channel: [ val(meta), path(*_transforms.json) ]
-    registered_slides = VALIS_WARP.out.registered_slides // channel: [ val(meta), path(warp_dir) ]
-    merged            = VALIS_MERGE.out.merged // channel: [ val(meta), path(*_merged.ome.tiff) ]
+    results_dir       = ch_results_dir // channel: [ val(meta), path(results_dir) ]
+    registrar         = ch_registrar // channel: [ val(meta), path(*_registrar.pickle) ]
+    transforms        = ch_transforms // channel: [ val(meta), path(*_transforms.json) ]
+    registered_slides = ch_registered_slides // channel: [ val(meta), path(warp_dir) ]
+    merged            = ch_merged // channel: [ val(meta), path(*_merged.ome.tiff) ]
     versions          = ch_versions // channel: [ versions ]
 }

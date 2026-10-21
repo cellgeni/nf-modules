@@ -33,9 +33,11 @@ workflow NICHECOMPASS {
 
     SPATIAL_NICHECOMPASSANALYSIS(NICHECOMPASS_TRAIN.out.nichecompass_model)
     ch_versions = ch_versions.mix(SPATIAL_NICHECOMPASSANALYSIS.out.versions.first())
+    def ch_nichecompass_dir = SPATIAL_NICHECOMPASSANALYSIS.out.nichecompass_dir
+    def ch_notebook = SPATIAL_NICHECOMPASSANALYSIS.out.notebook
 
     emit:
-    nichecompass_dir = SPATIAL_NICHECOMPASSANALYSIS.out.nichecompass_dir // channel: [ val(meta), path(nichecompass_dir) ]
-    notebook         = SPATIAL_NICHECOMPASSANALYSIS.out.notebook // channel: [ val(meta), path(notebook.ipynb) ]
+    nichecompass_dir = ch_nichecompass_dir // channel: [ val(meta), path(nichecompass_dir) ]
+    notebook         = ch_notebook // channel: [ val(meta), path(notebook.ipynb) ]
     versions         = ch_versions // channel: [ versions.yml ]
 }

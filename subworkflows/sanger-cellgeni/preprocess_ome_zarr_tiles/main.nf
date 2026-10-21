@@ -77,8 +77,9 @@ workflow PREPROCESS_OME_ZARR_TILES {
         .map { meta, out_zarr, tile_list -> [meta, out_zarr, groovy.json.JsonOutput.toJson(tile_list)] }
     OMEZARR_VALIDATE(completed_tiles)
     ch_versions = ch_versions.mix(OMEZARR_VALIDATE.out.versions_omezarr_validate.first())
+    ch_companion_tiles = IMAGING_GENERATECOMPANION.out.companion.join(OMEZARR_VALIDATE.out.out_zarr, by: 0)
 
     emit:
-    companion_tiles = IMAGING_GENERATECOMPANION.out.companion.join(OMEZARR_VALIDATE.out.out_zarr, by: 0) // [ meta, companion, out_zarr ]
+    companion_tiles = ch_companion_tiles // [ meta, companion, out_zarr ]
     versions        = ch_versions // channel: [ versions.yml ]
 }

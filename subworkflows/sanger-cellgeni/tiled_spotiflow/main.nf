@@ -27,8 +27,9 @@ workflow TILED_SPOTIFLOW {
 
     CONCATENATEWKTS(MERGEPEAKS.out.merged_peaks.groupTuple(by: 0))
     ch_versions = ch_versions.mix(CONCATENATEWKTS.out.versions.first())
+    def ch_spots_csv = CONCATENATEWKTS.out.concatenated_peaks
 
     emit:
-    spots_csv = CONCATENATEWKTS.out.concatenated_peaks
+    spots_csv = ch_spots_csv
     versions  = ch_versions
 }

@@ -23,9 +23,11 @@ workflow POSTCODE_DECODING {
 
     POSTCODE_POSTPROCESS(POSTCODE_DECODE.out.model_params_and_losses.combine(ch_loc, by: 0))
     ch_versions = ch_versions.mix(POSTCODE_POSTPROCESS.out.versions.first())
+    def ch_processed_profiles = POSTCODE_PREPROCESS.out.for_decoding
+    def ch_decoded_profiles = POSTCODE_POSTPROCESS.out.decoded_profile
 
     emit:
-    processed_profiles = POSTCODE_PREPROCESS.out.for_decoding // channel: [ val(meta), [ pixel/cell ] ]
-    decoded_profiles   = POSTCODE_POSTPROCESS.out.decoded_profile // channel: [ val(meta), [ decoded_profile ] ]
+    processed_profiles = ch_processed_profiles // channel: [ val(meta), [ pixel/cell ] ]
+    decoded_profiles   = ch_decoded_profiles // channel: [ val(meta), [ decoded_profile ] ]
     versions           = ch_versions // channel: [ versions.yml ]
 }
