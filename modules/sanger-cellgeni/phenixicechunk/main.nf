@@ -4,8 +4,8 @@ process PHENIXICECHUNK {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/c7/c79c0258e345c2e9af8120b1a910a6b0646ca27e9f6f312a085e4fe4f797c809/data'
-        : 'community.wave.seqera.io/library/python_procps-ng_pip_phenix-icechunk:af533c50a7c65dc3'}"
+        ? 'quay.io/cellgeni/phenix-icechunk:0.2.0'
+        : 'quay.io/cellgeni/phenix-icechunk:0.2.0'}"
 
     input:
     tuple val(meta), path(image_dir), val(index_name)
