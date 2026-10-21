@@ -1,0 +1,79 @@
+{
+    "perkinelmer - index xml - ome-tiff - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.summary.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_A01.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "PHENIXICECHUNK",
+                        "phenix-icechunk",
+                        "0.2.0"
+                    ]
+                ],
+                "ome_tiff": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_A01.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "repo": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "summary": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.summary.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "versions_phenixicechunk": [
+                    [
+                        "PHENIXICECHUNK",
+                        "phenix-icechunk",
+                        "0.2.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T08:58:05.694099351",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

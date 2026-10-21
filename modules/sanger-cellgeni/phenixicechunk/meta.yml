@@ -1,0 +1,107 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "phenixicechunk"
+description: Expose an Opera Phenix / Harmony Index.xml export as a virtual OME-Zarr (0.5) HCS plate in an icechunk repository, with optional flatfield correction, z projection and per-well OME-TIFF export.
+keywords:
+  - microscopy
+  - opera phenix
+  - harmony
+  - perkinelmer
+  - icechunk
+  - ome-zarr
+  - ome-tiff
+  - conversion
+tools:
+  - "phenix-icechunk":
+      description: "Expose an Opera Phenix / Harmony Index.xml export as a virtual OME-Zarr plate in an icechunk repo"
+      homepage: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      documentation: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      tool_dev_url: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      licence:
+        - "MIT"
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - image_dir:
+        type: directory
+        description: |
+          Harmony export Images directory containing the index XML and the TIFF planes.
+          The repo references these TIFFs in place (virtual chunks), so they must stay at
+          their resolved location for the repo to remain readable.
+          The source export must also be mounted into the compute environment at that
+          same absolute path wherever the repo is read, e.g. `-B /path/to/export` for
+          singularity/apptainer (singularity.runOptions) or
+          `-v /path/to/export:/path/to/export` for docker (docker.runOptions).
+    - index_name:
+        type: string
+        description: File name of the index XML within image_dir (e.g. Index.xml or Index.idx.xml).
+
+output:
+  repo:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.icechunk":
+          type: directory
+          description: Icechunk repository holding the virtual OME-Zarr plate (and z projections under /projections when --zproject is given).
+          pattern: "*.icechunk"
+          ontologies:
+            - edam: "http://edamontology.org/format_3915" # Zarr
+  summary:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.summary.json":
+          type: file
+          description: JSON summary of the conversion printed by phenix-icechunk.
+          pattern: "*.summary.json"
+          ontologies:
+            - edam: "http://edamontology.org/format_3464" # JSON
+  ome_tiff:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.ome.tiff":
+          type: file
+          description: Optional per-well OME-TIFFs, emitted when ext.args contains `--ome-tiff .`, named <plate>_<well>.ome.tiff (or <plate>_<well>_z<method>.ome.tiff for projections).
+          pattern: "*.ome.tiff"
+          ontologies:
+            - edam: "http://edamontology.org/format_3727" # OME-TIFF
+  versions_phenixicechunk:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "phenix-icechunk":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"phenix-icechunk\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "phenix-icechunk":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"phenix-icechunk\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
