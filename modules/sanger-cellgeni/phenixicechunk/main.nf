@@ -4,8 +4,8 @@ process PHENIXICECHUNK {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/phenix-icechunk:0.3.1'
-        : 'quay.io/cellgeni/phenix-icechunk:0.3.1'}"
+        ? 'quay.io/cellgeni/phenix-icechunk:0.3.2'
+        : 'quay.io/cellgeni/phenix-icechunk:0.3.2'}"
 
     input:
     tuple val(meta), path(image_dir), val(index_name)

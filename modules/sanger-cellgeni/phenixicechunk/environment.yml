@@ -8,4 +8,4 @@ dependencies:
   - "conda-forge::procps-ng=4.0.6"
   - "conda-forge::python=3.12.15"
   - pip:
-      - "phenix-icechunk==0.3.1"
+      - "phenix-icechunk==0.3.2"
