@@ -1,0 +1,59 @@
+process STALIGN {
+    tag "${meta.id}"
+    label 'process_medium'
+
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/stalign:2.0.0-spatialdata0.8.0'
+        : 'quay.io/cellgeni/stalign:2.0.0-spatialdata0.8.0'}"
+
+    input:
+    tuple val(meta), path(source_cells), path(target_cells), path(landmarks)
+
+    output:
+    tuple val(meta), path("*.zarr"), emit: spatialdata
+    tuple val(meta), path("*_aligned_cells.csv.gz"), emit: cells
+    tuple val(meta), path("*_transform.npz"), emit: transform
+    tuple val(meta), path("*_stalign.json"), emit: summary
+    tuple val(meta), path("*_qc.png"), emit: qc, optional: true
+    tuple val("${task.process}"), val('stalign'), eval("python -c 'import STalign; print(STalign.__version__)'"), emit: versions_stalign, topic: versions
+    tuple val("${task.process}"), val('spatialdata'), eval("python -c 'import importlib.metadata as m; print(m.version(\"spatialdata\"))'"), emit: versions_spatialdata, topic: versions
+
+    script:
+    // STalign 2.0.0 is installed from a git commit with its C++ LDDMM engine compiled in the image.
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error("STALIGN module does not support Conda. Please use Docker / Singularity / Podman instead.")
+    }
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def landmarks_arg = landmarks ? "--landmarks ${landmarks}" : ''
+    // Cell tables need x_centroid/y_centroid in micrometers (Xenium cells.csv.gz); other columns,
+    // the method (align_cells or lddmm), LDDMM parameters and the registered affine go in ext.args,
+    // e.g. `--x-col x --y-col y --mixture none`. See stalign_align.py --help.
+    """
+    export MPLCONFIGDIR=\$PWD/.cache/matplotlib
+    export XDG_CACHE_HOME=\$PWD/.cache
+
+    stalign_align.py \\
+        ${source_cells} \\
+        ${target_cells} \\
+        ${landmarks_arg} \\
+        --prefix ${prefix} \\
+        --threads ${task.cpus} \\
+        ${args}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo ${args}
+
+    mkdir -p ${prefix}.zarr
+    touch ${prefix}.zarr/zarr.json
+    echo "" | gzip > ${prefix}_aligned_cells.csv.gz
+    touch ${prefix}_transform.npz
+    touch ${prefix}_stalign.json
+    touch ${prefix}_qc.png
+    """
+}

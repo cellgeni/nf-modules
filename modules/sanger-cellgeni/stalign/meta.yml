@@ -1,0 +1,174 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "stalign"
+description: Align the cells of a source spatial section to a target section with STalign (LDDMM, C++ engine) and write the result as a SpatialData object in which the source data stay unwarped and are registered to the target through a SpatialData affine transformation.
+keywords:
+  - spatial
+  - spatial transcriptomics
+  - xenium
+  - alignment
+  - registration
+  - lddmm
+  - spatialdata
+tools:
+  - "stalign":
+      description: "Alignment of spatial transcriptomics data with diffeomorphic metric mapping (LDDMM)"
+      homepage: "https://jef.works/STalign/"
+      documentation: "https://jef.works/STalign/notebooks/xenium-xenium-alignment.html"
+      tool_dev_url: "https://github.com/JEFworks-Lab/STalign"
+      doi: "10.1038/s41467-023-43915-7"
+      licence:
+        - "GPL-3.0"
+      identifier: ""
+  - "spatialdata":
+      description: "An open and universal framework for processing spatial omics data"
+      homepage: "https://spatialdata.scverse.org"
+      documentation: "https://spatialdata.scverse.org/en/latest/api/transformations.html"
+      tool_dev_url: "https://github.com/scverse/spatialdata"
+      doi: "10.1038/s41592-024-02212-x"
+      licence:
+        - "BSD-3-Clause"
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'rep1_to_rep2' ]`
+    - source_cells:
+        type: file
+        description: |
+          Cells of the section to align (moving), e.g. Xenium cells.csv.gz, with x/y centroids in
+          micrometers (default columns x_centroid, y_centroid; change with `--x-col`/`--y-col`
+          in ext.args). CSV, TSV (optionally gzipped) or parquet.
+        pattern: "*.{csv,csv.gz,tsv,tsv.gz,parquet}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752" # CSV
+          - edam: "http://edamontology.org/format_3475" # TSV
+    - target_cells:
+        type: file
+        description: Cells of the reference (fixed) section, in the same format as source_cells.
+        pattern: "*.{csv,csv.gz,tsv,tsv.gz,parquet}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752" # CSV
+          - edam: "http://edamontology.org/format_3475" # TSV
+    - landmarks:
+        type: file
+        description: |
+          Optional CSV of corresponding points with columns source_x, source_y, target_x, target_y.
+          They initialize the affine (STalign.L_T_from_points) and add a landmark term to LDDMM.
+          Pass `[]` to align without landmarks.
+        pattern: "*.csv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752" # CSV
+
+output:
+  spatialdata:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'rep1_to_rep2' ]`
+      - "*.zarr":
+          type: directory
+          description: |
+            SpatialData object. Shapes `source_cells` (coordinate system `global`, and `aligned` through
+            the registered Affine), `source_cells_aligned` (exact LDDMM positions) and `target_cells`;
+            images `source_density`, `target_density` and `stalign_displacement` (residual dx/dy of the
+            LDDMM map after the Affine, over the source section); tables `table` and `target_table`.
+          pattern: "*.zarr"
+          ontologies:
+            - edam: "http://edamontology.org/format_3915" # Zarr
+  cells:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'rep1_to_rep2' ]`
+      - "*_aligned_cells.csv.gz":
+          type: file
+          description: Source cell table with aligned_x/aligned_y (LDDMM), affine_x/affine_y (registered Affine) and stalign_match_weight columns.
+          pattern: "*_aligned_cells.csv.gz"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  transform:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'rep1_to_rep2' ]`
+      - "*_transform.npz":
+          type: file
+          description: STalign transform (A, v, xv0, xv1; row/column order) for STalign.transform_points_source_to_target, the registered affine (affine_xy) and the matching weights.
+          pattern: "*_transform.npz"
+  summary:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'rep1_to_rep2' ]`
+      - "*_stalign.json":
+          type: file
+          description: Parameters, LDDMM engine, run time, affine matrices and residuals of the alignment.
+          pattern: "*_stalign.json"
+          ontologies:
+            - edam: "http://edamontology.org/format_3464" # JSON
+  qc:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'rep1_to_rep2' ]`
+      - "*_qc.png":
+          type: file
+          description: Overlay of source and target cells before alignment, after the affine and after LDDMM, and the matching weights. Not written with `--no-qc`.
+          pattern: "*_qc.png"
+          ontologies:
+            - edam: "http://edamontology.org/format_3603" # PNG
+  versions_stalign:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "stalign":
+          type: string
+          description: The name of the tool
+      - "python -c 'import STalign; print(STalign.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_spatialdata:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "spatialdata":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"spatialdata\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "stalign":
+          type: string
+          description: The name of the tool
+      - "python -c 'import STalign; print(STalign.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "spatialdata":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"spatialdata\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

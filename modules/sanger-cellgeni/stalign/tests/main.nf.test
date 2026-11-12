@@ -1,0 +1,120 @@
+nextflow_process {
+
+    name "Test Process STALIGN"
+    script "../main.nf"
+    process "STALIGN"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "stalign"
+
+    // tests/data: two synthetic Xenium-like cell tables (~4,200 cells each). The target is the
+    // source section resampled, smoothly warped (~30 um), rotated by 25 degrees and shifted, plus
+    // landmarks.csv with 5 corresponding points.
+
+    test("synthetic cells - align_cells") {
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
+                    []
+                ]
+                """
+            }
+        }
+
+        then {
+            def summary = new groovy.json.JsonSlurper().parse(file(process.out.summary[0][1]))
+            assertAll(
+                { assert process.success },
+                { assert summary.engine == 'cpp' },
+                { assert summary.method == 'align_cells' },
+                { assert summary.affine_used == 'stalign' },
+                { assert summary.n_source_cells == 4237 },
+                // the true map is affine + a ~30 um warp: LDDMM should explain most of it
+                { assert summary.rms_lddmm_vs_affine.stalign < 25 },
+                { assert file("${process.out.spatialdata[0][1]}/zarr.json").exists() },
+                { assert path(process.out.qc[0][1]).exists() },
+                { assert snapshot(
+                    path(process.out.cells[0][1]).linesGzip[0],
+                    path(process.out.cells[0][1]).linesGzip.size(),
+                    file(process.out.spatialdata[0][1]).list().sort(),
+                    file(process.out.transform[0][1]).name,
+                    process.out.findAll { key, val -> key.startsWith('versions') },
+                ).match() }
+            )
+        }
+    }
+
+    test("synthetic cells - lddmm with landmarks") {
+
+        when {
+            params {
+                module_args = "--method lddmm --niter 300 --affine similarity --target-cs target"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test_lm' ],
+                    file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/landmarks.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def summary = new groovy.json.JsonSlurper().parse(file(process.out.summary[0][1]))
+            assertAll(
+                { assert process.success },
+                { assert summary.engine == 'cpp' },
+                { assert summary.method == 'lddmm' },
+                { assert summary.affine_used == 'similarity' },
+                { assert summary.coordinate_systems.target == 'target' },
+                { assert summary.landmark_error.mean < 25 },
+                { assert snapshot(
+                    path(process.out.cells[0][1]).linesGzip.size(),
+                    process.out.findAll { key, val -> key.startsWith('versions') },
+                ).match() }
+            )
+        }
+    }
+
+    test("synthetic cells - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
+                    []
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}

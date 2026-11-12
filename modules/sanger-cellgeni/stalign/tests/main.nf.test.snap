@@ -1,0 +1,185 @@
+{
+    "synthetic cells - lddmm with landmarks": {
+        "content": [
+            4238,
+            {
+                "versions_spatialdata": [
+                    [
+                        "STALIGN",
+                        "spatialdata",
+                        "0.8.0"
+                    ]
+                ],
+                "versions_stalign": [
+                    [
+                        "STALIGN",
+                        "stalign",
+                        "2.0.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-12T16:03:38.370113541",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "synthetic cells - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_aligned_cells.csv.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_transform.npz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_stalign.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_qc.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STALIGN",
+                        "stalign",
+                        "2.0.0"
+                    ]
+                ],
+                "6": [
+                    [
+                        "STALIGN",
+                        "spatialdata",
+                        "0.8.0"
+                    ]
+                ],
+                "cells": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_aligned_cells.csv.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "qc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_qc.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spatialdata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "zarr.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "summary": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_stalign.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "transform": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_transform.npz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_spatialdata": [
+                    [
+                        "STALIGN",
+                        "spatialdata",
+                        "0.8.0"
+                    ]
+                ],
+                "versions_stalign": [
+                    [
+                        "STALIGN",
+                        "stalign",
+                        "2.0.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-12T16:03:46.995191392",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "synthetic cells - align_cells": {
+        "content": [
+            "cell_id,x_centroid,y_centroid,transcript_counts,cell_area,aligned_x,aligned_y,affine_x,affine_y,stalign_match_weight",
+            4238,
+            [
+                "images",
+                "shapes",
+                "tables",
+                "zarr.json"
+            ],
+            "test_transform.npz",
+            {
+                "versions_spatialdata": [
+                    [
+                        "STALIGN",
+                        "spatialdata",
+                        "0.8.0"
+                    ]
+                ],
+                "versions_stalign": [
+                    [
+                        "STALIGN",
+                        "stalign",
+                        "2.0.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-12T16:03:19.126254196",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}
