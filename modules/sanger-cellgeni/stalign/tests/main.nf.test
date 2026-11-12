@@ -9,11 +9,12 @@ nextflow_process {
     tag "modules_sangercellgeni"
     tag "stalign"
 
-    // tests/data: two synthetic Xenium-like cell tables (~4,200 cells each). The target is the
-    // source section resampled, smoothly warped (~30 um), rotated by 25 degrees and shifted, plus
-    // landmarks.csv with 5 corresponding points.
+    // tests/data: synthetic Xenium-like cell tables (~4,200 cells each) of one tissue. The
+    // reference (target_cells) and the sources are differently resampled, smoothly warped (20-30 um),
+    // rotated (+25 / -15 degrees) and shifted; landmarks.csv has 5 points of section 1.
+    // Default section names come from the file names: source, source2.
 
-    test("synthetic cells - align_cells") {
+    test("series - two sections to one reference, landmarks for section 1") {
 
         when {
             params {
@@ -23,9 +24,12 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ],
-                    file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                    [
+                        file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/data/source2_cells.csv.gz", checkIfExists: true)
+                    ],
                     file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
-                    []
+                    file("${moduleDir}/tests/data/landmarks.csv", checkIfExists: true)
                 ]
                 """
             }
@@ -38,27 +42,32 @@ nextflow_process {
                 { assert summary.engine == 'cpp' },
                 { assert summary.method == 'align_cells' },
                 { assert summary.affine_used == 'stalign' },
-                { assert summary.n_source_cells == 4237 },
-                // the true map is affine + a ~30 um warp: LDDMM should explain most of it
-                { assert summary.rms_lddmm_vs_affine.stalign < 25 },
+                { assert summary.sections.keySet() as List == ['source', 'source2'] },
+                { assert summary.sections.source.n_cells == 4237 },
+                { assert summary.sections.source.landmark_error.mean < 15 },
+                { assert summary.sections.source2.landmark_error == null },
+                // the true maps are affine + a 20-30 um warp: LDDMM should explain most of it
+                { assert summary.sections.every { k, v -> v.rms_lddmm_vs_affine.stalign < 30 } },
                 { assert file("${process.out.spatialdata[0][1]}/zarr.json").exists() },
-                { assert path(process.out.qc[0][1]).exists() },
+                { assert process.out.qc[0][1].size() == 2 },
                 { assert snapshot(
                     path(process.out.cells[0][1]).linesGzip[0],
                     path(process.out.cells[0][1]).linesGzip.size(),
-                    file(process.out.spatialdata[0][1]).list().sort(),
-                    file(process.out.transform[0][1]).name,
+                    file("${process.out.spatialdata[0][1]}/images").list().sort(),
+                    file("${process.out.spatialdata[0][1]}/shapes").list().sort(),
+                    file("${process.out.spatialdata[0][1]}/tables").list().sort(),
+                    process.out.transform[0][1].collect { file(it).name },
                     process.out.findAll { key, val -> key.startsWith('versions') },
                 ).match() }
             )
         }
     }
 
-    test("synthetic cells - lddmm with landmarks") {
+    test("single section - lddmm, similarity, named") {
 
         when {
             params {
-                module_args = "--method lddmm --niter 300 --affine similarity --target-cs target"
+                module_args = "--method lddmm --niter 300 --affine similarity --target-cs target --names rep1"
             }
             process {
                 """
@@ -79,8 +88,9 @@ nextflow_process {
                 { assert summary.engine == 'cpp' },
                 { assert summary.method == 'lddmm' },
                 { assert summary.affine_used == 'similarity' },
-                { assert summary.coordinate_systems.target == 'target' },
-                { assert summary.landmark_error.mean < 25 },
+                { assert summary.target_cs == 'target' },
+                // landmarks of section 1 are matched to the section named rep1
+                { assert summary.sections.rep1.landmark_error.mean < 25 },
                 { assert snapshot(
                     path(process.out.cells[0][1]).linesGzip.size(),
                     process.out.findAll { key, val -> key.startsWith('versions') },
@@ -89,7 +99,7 @@ nextflow_process {
         }
     }
 
-    test("synthetic cells - stub") {
+    test("series - stub") {
 
         options "-stub"
 
@@ -101,7 +111,10 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ],
-                    file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                    [
+                        file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/data/source2_cells.csv.gz", checkIfExists: true)
+                    ],
                     file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
                     []
                 ]

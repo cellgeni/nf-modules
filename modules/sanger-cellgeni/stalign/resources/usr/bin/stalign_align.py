@@ -1,43 +1,53 @@
 #!/usr/bin/env python
-"""Align two sets of cells with STalign (LDDMM) and write the result as a SpatialData object.
+"""Align an ordered series of cell sections to one reference with STalign (LDDMM) into one SpatialData object.
 
 Follows the STalign Xenium-to-Xenium tutorial
-(https://jef.works/STalign/notebooks/xenium-xenium-alignment.html): cell centroids of a source
-and a target section are rasterized into density images, LDDMM fits an affine map A plus a
-diffeomorphism, and the source cells are mapped into the target frame.
+(https://jef.works/STalign/notebooks/xenium-xenium-alignment.html) for every section: the cell
+centroids of the section and of the reference are rasterized into density images, LDDMM fits an
+affine map A plus a diffeomorphism, and the section's cells are mapped into the reference frame.
+Each section is aligned to the reference independently.
 
-The source data are not warped. SpatialData transformations are affine only, so the fitted map
+The source data are not warped. SpatialData transformations are affine only, so each fitted map
 is split into:
 
-* an ``Affine`` from the source coordinate system (``--source-cs``) to the target one
-  (``--target-cs``), registered on every source element with ``spatialdata.transformations``.
-  By default it is LDDMM's affine component A (``--affine stalign``); ``--affine similarity``
-  registers ``get_transformation_between_landmarks`` (rotation, uniform scale, translation, and a
-  reflection if needed) fitted between the source cells and their LDDMM positions instead;
-* the exact LDDMM positions of the source cells (``source_cells_aligned`` and
+* an ``Affine`` from the section's coordinate system (named after the section) to the shared
+  reference one (``--target-cs``), registered on the section's elements with
+  ``spatialdata.transformations``. By default it is LDDMM's affine component A
+  (``--affine stalign``); ``--affine similarity`` registers ``get_transformation_between_landmarks``
+  (rotation, uniform scale, translation, and a reflection if needed) fitted between the section's
+  cells and their LDDMM positions instead;
+* the exact LDDMM positions of the cells (``<section>_cells_aligned`` and
   ``table.obsm['spatial_aligned']``), cheap because only the centroids are mapped;
-* ``stalign_displacement``: the residual of the full map after the affine (``dx``, ``dy`` in
-  target units) on a grid over the source section, so that any source point p (e.g. a transcript)
-  maps to ``Affine(p) + displacement(p)`` without STalign.
+* ``<section>_displacement``: the residual of the full map after the affine (``dx``, ``dy`` in
+  reference units) on a grid over the section, so that any point p of the section (e.g. a
+  transcript) maps to ``Affine(p) + displacement(p)`` without STalign.
 
 Coordinates are assumed to be in micrometers (STalign's defaults depend on it).
 
+Sections are named with ``--names``, else after their file names (without extensions and a
+trailing ``cells``, e.g. ``Rep1_cells.csv.gz`` -> ``Rep1``) when these are unique, else ``section_01``, ``section_02``, ... in input order.
+
 Outputs (``PREFIX`` = ``--prefix``):
 
-* ``PREFIX.zarr``: SpatialData with shapes ``source_cells``, ``source_cells_aligned`` and
-  ``target_cells``, images ``source_density``, ``target_density`` and ``stalign_displacement``, and
-  tables ``table`` (source cells) and ``target_table``. ``attrs['stalign']`` holds the summary.
-* ``PREFIX_aligned_cells.csv.gz``: the source table with ``aligned_x/y`` (LDDMM), ``affine_x/y``
-  and ``stalign_match_weight`` (weight of the matching class at the aligned position, 0-1).
-* ``PREFIX_transform.npz``: STalign's ``A`` (row/column order), ``v``, ``xv0``, ``xv1`` (to reuse
-  the map with ``STalign.transform_points_source_to_target(xv, v, A, points_yx)``) and the
-  registered affine as a 3x3 x/y matrix (``affine_xy``).
-* ``PREFIX_stalign.json``: parameters, engine, timings and residuals.
-* ``PREFIX_qc.png``: overlays before alignment, after the affine and after LDDMM.
+* ``PREFIX.zarr``: SpatialData with, for every section, shapes ``<section>_cells`` and
+  ``<section>_cells_aligned`` and images ``<section>_density`` and ``<section>_displacement``; the
+  reference's ``reference_cells`` and ``reference_density``; and one ``table`` of all the cells
+  (``obs['section']``, ``obs['section_index']``: 1..N in input order and 0 for the reference;
+  ``obsm['spatial']``, ``obsm['spatial_aligned']``, ``obsm['spatial_affine']``).
+  ``attrs['stalign']`` holds the summary.
+* ``PREFIX_aligned_cells.csv.gz``: the input tables of all sections and the reference with
+  ``section``, ``section_index``, ``aligned_x/y`` (LDDMM), ``affine_x/y`` and
+  ``stalign_match_weight`` (weight of the matching class at the aligned position, 0-1).
+* ``PREFIX_<section>_transform.npz``: STalign's ``A`` (row/column order), ``v``, ``xv0``, ``xv1``
+  (to reuse the map with ``STalign.transform_points_source_to_target(xv, v, A, points_yx)``) and
+  the registered affine as a 3x3 x/y matrix (``affine_xy``).
+* ``PREFIX_stalign.json``: parameters, engine, timings and residuals of every section.
+* ``PREFIX_<section>_qc.png``: overlays before alignment, after the affine and after LDDMM.
 
 Example::
 
-    stalign_align.py rep1_cells.csv.gz rep2_cells.csv.gz --prefix rep1_to_rep2 --threads 8
+    stalign_align.py --reference rep2_cells.csv.gz --sources rep1_cells.csv.gz rep3_cells.csv.gz \\
+        --prefix breast --threads 8
 """
 
 from __future__ import annotations
@@ -45,10 +55,12 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import time
 from importlib.metadata import version
 from pathlib import Path
 
+import anndata as ad
 import numpy as np
 import pandas as pd
 import spatialdata as sd
@@ -68,16 +80,24 @@ import STalign
 
 log = logging.getLogger("stalign_align")
 
+REFERENCE = "reference"
+
+
 def parse_args(argv=None):
     p = argparse.ArgumentParser(
         description=__doc__.split("\n\n")[0],
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    p.add_argument("source", type=Path, help="Source cells (.csv, .csv.gz, .tsv[.gz] or .parquet); mapped onto the target")
-    p.add_argument("target", type=Path, help="Target cells, same format")
+    p.add_argument("--reference", type=Path, required=True,
+                   help="Reference (target) cells (.csv, .csv.gz, .tsv[.gz] or .parquet)")
+    p.add_argument("--sources", type=Path, nargs="+", required=True,
+                   help="Ordered source sections, same format; each is aligned to the reference")
+    p.add_argument("--names", nargs="+", default=None, help="Section names, one per source, in order")
     p.add_argument("--landmarks", type=Path, default=None,
-                   help="CSV of corresponding points with columns source_x, source_y, target_x, target_y. "
-                        "Initializes the affine (L, T) and adds a landmark term to LDDMM, as in the tutorial")
+                   help="CSV of corresponding points with columns source_x, source_y, target_x, target_y and, "
+                        "with several sources, section (a section name or its 1-based index). Landmarks of a "
+                        "section initialize its affine (L, T) and add a landmark term to LDDMM, as in the "
+                        "tutorial; sections without landmarks are aligned from the images alone")
     p.add_argument("--prefix", default="stalign", help="Output file prefix")
 
     io = p.add_argument_group("input columns")
@@ -103,7 +123,7 @@ def parse_args(argv=None):
     m.add_argument("--niter", type=int, default=None, help="lddmm iterations (STalign default if unset)")
     m.add_argument("--mixture", choices=("em", "none"), default=None,
                    help="Mixture model of the matching weights (default: em for align_cells, none for lddmm). "
-                        "Use none when the target section is complete")
+                        "Use none when the reference section is complete")
     m.add_argument("--prefit", choices=("auto", "true", "false"), default="auto",
                    help="Coarse rotation search before LDDMM (auto: unless landmarks are given)")
     for name, help_ in (("a", "Velocity field smoothness scale"), ("sigmaM", "Matching term std"),
@@ -122,14 +142,13 @@ def parse_args(argv=None):
 
     o = p.add_argument_group("output")
     o.add_argument("--affine", choices=("stalign", "similarity"), default="stalign",
-                   help="Transformation registered from the source to the target coordinate system: STalign's "
-                        "affine component A, or spatialdata's get_transformation_between_landmarks (similarity) "
-                        "between the source cells and their LDDMM positions")
-    o.add_argument("--source-cs", default="global", help="Coordinate system of the source data")
-    o.add_argument("--target-cs", default="aligned", help="Coordinate system of the target (aligned) frame")
+                   help="Transformation registered from each section to the reference coordinate system: "
+                        "STalign's affine component A, or spatialdata's get_transformation_between_landmarks "
+                        "(similarity) between the section's cells and their LDDMM positions")
+    o.add_argument("--target-cs", default="aligned", help="Coordinate system of the reference (aligned) frame")
     o.add_argument("--field-dx", type=float, default=50.0,
-                   help="Pixel size of the stalign_displacement field in micrometers")
-    o.add_argument("--no-qc", action="store_true", help="Skip the QC plot")
+                   help="Pixel size of the <section>_displacement fields in micrometers")
+    o.add_argument("--no-qc", action="store_true", help="Skip the QC plots")
     return p.parse_args(argv)
 
 
@@ -144,7 +163,7 @@ def read_table(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, sep=sep)
 
 
-def read_cells(path: Path, args) -> tuple[pd.DataFrame, np.ndarray, np.ndarray]:
+def read_cells(path: Path, args) -> dict:
     df = read_table(path)
     missing = [c for c in (args.x_col, args.y_col) if c not in df.columns]
     if missing:
@@ -157,23 +176,60 @@ def read_cells(path: Path, args) -> tuple[pd.DataFrame, np.ndarray, np.ndarray]:
         log.warning("%s: %d of %d cells have non-finite coordinates and are not aligned", path, (~ok).sum(), len(df))
     if ok.sum() < 3:
         raise SystemExit(f"{path}: fewer than 3 cells with finite coordinates")
-    log.info("%s: %d cells, x %.1f-%.1f, y %.1f-%.1f", path.name, ok.sum(),
+    log.info("%s: %d cells, x %.1f-%.1f, y %.1f-%.1f", path, ok.sum(),
              x[ok].min(), x[ok].max(), y[ok].min(), y[ok].max())
-    return df, x, y
+    return dict(path=path, df=df, x=x, y=y, ok=ok)
 
 
-def read_landmarks(path: Path):
+def stem(path: Path) -> str:
+    """File name without extensions or a trailing 'cells' (Rep1_cells.csv.gz -> Rep1)."""
+    name = path.name
+    for ext in (".gz", ".parquet", ".pq", ".csv", ".tsv", ".txt"):
+        name = name.removesuffix(ext)
+    return re.sub(r"[_.-]?cells$", "", name) or name
+
+
+def section_names(args) -> list[str]:
+    n = len(args.sources)
+    if args.names is not None:
+        if len(args.names) != n:
+            raise SystemExit(f"--names has {len(args.names)} names for {n} sources")
+        names = list(args.names)
+    else:
+        names = [stem(p) for p in args.sources]
+        if len(set(names)) != n:
+            names = [f"section_{i:0{max(2, len(str(n)))}d}" for i in range(1, n + 1)]
+    # element and coordinate system names: letters, digits, '_', '-', '.'
+    names = [re.sub(r"[^\w.-]", "_", s) for s in names]
+    if len(set(names)) != n:
+        raise SystemExit(f"section names are not unique: {names}")
+    if REFERENCE in names or args.target_cs in names:
+        raise SystemExit(f"section names must differ from {REFERENCE!r} and --target-cs {args.target_cs!r}")
+    return names
+
+
+def read_landmarks(path: Path, names: list[str]) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    """Landmarks per section name, as (pointsI, pointsJ) in STalign's (y, x) order."""
     lm = pd.read_csv(path)
     cols = ["source_x", "source_y", "target_x", "target_y"]
     if any(c not in lm.columns for c in cols):
         raise SystemExit(f"{path}: landmarks need columns {cols}, got {list(lm.columns)}")
-    lm = lm[cols].astype(float).dropna()
-    if len(lm) == 0:
-        raise SystemExit(f"{path}: no landmarks")
-    pointsI = lm[["source_y", "source_x"]].to_numpy()
-    pointsJ = lm[["target_y", "target_x"]].to_numpy()
-    log.info("%d landmarks (%s)", len(lm), "affine" if len(lm) >= 3 else "translation only")
-    return pointsI, pointsJ
+    if "section" not in lm.columns:
+        if len(names) > 1:
+            raise SystemExit(f"{path}: with several sources the landmarks need a 'section' column")
+        lm["section"] = names[0]
+    by_index = {str(i): s for i, s in enumerate(names, 1)}
+    lm["section"] = [s if s in names else by_index.get(s, s) for s in lm["section"].astype(str)]
+    unknown = sorted(set(lm["section"]) - set(names))
+    if unknown:
+        raise SystemExit(f"{path}: unknown section(s) {unknown}; sections are {names} (or 1..{len(names)})")
+    out = {}
+    for s, g in lm.groupby("section", sort=False):
+        g = g[cols].astype(float).dropna()
+        if len(g):
+            out[s] = (g[["source_y", "source_x"]].to_numpy(), g[["target_y", "target_x"]].to_numpy())
+            log.info("%s: %d landmarks (%s)", s, len(g), "affine" if len(g) >= 3 else "translation only")
+    return out
 
 
 # ----------------------------------------------------------------------------- alignment
@@ -185,7 +241,7 @@ def numpy(x) -> np.ndarray:
     return np.asarray(x)
 
 
-def lddmm_kwargs(args, pointsI, pointsJ) -> dict:
+def lddmm_kwargs(args, landmarks) -> dict:
     kw = dict(device="cpu", dtype=torch.float64, backend=args.backend, draw=False)
     if args.threads:
         kw["num_threads"] = args.threads
@@ -196,7 +252,8 @@ def lddmm_kwargs(args, pointsI, pointsJ) -> dict:
         kw["mixture"] = None if args.mixture == "none" else "em"
     if args.prefit != "auto":
         kw["prefit"] = args.prefit == "true"
-    if pointsI is not None:
+    if landmarks is not None:
+        pointsI, pointsJ = landmarks
         L, T = STalign.L_T_from_points(pointsI, pointsJ)
         kw.update(L=torch.tensor(L), T=torch.tensor(T), pointsI=torch.tensor(pointsI), pointsJ=torch.tensor(pointsJ))
     return kw
@@ -209,13 +266,12 @@ def parse_levels(text: str) -> list[tuple[int, int]]:
         raise SystemExit(f"--levels must look like 4:500,2:500, got {text!r}") from e
 
 
-def run_alignment(xI, yI, xJ, yJ, args, pointsI, pointsJ) -> dict:
-    kw = lddmm_kwargs(args, pointsI, pointsJ)
+def run_alignment(xI, yI, xJ, yJ, args, landmarks) -> dict:
+    kw = lddmm_kwargs(args, landmarks)
     if args.method == "align_cells":
         dx = args.dx or 15.0
         blur_um = args.blur_um if args.blur_um is not None else 30.0
         out = STalign.align_cells(xI, yI, xJ, yJ, dx=dx, blur_um=blur_um, levels=parse_levels(args.levels), **kw)
-        r = out["rasters"]
         out["xJ_weights"] = out["levels"][-1]["xJ"]
     else:
         dx = args.dx or 30.0
@@ -225,8 +281,7 @@ def run_alignment(xI, yI, xJ, yJ, args, pointsI, pointsJ) -> dict:
         if args.niter is not None:
             kw["niter"] = args.niter
         out = STalign.LDDMM([YI, XI], I, [YJ, XJ], J, **kw)
-        r = dict(XI=XI, YI=YI, I=I, XJ=XJ, YJ=YJ, J=J)
-        out["rasters"] = r
+        out["rasters"] = dict(XI=XI, YI=YI, I=I, XJ=XJ, YJ=YJ, J=J)
         out["xJ_weights"] = [YJ, XJ]
     out["dx"] = dx
     return out
@@ -262,12 +317,16 @@ def transform_xy(t: BaseTransformation, x, y) -> tuple[np.ndarray, np.ndarray]:
     return moved["x"].to_numpy(), moved["y"].to_numpy()
 
 
+def xy_matrix(t: BaseTransformation) -> np.ndarray:
+    return t.to_affine_matrix(input_axes=("x", "y"), output_axes=("x", "y"))
+
+
 def registered_transformations(out, sx, sy, ax, ay) -> dict[str, BaseTransformation]:
     """The source -> target affine candidates as spatialdata transformations.
 
+    stalign: LDDMM's affine A, which STalign defines on (row, column) = (y, x) coordinates.
     similarity: get_transformation_between_landmarks with every cell as a landmark (moving: its
-    source position, reference: its LDDMM position). stalign: LDDMM's affine A, which STalign
-    defines on (row, column) = (y, x) coordinates.
+    source position, reference: its LDDMM position).
     """
     ok = np.isfinite(ax) & np.isfinite(ay)
     A_yx = Affine(numpy(out["A"]).astype(np.float64), input_axes=("y", "x"), output_axes=("y", "x"))
@@ -277,10 +336,6 @@ def registered_transformations(out, sx, sy, ax, ay) -> dict[str, BaseTransformat
         "similarity": get_transformation_between_landmarks(references_coords=points(ax[ok], ay[ok]),
                                                            moving_coords=points(sx[ok], sy[ok])),
     }
-
-
-def xy_matrix(t: BaseTransformation) -> np.ndarray:
-    return t.to_affine_matrix(input_axes=("x", "y"), output_axes=("x", "y"))
 
 
 def grid_transform(x0, y0, step) -> Sequence:
@@ -310,6 +365,51 @@ def displacement_field(out, t, x, y, step):
     return field, gx[0], gy[0]
 
 
+def align_section(name, src, ref, args, landmarks) -> dict:
+    """Align one section to the reference; adds the results to src and returns its summary."""
+    sx, sy, sok = src["x"], src["y"], src["ok"]
+    t0 = time.perf_counter()
+    out = run_alignment(sx[sok], sy[sok], ref["x"][ref["ok"]], ref["y"][ref["ok"]], args, landmarks)
+    t_fit = time.perf_counter() - t0
+    log.info("%s: %s finished in %.1f s", name, args.method, t_fit)
+
+    ax, ay, w = np.full_like(sx, np.nan), np.full_like(sy, np.nan), np.full_like(sx, np.nan)
+    ax[sok], ay[sok] = source_to_target(out, sx[sok], sy[sok])
+    w[sok] = match_weight(out, ax[sok], ay[sok])
+
+    candidates = registered_transformations(out, sx[sok], sy[sok], ax[sok], ay[sok])
+    resid = {}
+    for k, cand in candidates.items():
+        cx, cy = transform_xy(cand, sx[sok], sy[sok])
+        resid[k] = rms(ax[sok] - cx, ay[sok] - cy)
+    log.info("%s: RMS distance between the LDDMM map and the affine part: %s", name,
+             ", ".join(f"{k} {v:.2f}" for k, v in resid.items()))
+    t = candidates[args.affine]
+    fx, fy = np.full_like(sx, np.nan), np.full_like(sy, np.nan)
+    fx[sok], fy[sok] = transform_xy(t, sx[sok], sy[sok])
+
+    src.update(out=out, t=t, ax=ax, ay=ay, fx=fx, fy=fy, w=w,
+               field=displacement_field(out, t, sx[sok], sy[sok], args.field_dx))
+    summary = {
+        "source": str(src["path"]),
+        "n_cells": int(sok.sum()),
+        "seconds_fit": t_fit,
+        "dx": out["dx"],
+        "affine_xy": {k: xy_matrix(v).tolist() for k, v in candidates.items()},
+        "rms_lddmm_vs_affine": resid,
+        "match_weight_median": float(np.nanmedian(w)),
+        "settings": jsonable(out.get("settings", {})),
+        "prefit": jsonable({k: v for k, v in out.get("prefit", {}).items() if k in ("ran", "reason", "best", "seconds")}),
+    }
+    if landmarks is not None:
+        pointsI, pointsJ = landmarks
+        tl = numpy(STalign.transform_points_source_to_target(out["xv"], out["v"], out["A"], pointsI))
+        err = np.linalg.norm(tl - pointsJ, axis=1)
+        summary["landmark_error"] = {"n": len(err), "mean": float(err.mean()), "max": float(err.max())}
+        log.info("%s: landmark error after alignment: mean %.2f, max %.2f", name, err.mean(), err.max())
+    return summary
+
+
 # ----------------------------------------------------------------------------- outputs
 
 
@@ -321,12 +421,28 @@ def cell_radius(df, ok, args) -> np.ndarray:
     return np.full(int(ok.sum()), args.radius)
 
 
-def cells_adata(df, ok, args, region):
-    import anndata as ad
+def section_frame(name, index, cells, args) -> pd.DataFrame:
+    """The input table with the alignment columns (all rows, NaN where not aligned)."""
+    df = cells["df"].copy()
+    df.insert(0, "section_index", index)
+    df.insert(0, "section", name)
+    df["aligned_x"], df["aligned_y"] = cells["ax"], cells["ay"]
+    df["affine_x"], df["affine_y"] = cells["fx"], cells["fy"]
+    df["stalign_match_weight"] = cells["w"]
+    return df
 
-    obs = df.loc[ok].copy()
-    if args.id_col in obs.columns and obs[args.id_col].is_unique:
-        obs.index = obs[args.id_col].astype(str).to_numpy()
+
+def cells_table(frames: dict[str, pd.DataFrame], cells: dict[str, dict], order: list[str], args) -> ad.AnnData:
+    """One AnnData of the cells with finite coordinates of every section, annotating <section>_cells."""
+    parts = []
+    for name in order:
+        df = frames[name].loc[cells[name]["ok"]].copy()
+        df["region"] = f"{name}_cells"
+        df["instance_id"] = np.arange(len(df))
+        parts.append(df)
+    obs = pd.concat(parts, ignore_index=True)
+    if args.id_col in obs.columns and (obs["section"].astype(str) + ":" + obs[args.id_col].astype(str)).is_unique:
+        obs.index = (obs["section"].astype(str) + ":" + obs[args.id_col].astype(str)).to_numpy()
     else:
         obs.index = obs.index.astype(str)
     obs.index.name = None
@@ -334,62 +450,63 @@ def cells_adata(df, ok, args, region):
     for c in obs.columns:
         if pd.api.types.is_string_dtype(obs[c]) or obs[c].dtype == object:
             obs[c] = obs[c].astype(object)
-    obs["region"] = pd.Categorical([region] * len(obs))
-    obs["instance_id"] = np.arange(len(obs))
-    adata = ad.AnnData(obs=obs)
-    adata.obsm["spatial"] = np.c_[obs[args.x_col].to_numpy(float), obs[args.y_col].to_numpy(float)]
+    obs["section"] = pd.Categorical(obs["section"], categories=order, ordered=True)
+    obs["region"] = pd.Categorical(obs["region"], categories=[f"{s}_cells" for s in order])
+    adata = ad.AnnData(obs=obs.drop(columns=["aligned_x", "aligned_y", "affine_x", "affine_y"]))
+    adata.obsm["spatial"] = obs[[args.x_col, args.y_col]].to_numpy(float)
+    adata.obsm["spatial_aligned"] = obs[["aligned_x", "aligned_y"]].to_numpy(float)
+    adata.obsm["spatial_affine"] = obs[["affine_x", "affine_y"]].to_numpy(float)
     return adata
 
 
-def write_spatialdata(path, args, out, src, tgt, t, field, summary):
-    scs, tcs = args.source_cs, args.target_cs
-    sdf, sx, sy, sok, ax, ay, fx, fy, w = (src[k] for k in ("df", "x", "y", "ok", "ax", "ay", "fx", "fy", "w"))
-    tdf, tx, ty, tok = (tgt[k] for k in ("df", "x", "y", "ok"))
-    rs, rt = cell_radius(sdf, sok, args), cell_radius(tdf, tok, args)
-    # rows that are finite after the LDDMM map (all of them unless points left the velocity grid)
-    aok = np.isfinite(ax[sok]) & np.isfinite(ay[sok])
+def density_image(rasters, keys, dx, transformations_of):
+    """STalign's density raster (keys: x axis, y axis, image) with transformations_of(pixel -> coordinates)."""
+    X, Y, I = (numpy(rasters[k]) for k in keys)
+    grid = grid_transform(float(X[0]), float(Y[0]), dx)
+    return Image2DModel.parse(I.astype(np.float32), dims=("c", "y", "x"), transformations=transformations_of(grid))
 
-    shapes = {
-        "source_cells": ShapesModel.parse(np.c_[sx[sok], sy[sok]], geometry=0, radius=rs,
-                                          index=np.arange(sok.sum()),
-                                          transformations={scs: Identity(), tcs: t}),
-        "source_cells_aligned": ShapesModel.parse(np.c_[ax[sok][aok], ay[sok][aok]], geometry=0, radius=rs[aok],
-                                                  index=np.flatnonzero(aok),
-                                                  transformations={tcs: Identity()}),
-        "target_cells": ShapesModel.parse(np.c_[tx[tok], ty[tok]], geometry=0, radius=rt,
-                                          index=np.arange(tok.sum()), transformations={tcs: Identity()}),
-    }
 
-    r, dx = out["rasters"], out["dx"]
-    s_grid = grid_transform(float(numpy(r["XI"])[0]), float(numpy(r["YI"])[0]), dx)
-    t_grid = grid_transform(float(numpy(r["XJ"])[0]), float(numpy(r["YJ"])[0]), dx)
-    f, fx0, fy0 = field
-    f_grid = grid_transform(fx0, fy0, args.field_dx)
-    images = {
-        "source_density": Image2DModel.parse(numpy(r["I"]).astype(np.float32), dims=("c", "y", "x"),
-                                             transformations={scs: s_grid, tcs: Sequence([s_grid, t])}),
-        "target_density": Image2DModel.parse(numpy(r["J"]).astype(np.float32), dims=("c", "y", "x"),
-                                             transformations={tcs: t_grid}),
-        "stalign_displacement": Image2DModel.parse(f, dims=("c", "y", "x"), c_coords=["dx", "dy"],
-                                                   transformations={scs: f_grid}),
-    }
+def write_spatialdata(path, args, names, sections, ref, frames, summary):
+    tcs = args.target_cs
+    shapes, images = {}, {}
+    for name in names:
+        s = sections[name]
+        sok, t = s["ok"], s["t"]
+        r = cell_radius(s["df"], sok, args)
+        aok = np.isfinite(s["ax"][sok]) & np.isfinite(s["ay"][sok])
+        shapes[f"{name}_cells"] = ShapesModel.parse(
+            np.c_[s["x"][sok], s["y"][sok]], geometry=0, radius=r, index=np.arange(sok.sum()),
+            transformations={name: Identity(), tcs: t})
+        shapes[f"{name}_cells_aligned"] = ShapesModel.parse(
+            np.c_[s["ax"][sok][aok], s["ay"][sok][aok]], geometry=0, radius=r[aok], index=np.flatnonzero(aok),
+            transformations={tcs: Identity()})
+        out = s["out"]
+        images[f"{name}_density"] = density_image(
+            out["rasters"], ("XI", "YI", "I"), out["dx"], lambda g, n=name, t=t: {n: g, tcs: Sequence([g, t])})
+        f, fx0, fy0 = s["field"]
+        images[f"{name}_displacement"] = Image2DModel.parse(
+            f, dims=("c", "y", "x"), c_coords=["dx", "dy"],
+            transformations={name: grid_transform(fx0, fy0, args.field_dx)})
 
-    table = cells_adata(sdf, sok, args, "source_cells")
-    table.obsm["spatial_aligned"] = np.c_[ax[sok], ay[sok]]
-    table.obsm["spatial_affine"] = np.c_[fx[sok], fy[sok]]
-    table.obs["stalign_match_weight"] = w[sok]
-    tables = {
-        "table": TableModel.parse(table, region="source_cells", region_key="region", instance_key="instance_id"),
-        "target_table": TableModel.parse(cells_adata(tdf, tok, args, "target_cells"), region="target_cells",
-                                         region_key="region", instance_key="instance_id"),
-    }
+    rok = ref["ok"]
+    shapes[f"{REFERENCE}_cells"] = ShapesModel.parse(
+        np.c_[ref["x"][rok], ref["y"][rok]], geometry=0, radius=cell_radius(ref["df"], rok, args),
+        index=np.arange(rok.sum()), transformations={tcs: Identity()})
+    # every section rasterizes the reference on the same grid; take the first one's
+    first = sections[names[0]]["out"]
+    images[f"{REFERENCE}_density"] = density_image(
+        first["rasters"], ("XJ", "YJ", "J"), first["dx"], lambda g: {tcs: g})
 
-    sdata = sd.SpatialData(images=images, shapes=shapes, tables=tables, attrs={"stalign": summary})
+    order = names + [REFERENCE]
+    table = cells_table(frames, {**sections, REFERENCE: ref}, order, args)
+    table = TableModel.parse(table, region=[f"{s}_cells" for s in order], region_key="region",
+                             instance_key="instance_id")
+    sdata = sd.SpatialData(images=images, shapes=shapes, tables={"table": table}, attrs={"stalign": summary})
     sdata.write(path, overwrite=True)
     log.info("wrote %s", path)
 
 
-def plot_qc(path, src, tgt, aff_name, max_points=50000):
+def plot_qc(path, name, src, ref, aff_name, max_points=50000):
     import matplotlib
 
     matplotlib.use("Agg")
@@ -400,8 +517,8 @@ def plot_qc(path, src, tgt, aff_name, max_points=50000):
     def sub(n):
         return np.sort(rng.choice(n, min(n, max_points), replace=False))
 
-    si, ti = sub(len(src["x"])), sub(len(tgt["x"]))
-    tx, ty = tgt["x"][ti], tgt["y"][ti]
+    si, ti = sub(len(src["x"])), sub(len(ref["x"]))
+    tx, ty = ref["x"][ti], ref["y"][ti]
     panels = [
         ("before", src["x"][si], src["y"][si], None),
         (f"affine ({aff_name})", src["fx"][si], src["fy"][si], None),
@@ -412,9 +529,9 @@ def plot_qc(path, src, tgt, aff_name, max_points=50000):
     ms = float(np.clip(20000 / max(len(si), len(ti)), 0.3, 4.0))
     fig, axes = plt.subplots(1, 4, figsize=(24, 6.5))
     for ax, (title, x, y, c) in zip(axes, panels):
-        ax.scatter(tx, ty, s=ms, c="0.6" if c is not None else "tab:blue", alpha=0.5, lw=0, label="target")
+        ax.scatter(tx, ty, s=ms, c="0.6" if c is not None else "tab:blue", alpha=0.5, lw=0, label=REFERENCE)
         if c is None:
-            ax.scatter(x, y, s=ms, c="tab:red", alpha=0.5, lw=0, label="source")
+            ax.scatter(x, y, s=ms, c="tab:red", alpha=0.5, lw=0, label=name)
         else:
             sc = ax.scatter(x, y, s=ms, c=c, cmap="viridis", vmin=0, vmax=1, lw=0)
             fig.colorbar(sc, ax=ax, fraction=0.04, label="stalign_match_weight")
@@ -422,6 +539,7 @@ def plot_qc(path, src, tgt, aff_name, max_points=50000):
         ax.set_aspect("equal")
         ax.invert_yaxis()
     axes[0].legend(markerscale=4 / np.sqrt(ms), loc="upper right")
+    fig.suptitle(f"{name} -> {REFERENCE}")
     fig.tight_layout()
     fig.savefig(path, dpi=120)
     plt.close(fig)
@@ -448,8 +566,6 @@ def jsonable(x):
 def main(argv=None):
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    if args.source_cs == args.target_cs:
-        raise SystemExit("--source-cs and --target-cs must differ")
     if args.threads:
         torch.set_num_threads(args.threads)
     info = STalign.backend_info()
@@ -459,33 +575,11 @@ def main(argv=None):
                          "use --backend auto to fall back to torch")
     engine = "cpp" if args.backend == "cpp" or (args.backend == "auto" and info.get("auto") == "cpp") else "torch"
 
-    sdf, sx, sy = read_cells(args.source, args)
-    tdf, tx, ty = read_cells(args.target, args)
-    sok, tok = np.isfinite(sx) & np.isfinite(sy), np.isfinite(tx) & np.isfinite(ty)
-    pointsI = pointsJ = None
-    if args.landmarks is not None:
-        pointsI, pointsJ = read_landmarks(args.landmarks)
-
-    t0 = time.perf_counter()
-    out = run_alignment(sx[sok], sy[sok], tx[tok], ty[tok], args, pointsI, pointsJ)
-    t_fit = time.perf_counter() - t0
-    log.info("%s finished in %.1f s (%s engine)", args.method, t_fit, engine)
-
-    ax, ay = np.full_like(sx, np.nan), np.full_like(sy, np.nan)
-    ax[sok], ay[sok] = source_to_target(out, sx[sok], sy[sok])
-    w = np.full_like(sx, np.nan)
-    w[sok] = match_weight(out, ax[sok], ay[sok])
-
-    candidates = registered_transformations(out, sx[sok], sy[sok], ax[sok], ay[sok])
-    resid = {}
-    for name, cand in candidates.items():
-        cx, cy = transform_xy(cand, sx[sok], sy[sok])
-        resid[name] = rms(ax[sok] - cx, ay[sok] - cy)
-    log.info("RMS distance between the LDDMM map and the affine part: %s",
-             ", ".join(f"{k} {v:.2f}" for k, v in resid.items()))
-    t = candidates[args.affine]
-    fx, fy = np.full_like(sx, np.nan), np.full_like(sy, np.nan)
-    fx[sok], fy[sok] = transform_xy(t, sx[sok], sy[sok])
+    names = section_names(args)
+    landmarks = read_landmarks(args.landmarks, names) if args.landmarks is not None else {}
+    ref = read_cells(args.reference, args)
+    # the reference is its own aligned frame
+    ref.update(ax=ref["x"], ay=ref["y"], fx=ref["x"], fy=ref["y"], w=np.full_like(ref["x"], np.nan))
 
     summary = {
         "stalign_version": STalign.__version__,
@@ -493,46 +587,34 @@ def main(argv=None):
         "method": args.method,
         "engine": engine,
         "backend_info": info,
-        "seconds_fit": t_fit,
-        "source": str(args.source),
-        "target": str(args.target),
-        "n_source_cells": int(sok.sum()),
-        "n_target_cells": int(tok.sum()),
-        "dx": out["dx"],
-        "coordinate_systems": {"source": args.source_cs, "target": args.target_cs},
+        "reference": str(args.reference),
+        "n_reference_cells": int(ref["ok"].sum()),
+        "target_cs": args.target_cs,
         "affine_used": args.affine,
-        "affine_xy": {k: xy_matrix(v).tolist() for k, v in candidates.items()},
-        "rms_lddmm_vs_affine": resid,
-        "match_weight_median": float(np.nanmedian(w)),
-        "settings": jsonable(out.get("settings", {})),
-        "prefit": jsonable({k: v for k, v in out.get("prefit", {}).items() if k in ("ran", "reason", "best", "seconds")}),
+        "sections": {},
         "args": jsonable(vars(args)),
     }
-    if pointsI is not None:
-        tl = numpy(STalign.transform_points_source_to_target(out["xv"], out["v"], out["A"], pointsI))
-        err = np.linalg.norm(tl - pointsJ, axis=1)
-        summary["landmark_error"] = {"mean": float(err.mean()), "max": float(err.max())}
-        log.info("landmark error after alignment: mean %.2f, max %.2f", err.mean(), err.max())
+    sections, frames = {}, {}
+    for i, (name, path) in enumerate(zip(names, args.sources), 1):
+        src = read_cells(path, args)
+        summary["sections"][name] = {"index": i, **align_section(name, src, ref, args, landmarks.get(name))}
+        sections[name] = src
+        frames[name] = section_frame(name, i, src, args)
 
-    res = sdf.copy()
-    res["aligned_x"], res["aligned_y"] = ax, ay
-    res["affine_x"], res["affine_y"] = fx, fy
-    res["stalign_match_weight"] = w
-    res.to_csv(f"{args.prefix}_aligned_cells.csv.gz", index=False, compression="gzip")
+        out = src["out"]
+        xv = [numpy(v) for v in out["xv"]]
+        np.savez_compressed(f"{args.prefix}_{name}_transform.npz", A=numpy(out["A"]), v=numpy(out["v"]),
+                            xv0=xv[0], xv1=xv[1], affine_xy=xy_matrix(src["t"]), WM=numpy(out["WM"]),
+                            xJ0=numpy(out["xJ_weights"][0]), xJ1=numpy(out["xJ_weights"][1]))
+        if not args.no_qc:
+            plot_qc(f"{args.prefix}_{name}_qc.png", name, src, ref, args.affine)
+    frames[REFERENCE] = section_frame(REFERENCE, 0, ref, args)
 
-    xv = [numpy(v) for v in out["xv"]]
-    np.savez_compressed(f"{args.prefix}_transform.npz", A=numpy(out["A"]), v=numpy(out["v"]), xv0=xv[0], xv1=xv[1],
-                        affine_xy=xy_matrix(t), WM=numpy(out["WM"]),
-                        xJ0=numpy(out["xJ_weights"][0]), xJ1=numpy(out["xJ_weights"][1]))
+    pd.concat([frames[s] for s in names + [REFERENCE]], ignore_index=True).to_csv(
+        f"{args.prefix}_aligned_cells.csv.gz", index=False, compression="gzip")
     with open(f"{args.prefix}_stalign.json", "w") as fh:
         json.dump(summary, fh, indent=2)
-
-    src = dict(df=sdf, x=sx, y=sy, ok=sok, ax=ax, ay=ay, fx=fx, fy=fy, w=w)
-    tgt = dict(df=tdf, x=tx, y=ty, ok=tok)
-    if not args.no_qc:
-        plot_qc(f"{args.prefix}_qc.png", src, tgt, args.affine)
-    field = displacement_field(out, t, sx[sok], sy[sok], args.field_dx)
-    write_spatialdata(f"{args.prefix}.zarr", args, out, src, tgt, t, field, summary)
+    write_spatialdata(f"{args.prefix}.zarr", args, names, sections, ref, frames, summary)
 
 
 if __name__ == "__main__":

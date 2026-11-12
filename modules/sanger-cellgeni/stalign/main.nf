@@ -8,7 +8,9 @@ process STALIGN {
         : 'quay.io/cellgeni/stalign:2.0.0-spatialdata0.8.0'}"
 
     input:
-    tuple val(meta), path(source_cells), path(target_cells), path(landmarks)
+    // source_cells: ordered list of sections (one file is fine), each staged in its own folder
+    // because Xenium outputs all share the name cells.csv.gz
+    tuple val(meta), path(source_cells, stageAs: 'sources/???/*'), path(reference_cells, stageAs: 'reference/*'), path(landmarks)
 
     output:
     tuple val(meta), path("*.zarr"), emit: spatialdata
@@ -27,16 +29,18 @@ process STALIGN {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def landmarks_arg = landmarks ? "--landmarks ${landmarks}" : ''
-    // Cell tables need x_centroid/y_centroid in micrometers (Xenium cells.csv.gz); other columns,
-    // the method (align_cells or lddmm), LDDMM parameters and the registered affine go in ext.args,
-    // e.g. `--x-col x --y-col y --mixture none`. See stalign_align.py --help.
+    // Every source section is aligned to the reference and all go into one SpatialData object.
+    // Cell tables need x_centroid/y_centroid in micrometers (Xenium cells.csv.gz); section names
+    // (`--names a b c`, default: file names, or section_01.. when these clash), other columns, the
+    // method (align_cells or lddmm), LDDMM parameters and the registered affine go in ext.args,
+    // e.g. `--names s1 s2 --mixture none`. See stalign_align.py --help.
     """
     export MPLCONFIGDIR=\$PWD/.cache/matplotlib
     export XDG_CACHE_HOME=\$PWD/.cache
 
     stalign_align.py \\
-        ${source_cells} \\
-        ${target_cells} \\
+        --reference ${reference_cells} \\
+        --sources ${source_cells} \\
         ${landmarks_arg} \\
         --prefix ${prefix} \\
         --threads ${task.cpus} \\
@@ -52,8 +56,8 @@ process STALIGN {
     mkdir -p ${prefix}.zarr
     touch ${prefix}.zarr/zarr.json
     echo "" | gzip > ${prefix}_aligned_cells.csv.gz
-    touch ${prefix}_transform.npz
+    touch ${prefix}_section_01_transform.npz
     touch ${prefix}_stalign.json
-    touch ${prefix}_qc.png
+    touch ${prefix}_section_01_qc.png
     """
 }

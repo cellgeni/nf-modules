@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "stalign"
-description: Align the cells of a source spatial section to a target section with STalign (LDDMM, C++ engine) and write the result as a SpatialData object in which the source data stay unwarped and are registered to the target through a SpatialData affine transformation.
+description: Align an ordered series of spatial sections (cell tables, e.g. Xenium) to one reference section with STalign (LDDMM, C++ engine) and write all of them into a single SpatialData object, in which the sections stay unwarped and are registered to the reference through SpatialData affine transformations.
 keywords:
   - spatial
   - spatial transcriptomics
@@ -35,18 +35,20 @@ input:
         type: map
         description: |
           Groovy Map containing sample information
-          e.g. `[ id:'rep1_to_rep2' ]`
+          e.g. `[ id:'breast_series' ]`
     - source_cells:
-        type: file
+        type: list
         description: |
-          Cells of the section to align (moving), e.g. Xenium cells.csv.gz, with x/y centroids in
-          micrometers (default columns x_centroid, y_centroid; change with `--x-col`/`--y-col`
-          in ext.args). CSV, TSV (optionally gzipped) or parquet.
+          Ordered list of the sections to align (one file is also accepted), e.g. Xenium cells.csv.gz,
+          with x/y centroids in micrometers (default columns x_centroid, y_centroid; change with
+          `--x-col`/`--y-col` in ext.args). CSV, TSV (optionally gzipped) or parquet. Each is aligned
+          to reference_cells independently. Sections are named after their files (without a trailing
+          `cells`), section_01.. when these clash (e.g. all cells.csv.gz), or `--names` in ext.args.
         pattern: "*.{csv,csv.gz,tsv,tsv.gz,parquet}"
         ontologies:
           - edam: "http://edamontology.org/format_3752" # CSV
           - edam: "http://edamontology.org/format_3475" # TSV
-    - target_cells:
+    - reference_cells:
         type: file
         description: Cells of the reference (fixed) section, in the same format as source_cells.
         pattern: "*.{csv,csv.gz,tsv,tsv.gz,parquet}"
@@ -56,8 +58,10 @@ input:
     - landmarks:
         type: file
         description: |
-          Optional CSV of corresponding points with columns source_x, source_y, target_x, target_y.
-          They initialize the affine (STalign.L_T_from_points) and add a landmark term to LDDMM.
+          Optional CSV of corresponding points with columns source_x, source_y, target_x, target_y
+          and, with several sections, section (a section name or its 1-based position in
+          source_cells). A section's landmarks initialize its affine (STalign.L_T_from_points) and add a
+          landmark term to LDDMM; sections without landmarks are aligned from the cells alone.
           Pass `[]` to align without landmarks.
         pattern: "*.csv"
         ontologies:
@@ -69,14 +73,16 @@ output:
           type: map
           description: |
             Groovy Map containing sample information
-            e.g. `[ id:'rep1_to_rep2' ]`
+            e.g. `[ id:'breast_series' ]`
       - "*.zarr":
           type: directory
           description: |
-            SpatialData object. Shapes `source_cells` (coordinate system `global`, and `aligned` through
-            the registered Affine), `source_cells_aligned` (exact LDDMM positions) and `target_cells`;
-            images `source_density`, `target_density` and `stalign_displacement` (residual dx/dy of the
-            LDDMM map after the Affine, over the source section); tables `table` and `target_table`.
+            One SpatialData object of all sections and the reference. Per section: shapes
+            `<section>_cells` (coordinate system `<section>`, and `aligned` through the registered
+            Affine) and `<section>_cells_aligned` (exact LDDMM positions), images `<section>_density`
+            and `<section>_displacement` (residual dx/dy of the LDDMM map after the Affine). Reference:
+            `reference_cells` and `reference_density` in `aligned`. One `table` of all cells with
+            obs `section`/`section_index` and obsm `spatial`, `spatial_aligned`, `spatial_affine`.
           pattern: "*.zarr"
           ontologies:
             - edam: "http://edamontology.org/format_3915" # Zarr
@@ -85,10 +91,10 @@ output:
           type: map
           description: |
             Groovy Map containing sample information
-            e.g. `[ id:'rep1_to_rep2' ]`
+            e.g. `[ id:'breast_series' ]`
       - "*_aligned_cells.csv.gz":
           type: file
-          description: Source cell table with aligned_x/aligned_y (LDDMM), affine_x/affine_y (registered Affine) and stalign_match_weight columns.
+          description: Cell tables of all sections and the reference with section, section_index (1..N in input order, 0 for the reference), aligned_x/aligned_y (LDDMM), affine_x/affine_y (registered Affine) and stalign_match_weight columns.
           pattern: "*_aligned_cells.csv.gz"
           ontologies:
             - edam: "http://edamontology.org/format_3752" # CSV
@@ -97,20 +103,20 @@ output:
           type: map
           description: |
             Groovy Map containing sample information
-            e.g. `[ id:'rep1_to_rep2' ]`
+            e.g. `[ id:'breast_series' ]`
       - "*_transform.npz":
           type: file
-          description: STalign transform (A, v, xv0, xv1; row/column order) for STalign.transform_points_source_to_target, the registered affine (affine_xy) and the matching weights.
+          description: One per section, <prefix>_<section>_transform.npz. STalign transform (A, v, xv0, xv1; row/column order) for STalign.transform_points_source_to_target, the registered affine (affine_xy) and the matching weights.
           pattern: "*_transform.npz"
   summary:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
-            e.g. `[ id:'rep1_to_rep2' ]`
+            e.g. `[ id:'breast_series' ]`
       - "*_stalign.json":
           type: file
-          description: Parameters, LDDMM engine, run time, affine matrices and residuals of the alignment.
+          description: Parameters, LDDMM engine, and per-section run time, affine matrices, residuals and landmark errors.
           pattern: "*_stalign.json"
           ontologies:
             - edam: "http://edamontology.org/format_3464" # JSON
@@ -119,10 +125,10 @@ output:
           type: map
           description: |
             Groovy Map containing sample information
-            e.g. `[ id:'rep1_to_rep2' ]`
+            e.g. `[ id:'breast_series' ]`
       - "*_qc.png":
           type: file
-          description: Overlay of source and target cells before alignment, after the affine and after LDDMM, and the matching weights. Not written with `--no-qc`.
+          description: One per section, <prefix>_<section>_qc.png. Overlay of the section and reference cells before alignment, after the affine and after LDDMM, and the matching weights. Not written with `--no-qc`.
           pattern: "*_qc.png"
           ontologies:
             - edam: "http://edamontology.org/format_3603" # PNG
