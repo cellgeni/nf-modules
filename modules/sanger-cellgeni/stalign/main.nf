@@ -8,8 +8,9 @@ process STALIGN {
         : 'quay.io/cellgeni/stalign:2.0.0-spatialdata0.8.0'}"
 
     input:
-    // source_cells: ordered list of sections (one file is fine), each staged in its own folder
-    // because Xenium outputs all share the name cells.csv.gz
+    // source_cells: ordered list of sections (one is fine): cell tables, Xenium output folders or
+    // SpatialData .zarr, mixed if needed. Each is staged in its own folder because Xenium outputs
+    // all share the name cells.csv.gz
     tuple val(meta), path(source_cells, stageAs: 'sources/???/*'), path(reference_cells, stageAs: 'reference/*'), path(landmarks)
 
     output:
@@ -30,7 +31,9 @@ process STALIGN {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def landmarks_arg = landmarks ? "--landmarks ${landmarks}" : ''
     // Every source section is aligned to the reference and all go into one SpatialData object.
-    // Cell tables need x_centroid/y_centroid in micrometers (Xenium cells.csv.gz); section names
+    // Cell tables need x_centroid/y_centroid in micrometers (Xenium cells.csv.gz). SpatialData inputs
+    // give their cells from a shapes element (--sdata-shapes, --sdata-cs) and their elements are
+    // copied into the output, registered to the reference (--sdata-elements all|none|a,b). Section names
     // (`--names a b c`, default: file names, or section_01.. when these clash), other columns, the
     // method (align_cells or lddmm), LDDMM parameters and the registered affine go in ext.args,
     // e.g. `--names s1 s2 --mixture none`. See stalign_align.py --help.

@@ -22,7 +22,21 @@ is split into:
   reference units) on a grid over the section, so that any point p of the section (e.g. a
   transcript) maps to ``Affine(p) + displacement(p)`` without STalign.
 
-Coordinates are assumed to be in micrometers (STalign's defaults depend on it).
+Inputs (``--reference``, ``--sources``; each can be any of):
+
+* a cell table (.csv, .csv.gz, .tsv[.gz], .parquet), e.g. Xenium's ``cells.csv.gz``;
+* a Xenium output folder (its ``cells.parquet`` or ``cells.csv.gz`` is read);
+* a SpatialData ``.zarr`` (e.g. from ``spatialdata_io.xenium``). Its cells are the centroids of a
+  shapes element (``--sdata-shapes``; default: the one annotated by a table, else
+  ``cell_circles``, else the only one), in the element's own coordinates unless ``--sdata-cs``
+  is given, with the obs of the table annotating it. Its elements (images, labels, points, shapes,
+  tables; ``--sdata-elements``) are copied, unwarped, into the output as ``<section>_<element>``
+  and registered to the reference through their transformation to the cells' frame followed by
+  the section's affine, so that e.g. the morphology image and the transcripts of every section are
+  aligned in ``--target-cs`` too. The reference's elements become ``reference_<element>``.
+
+Coordinates are assumed to be in micrometers (STalign's defaults depend on it). Landmarks are
+given in each section's cell coordinates.
 
 Sections are named with ``--names``, else after their file names (without extensions and a
 trailing ``cells``, e.g. ``Rep1_cells.csv.gz`` -> ``Rep1``) when these are unique, else ``section_01``, ``section_02``, ... in input order.
@@ -33,7 +47,8 @@ Outputs (``PREFIX`` = ``--prefix``):
   ``<section>_cells_aligned`` and images ``<section>_density`` and ``<section>_displacement``; the
   reference's ``reference_cells`` and ``reference_density``; and one ``table`` of all the cells
   (``obs['section']``, ``obs['section_index']``: 1..N in input order and 0 for the reference;
-  ``obsm['spatial']``, ``obsm['spatial_aligned']``, ``obsm['spatial_affine']``).
+  ``obsm['spatial']``, ``obsm['spatial_aligned']``, ``obsm['spatial_affine']``); plus the copied
+  elements of SpatialData inputs (``<section>_<element>``, ``reference_<element>``).
   ``attrs['stalign']`` holds the summary.
 * ``PREFIX_aligned_cells.csv.gz``: the input tables of all sections and the reference with
   ``section``, ``section_index``, ``aligned_x/y`` (LDDMM), ``affine_x/y`` and
@@ -48,6 +63,7 @@ Example::
 
     stalign_align.py --reference rep2_cells.csv.gz --sources rep1_cells.csv.gz rep3_cells.csv.gz \\
         --prefix breast --threads 8
+    stalign_align.py --reference rep2.zarr --sources rep1.zarr rep3.zarr --names rep1 rep3 --prefix breast
 """
 
 from __future__ import annotations
@@ -65,7 +81,7 @@ import numpy as np
 import pandas as pd
 import spatialdata as sd
 import torch
-from spatialdata.models import Image2DModel, PointsModel, ShapesModel, TableModel
+from spatialdata.models import Image2DModel, PointsModel, ShapesModel, TableModel, get_table_keys
 from spatialdata.transformations import (
     Affine,
     BaseTransformation,
@@ -73,7 +89,10 @@ from spatialdata.transformations import (
     Scale,
     Sequence,
     Translation,
+    get_transformation,
+    get_transformation_between_coordinate_systems,
     get_transformation_between_landmarks,
+    set_transformation,
 )
 
 import STalign
@@ -89,9 +108,11 @@ def parse_args(argv=None):
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     p.add_argument("--reference", type=Path, required=True,
-                   help="Reference (target) cells (.csv, .csv.gz, .tsv[.gz] or .parquet)")
+                   help="Reference (target) section: cell table (.csv, .csv.gz, .tsv[.gz], .parquet), "
+                        "Xenium output folder or SpatialData .zarr")
     p.add_argument("--sources", type=Path, nargs="+", required=True,
-                   help="Ordered source sections, same format; each is aligned to the reference")
+                   help="Ordered source sections, any of the same formats (they can be mixed); each is "
+                        "aligned to the reference")
     p.add_argument("--names", nargs="+", default=None, help="Section names, one per source, in order")
     p.add_argument("--landmarks", type=Path, default=None,
                    help="CSV of corresponding points with columns source_x, source_y, target_x, target_y and, "
@@ -107,6 +128,19 @@ def parse_args(argv=None):
     io.add_argument("--area-col", default="cell_area",
                     help="Cell area column for the circle radius in the SpatialData shapes (used if present)")
     io.add_argument("--radius", type=float, default=5.0, help="Circle radius when there is no area column")
+
+    sdi = p.add_argument_group("SpatialData input")
+    sdi.add_argument("--sdata-shapes", default=None,
+                     help="Shapes element holding the cells (circles: centres, polygons: centroids). Default: "
+                          "the shapes element annotated by a table, else cell_circles, else the only one")
+    sdi.add_argument("--sdata-cs", default=None,
+                     help="Coordinate system to read the cell positions in (must be in micrometers). Default: "
+                          "the shapes element's own coordinates, which are micrometers for spatialdata_io.xenium "
+                          "(whose 'global' system is in morphology pixels)")
+    sdi.add_argument("--sdata-elements", default="all",
+                     help="Elements of SpatialData inputs to copy into the output, registered to the reference: "
+                          "all, none, or a comma-separated list of element names (e.g. "
+                          "morphology_focus,transcripts,table)")
 
     m = p.add_argument_group("alignment")
     m.add_argument("--method", choices=("align_cells", "lddmm"), default="align_cells",
@@ -163,8 +197,34 @@ def read_table(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, sep=sep)
 
 
+XENIUM_CELLS = ("cells.parquet", "cells.csv.gz")
+# columns of the output tables; input columns of these names are dropped
+RESERVED = ("section", "section_index", "region", "instance_id", "aligned_x", "aligned_y", "affine_x", "affine_y",
+            "stalign_match_weight")
+
+
+def is_spatialdata(path: Path) -> bool:
+    return path.is_dir() and any((path / f).exists() for f in ("zarr.json", ".zgroup", ".zattrs"))
+
+
 def read_cells(path: Path, args) -> dict:
-    df = read_table(path)
+    """Cells of a section: the table df (all rows) with coordinates x, y and the finite ones ok."""
+    if is_spatialdata(path):
+        cells = read_sdata_cells(path, args)
+    elif path.is_dir():
+        found = [path / f for f in XENIUM_CELLS if (path / f).exists()]
+        if not found:
+            raise SystemExit(f"{path}: a folder that is neither a SpatialData .zarr nor a Xenium output folder "
+                             f"(with {' or '.join(XENIUM_CELLS)})")
+        log.info("%s: Xenium output folder, reading %s", path, found[0].name)
+        cells = dict(kind="xenium", df=read_table(found[0]))
+    else:
+        cells = dict(kind="table", df=read_table(path))
+    df = cells["df"]
+    for c in df.columns:  # Xenium cells.parquet of older versions stores ids as bytes
+        if df[c].dtype == object and len(df) and isinstance(df[c].iloc[0], bytes):
+            df[c] = df[c].str.decode("utf-8")
+    df.drop(columns=[c for c in RESERVED if c in df.columns], inplace=True)
     missing = [c for c in (args.x_col, args.y_col) if c not in df.columns]
     if missing:
         raise SystemExit(f"{path}: missing column(s) {missing}; columns are {list(df.columns)}. "
@@ -178,13 +238,77 @@ def read_cells(path: Path, args) -> dict:
         raise SystemExit(f"{path}: fewer than 3 cells with finite coordinates")
     log.info("%s: %d cells, x %.1f-%.1f, y %.1f-%.1f", path, ok.sum(),
              x[ok].min(), x[ok].max(), y[ok].min(), y[ok].max())
-    return dict(path=path, df=df, x=x, y=y, ok=ok)
+    cells.update(path=path, x=x, y=y, ok=ok)
+    return cells
+
+
+def table_regions(table) -> list[str]:
+    if "spatialdata_attrs" not in table.uns:
+        return []
+    region = get_table_keys(table)[0]
+    return [region] if isinstance(region, str) else list(region)
+
+
+def pick_cells_element(sdata, path: Path, wanted: str | None) -> str:
+    shapes = list(sdata.shapes)
+    if wanted is not None:
+        if wanted not in sdata.shapes:
+            raise SystemExit(f"{path}: no shapes element {wanted!r}; shapes are {shapes}")
+        return wanted
+    annotated = sorted({r for t in sdata.tables.values() for r in table_regions(t) if r in sdata.shapes})
+    for candidates in (annotated, [s for s in shapes if s == "cell_circles"], shapes):
+        if len(candidates) == 1:
+            return candidates[0]
+    raise SystemExit(f"{path}: cannot tell which shapes element holds the cells (shapes: {shapes}, annotated by a "
+                     f"table: {annotated}); set --sdata-shapes")
+
+
+def read_sdata_cells(path: Path, args) -> dict:
+    """Cells of a SpatialData object: centroids of a shapes element and the obs of its table."""
+    sdata = sd.read_zarr(path)
+    el = pick_cells_element(sdata, path, args.sdata_shapes)
+    gdf = sdata.shapes[el]
+    to_frame = Identity()
+    if args.sdata_cs is not None:
+        systems = get_transformation(gdf, get_all=True)
+        if args.sdata_cs not in systems:
+            raise SystemExit(f"{path}: {el} is not in coordinate system {args.sdata_cs!r} ({list(systems)})")
+        to_frame = systems[args.sdata_cs]
+    centroids = gdf.geometry.centroid
+    x, y = transform_xy(to_frame, centroids.x.to_numpy(float), centroids.y.to_numpy(float))
+    if "radius" in gdf.columns:
+        radius = gdf["radius"].to_numpy(float)
+    else:
+        radius = np.sqrt(gdf.geometry.area.to_numpy(float) / np.pi)
+    lin = xy_matrix(to_frame)[:2, :2]
+    radius = radius * np.sqrt(abs(np.linalg.det(lin)))
+
+    df, table_name = pd.DataFrame(index=pd.RangeIndex(len(gdf))), None
+    for tname, table in sdata.tables.items():
+        if el not in table_regions(table):
+            continue
+        _, rkey, ikey = get_table_keys(table)
+        obs = table.obs[table.obs[rkey].astype(str) == el]
+        pos = pd.Index(gdf.index.astype(str)).get_indexer(obs[ikey].astype(str))
+        obs = obs.loc[pos >= 0].drop(columns=[rkey]).set_axis(pos[pos >= 0])
+        df = obs.reindex(pd.RangeIndex(len(gdf)))
+        table_name = tname
+        log.info("%s: obs of table %r matched for %d of %d cells", path, tname, (pos >= 0).sum(), len(gdf))
+        break
+    df = df.reset_index(drop=True)
+    if args.id_col not in df.columns:
+        df.insert(0, args.id_col, gdf.index.astype(str).to_numpy())
+    df[args.x_col], df[args.y_col] = x, y
+    log.info("%s: SpatialData, cells from shapes %r in %s, %s", path, el,
+             f"coordinate system {args.sdata_cs!r}" if args.sdata_cs else "its own coordinates",
+             f"obs from table {table_name!r}" if table_name else "no table")
+    return dict(kind="spatialdata", df=df, radius=radius, sdata=sdata, element=el, table=table_name)
 
 
 def stem(path: Path) -> str:
     """File name without extensions or a trailing 'cells' (Rep1_cells.csv.gz -> Rep1)."""
     name = path.name
-    for ext in (".gz", ".parquet", ".pq", ".csv", ".tsv", ".txt"):
+    for ext in (".zarr", ".gz", ".parquet", ".pq", ".csv", ".tsv", ".txt"):
         name = name.removesuffix(ext)
     return re.sub(r"[_.-]?cells$", "", name) or name
 
@@ -392,6 +516,8 @@ def align_section(name, src, ref, args, landmarks) -> dict:
                field=displacement_field(out, t, sx[sok], sy[sok], args.field_dx))
     summary = {
         "source": str(src["path"]),
+        "input": src["kind"],
+        **({"cells_element": src["element"], "table": src["table"]} if src["kind"] == "spatialdata" else {}),
         "n_cells": int(sok.sum()),
         "seconds_fit": t_fit,
         "dx": out["dx"],
@@ -413,12 +539,16 @@ def align_section(name, src, ref, args, landmarks) -> dict:
 # ----------------------------------------------------------------------------- outputs
 
 
-def cell_radius(df, ok, args) -> np.ndarray:
-    if args.area_col in df.columns:
-        area = df.loc[ok, args.area_col].to_numpy(dtype=np.float64)
-        r = np.sqrt(np.clip(area, 0, None) / np.pi)
-        return np.where(np.isfinite(r) & (r > 0), r, args.radius)
-    return np.full(int(ok.sum()), args.radius)
+def cell_radius(cells, args) -> np.ndarray:
+    """Circle radius of the cells with finite coordinates: the input shapes', else from the area column."""
+    df, ok = cells["df"], cells["ok"]
+    if "radius" in cells:
+        r = cells["radius"][ok]
+    elif args.area_col in df.columns:
+        r = np.sqrt(np.clip(df.loc[ok, args.area_col].to_numpy(dtype=np.float64), 0, None) / np.pi)
+    else:
+        return np.full(int(ok.sum()), args.radius)
+    return np.where(np.isfinite(r) & (r > 0), r, args.radius)
 
 
 def section_frame(name, index, cells, args) -> pd.DataFrame:
@@ -466,13 +596,78 @@ def density_image(rasters, keys, dx, transformations_of):
     return Image2DModel.parse(I.astype(np.float32), dims=("c", "y", "x"), transformations=transformations_of(grid))
 
 
+ELEMENT_TYPES = ("images", "labels", "points", "shapes", "tables")
+
+
+def selected_elements(args) -> set[str] | None:
+    """Names of the SpatialData input elements to copy (None: all)."""
+    text = args.sdata_elements.strip()
+    if text == "all":
+        return None
+    return set() if text == "none" else {e.strip() for e in text.split(",") if e.strip()}
+
+
+def unique_name(base: str, taken: set[str]) -> str:
+    name, i = base, 2
+    while name in taken:
+        name, i = f"{base}_{i}", i + 1
+    taken.add(name)
+    return name
+
+
+def carry_elements(prefix, cells, args, transformations_of, taken) -> tuple[dict, dict]:
+    """Elements of a SpatialData input, renamed <prefix>_<name> and registered with transformations_of(T),
+    T being the element's transformation to the frame the cells were read in.
+
+    Returns {element type: {new name: element}} and {old name: new name}.
+    """
+    sdata, path, wanted = cells["sdata"], cells["path"], selected_elements(args)
+    frame = args.sdata_cs if args.sdata_cs is not None else sdata.shapes[cells["element"]]
+    # all paths to the frame first: registering an element changes the transformation graph
+    to_frame = {}
+    for etype, name, el in sdata.gen_spatial_elements():
+        if wanted is not None and name not in wanted:
+            continue
+        if args.sdata_cs is None and name == cells["element"]:
+            to_frame[name] = (etype, el, Identity())
+            continue
+        try:
+            to_frame[name] = (etype, el, get_transformation_between_coordinate_systems(sdata, el, frame))
+        except Exception as e:  # noqa: BLE001 - spatialdata raises several types for a missing path
+            log.warning("%s: %s %r has no transformation to the cells' frame (%s); not copied", path, etype, name, e)
+    out, renamed = {k: {} for k in ELEMENT_TYPES}, {}
+    for name, (etype, el, t) in to_frame.items():
+        set_transformation(el, transformations_of(t), set_all=True)
+        renamed[name] = unique_name(f"{prefix}_{name}", taken)
+        out[etype][renamed[name]] = el
+    for name, table in sdata.tables.items():
+        if wanted is not None and name not in wanted:
+            continue
+        regions = table_regions(table)
+        if regions:
+            keep = [r for r in regions if r in renamed]
+            if not keep:
+                log.warning("%s: table %r annotates no copied element (%s); not copied", path, name, regions)
+                continue
+            _, rkey, ikey = get_table_keys(table)
+            table = table[table.obs[rkey].astype(str).isin(keep)].copy()
+            table.obs[rkey] = table.obs[rkey].astype(str).map(renamed)
+            del table.uns["spatialdata_attrs"]
+            table = TableModel.parse(table, region=[renamed[r] for r in keep], region_key=rkey, instance_key=ikey)
+        renamed[name] = unique_name(f"{prefix}_{name}", taken)
+        out["tables"][renamed[name]] = table
+    if renamed:
+        log.info("%s: copied %s", path, ", ".join(f"{k} -> {v}" for k, v in renamed.items()))
+    return out, renamed
+
+
 def write_spatialdata(path, args, names, sections, ref, frames, summary):
     tcs = args.target_cs
     shapes, images = {}, {}
     for name in names:
         s = sections[name]
         sok, t = s["ok"], s["t"]
-        r = cell_radius(s["df"], sok, args)
+        r = cell_radius(s, args)
         aok = np.isfinite(s["ax"][sok]) & np.isfinite(s["ay"][sok])
         shapes[f"{name}_cells"] = ShapesModel.parse(
             np.c_[s["x"][sok], s["y"][sok]], geometry=0, radius=r, index=np.arange(sok.sum()),
@@ -490,7 +685,7 @@ def write_spatialdata(path, args, names, sections, ref, frames, summary):
 
     rok = ref["ok"]
     shapes[f"{REFERENCE}_cells"] = ShapesModel.parse(
-        np.c_[ref["x"][rok], ref["y"][rok]], geometry=0, radius=cell_radius(ref["df"], rok, args),
+        np.c_[ref["x"][rok], ref["y"][rok]], geometry=0, radius=cell_radius(ref, args),
         index=np.arange(rok.sum()), transformations={tcs: Identity()})
     # every section rasterizes the reference on the same grid; take the first one's
     first = sections[names[0]]["out"]
@@ -501,7 +696,27 @@ def write_spatialdata(path, args, names, sections, ref, frames, summary):
     table = cells_table(frames, {**sections, REFERENCE: ref}, order, args)
     table = TableModel.parse(table, region=[f"{s}_cells" for s in order], region_key="region",
                              instance_key="instance_id")
-    sdata = sd.SpatialData(images=images, shapes=shapes, tables={"table": table}, attrs={"stalign": summary})
+    elements = {k: {} for k in ELEMENT_TYPES}
+    elements.update(images=images, shapes=shapes, tables={"table": table})
+
+    # elements of SpatialData inputs, registered through the cells' frame
+    taken = {n for group in elements.values() for n in group}
+    for name in order:
+        cells = ref if name == REFERENCE else sections[name]
+        if cells["kind"] != "spatialdata":
+            continue
+        if name == REFERENCE:
+            def transformations_of(t):
+                return {tcs: t}
+        else:
+            def transformations_of(t, n=name, aff=cells["t"]):
+                return {n: t, tcs: Sequence([t, aff])}
+        carried, renamed = carry_elements(name, cells, args, transformations_of, taken)
+        for k in ELEMENT_TYPES:
+            elements[k].update(carried[k])
+        (summary if name == REFERENCE else summary["sections"][name])["copied_elements"] = renamed
+
+    sdata = sd.SpatialData(**elements, attrs={"stalign": summary})
     sdata.write(path, overwrite=True)
     log.info("wrote %s", path)
 
@@ -588,6 +803,7 @@ def main(argv=None):
         "engine": engine,
         "backend_info": info,
         "reference": str(args.reference),
+        "reference_input": ref["kind"],
         "n_reference_cells": int(ref["ok"].sum()),
         "target_cs": args.target_cs,
         "affine_used": args.affine,
@@ -612,9 +828,9 @@ def main(argv=None):
 
     pd.concat([frames[s] for s in names + [REFERENCE]], ignore_index=True).to_csv(
         f"{args.prefix}_aligned_cells.csv.gz", index=False, compression="gzip")
+    write_spatialdata(f"{args.prefix}.zarr", args, names, sections, ref, frames, summary)
     with open(f"{args.prefix}_stalign.json", "w") as fh:
         json.dump(summary, fh, indent=2)
-    write_spatialdata(f"{args.prefix}.zarr", args, names, sections, ref, frames, summary)
 
 
 if __name__ == "__main__":

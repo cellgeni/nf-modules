@@ -99,6 +99,56 @@ nextflow_process {
         }
     }
 
+    // source2.zarr and target.zarr: the same cells as SpatialData objects laid out like
+    // spatialdata_io.xenium (cell_circles and transcripts in micrometers, a 'global' system in
+    // morphology pixels, a morphology_focus image and a table annotating cell_circles)
+    test("spatialdata input - SpatialData section and reference mixed with a cell table") {
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sd' ],
+                    [
+                        file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/data/source2.zarr", checkIfExists: true)
+                    ],
+                    file("${moduleDir}/tests/data/target.zarr", checkIfExists: true),
+                    file("${moduleDir}/tests/data/landmarks.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def summary = new groovy.json.JsonSlurper().parse(file(process.out.summary[0][1]))
+            def sdata = process.out.spatialdata[0][1]
+            assertAll(
+                { assert process.success },
+                { assert summary.reference_input == 'spatialdata' },
+                { assert summary.sections.collect { k, v -> v.input } == ['table', 'spatialdata'] },
+                { assert summary.sections.source2.cells_element == 'cell_circles' },
+                { assert summary.sections.source2.n_cells == 4212 },
+                { assert summary.sections.source.landmark_error.mean < 15 },
+                { assert summary.sections.every { k, v -> v.rms_lddmm_vs_affine.stalign < 30 } },
+                { assert summary.sections.source2.copied_elements.morphology_focus == 'source2_morphology_focus' },
+                { assert summary.copied_elements.table == 'reference_table' },
+                { assert snapshot(
+                    path(process.out.cells[0][1]).linesGzip[0],
+                    path(process.out.cells[0][1]).linesGzip.size(),
+                    file("${sdata}/images").list().sort(),
+                    file("${sdata}/points").list().sort(),
+                    file("${sdata}/shapes").list().sort(),
+                    file("${sdata}/tables").list().sort(),
+                    process.out.findAll { key, val -> key.startsWith('versions') },
+                ).match() }
+            )
+        }
+    }
+
     test("series - stub") {
 
         options "-stub"

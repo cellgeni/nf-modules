@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "stalign"
-description: Align an ordered series of spatial sections (cell tables, e.g. Xenium) to one reference section with STalign (LDDMM, C++ engine) and write all of them into a single SpatialData object, in which the sections stay unwarped and are registered to the reference through SpatialData affine transformations.
+description: Align an ordered series of spatial sections (cell tables, Xenium output folders or SpatialData objects) to one reference section with STalign (LDDMM, C++ engine) and write all of them into a single SpatialData object, in which the sections stay unwarped and are registered to the reference through SpatialData affine transformations.
 keywords:
   - spatial
   - spatial transcriptomics
@@ -39,22 +39,30 @@ input:
     - source_cells:
         type: list
         description: |
-          Ordered list of the sections to align (one file is also accepted), e.g. Xenium cells.csv.gz,
-          with x/y centroids in micrometers (default columns x_centroid, y_centroid; change with
-          `--x-col`/`--y-col` in ext.args). CSV, TSV (optionally gzipped) or parquet. Each is aligned
-          to reference_cells independently. Sections are named after their files (without a trailing
-          `cells`), section_01.. when these clash (e.g. all cells.csv.gz), or `--names` in ext.args.
-        pattern: "*.{csv,csv.gz,tsv,tsv.gz,parquet}"
+          Ordered list of the sections to align (one is also accepted), each any of: a cell table
+          (CSV, TSV, optionally gzipped, or parquet, e.g. Xenium cells.csv.gz) with x/y centroids in
+          micrometers (default columns x_centroid, y_centroid; `--x-col`/`--y-col` in ext.args); a
+          Xenium output folder (its cells.parquet or cells.csv.gz); or a SpatialData .zarr (e.g. from
+          spatialdata_io.xenium), whose cells are the centroids of a shapes element (`--sdata-shapes`,
+          `--sdata-cs`) and whose elements are copied into the output, registered to the reference
+          (`--sdata-elements`). Inputs can be mixed. Each is aligned to reference_cells independently.
+          Sections are named after their files (without extensions and a trailing `cells`),
+          section_01.. when these clash (e.g. all cells.csv.gz), or `--names` in ext.args.
+        pattern: "*"
         ontologies:
           - edam: "http://edamontology.org/format_3752" # CSV
           - edam: "http://edamontology.org/format_3475" # TSV
+          - edam: "http://edamontology.org/format_3915" # Zarr
     - reference_cells:
         type: file
-        description: Cells of the reference (fixed) section, in the same format as source_cells.
-        pattern: "*.{csv,csv.gz,tsv,tsv.gz,parquet}"
+        description: |
+          The reference (fixed) section, in any format of source_cells. The elements of a SpatialData
+          reference are copied into the output as reference_<element>.
+        pattern: "*"
         ontologies:
           - edam: "http://edamontology.org/format_3752" # CSV
           - edam: "http://edamontology.org/format_3475" # TSV
+          - edam: "http://edamontology.org/format_3915" # Zarr
     - landmarks:
         type: file
         description: |
@@ -83,6 +91,8 @@ output:
             and `<section>_displacement` (residual dx/dy of the LDDMM map after the Affine). Reference:
             `reference_cells` and `reference_density` in `aligned`. One `table` of all cells with
             obs `section`/`section_index` and obsm `spatial`, `spatial_aligned`, `spatial_affine`.
+            The elements of SpatialData inputs (images, labels, points, shapes, tables), unwarped, as
+            `<section>_<element>` and `reference_<element>`, registered to `aligned` too.
           pattern: "*.zarr"
           ontologies:
             - edam: "http://edamontology.org/format_3915" # Zarr

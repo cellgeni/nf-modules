@@ -122,6 +122,64 @@
             "nextflow": "26.04.0"
         }
     },
+    "spatialdata input - SpatialData section and reference mixed with a cell table": {
+        "content": [
+            "section,section_index,cell_id,x_centroid,y_centroid,transcript_counts,cell_area,aligned_x,aligned_y,affine_x,affine_y,stalign_match_weight",
+            12706,
+            [
+                "reference_density",
+                "reference_morphology_focus",
+                "source2_density",
+                "source2_displacement",
+                "source2_morphology_focus",
+                "source_density",
+                "source_displacement",
+                "zarr.json"
+            ],
+            [
+                "reference_transcripts",
+                "source2_transcripts",
+                "zarr.json"
+            ],
+            [
+                "reference_cell_circles",
+                "reference_cells",
+                "source2_cell_circles",
+                "source2_cells",
+                "source2_cells_aligned",
+                "source_cells",
+                "source_cells_aligned",
+                "zarr.json"
+            ],
+            [
+                "reference_table",
+                "source2_table",
+                "table",
+                "zarr.json"
+            ],
+            {
+                "versions_spatialdata": [
+                    [
+                        "STALIGN",
+                        "spatialdata",
+                        "0.8.0"
+                    ]
+                ],
+                "versions_stalign": [
+                    [
+                        "STALIGN",
+                        "stalign",
+                        "2.0.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-12T20:27:53.528732161",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
     "series - two sections to one reference, landmarks for section 1": {
         "content": [
             "section,section_index,cell_id,x_centroid,y_centroid,transcript_counts,cell_area,aligned_x,aligned_y,affine_x,affine_y,stalign_match_weight",
