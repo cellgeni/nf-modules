@@ -38,6 +38,11 @@ Inputs (``--reference``, ``--sources``; each can be any of):
 Coordinates are assumed to be in micrometers (STalign's defaults depend on it). Landmarks are
 given in each section's cell coordinates.
 
+Sections need not overlap the reference to begin with (e.g. sections cut out of one slide keep
+their slide positions): without landmarks, each fit starts from the translation that puts the
+section's mean cell position on the reference's (``--init centroid``), and STalign's pre-fit
+searches rotations from there. Sections with landmarks start from the landmarks' affine.
+
 Sections are named with ``--names``, else after their file names (without extensions and a
 trailing ``cells``, e.g. ``Rep1_cells.csv.gz`` -> ``Rep1``) when these are unique, else ``section_01``, ``section_02``, ... in input order.
 
@@ -158,6 +163,10 @@ def parse_args(argv=None):
     m.add_argument("--mixture", choices=("em", "none"), default=None,
                    help="Mixture model of the matching weights (default: em for align_cells, none for lddmm). "
                         "Use none when the reference section is complete")
+    m.add_argument("--init", choices=("centroid", "identity"), default="centroid",
+                   help="Initial affine of sections without landmarks: centroid, the translation that puts the "
+                        "section's mean cell position on the reference's (needed when sections do not overlap "
+                        "the reference, e.g. sections of one slide in slide coordinates); identity, STalign's default")
     m.add_argument("--prefit", choices=("auto", "true", "false"), default="auto",
                    help="Coarse rotation search before LDDMM (auto: unless landmarks are given)")
     for name, help_ in (("a", "Velocity field smoothness scale"), ("sigmaM", "Matching term std"),
@@ -365,7 +374,7 @@ def numpy(x) -> np.ndarray:
     return np.asarray(x)
 
 
-def lddmm_kwargs(args, landmarks) -> dict:
+def lddmm_kwargs(args, landmarks, init=None) -> dict:
     kw = dict(device="cpu", dtype=torch.float64, backend=args.backend, draw=False)
     if args.threads:
         kw["num_threads"] = args.threads
@@ -380,7 +389,20 @@ def lddmm_kwargs(args, landmarks) -> dict:
         pointsI, pointsJ = landmarks
         L, T = STalign.L_T_from_points(pointsI, pointsJ)
         kw.update(L=torch.tensor(L), T=torch.tensor(T), pointsI=torch.tensor(pointsI), pointsJ=torch.tensor(pointsJ))
+    elif init is not None:
+        L, T = STalign.L_T_from_points(*init)
+        kw.update(L=torch.tensor(L), T=torch.tensor(T))
     return kw
+
+
+def centroid_init(xI, yI, xJ, yJ) -> tuple[np.ndarray, np.ndarray]:
+    """Point pairs (pointsI, pointsJ; STalign's (y, x) order) of the translation from the source's median
+    cell position to the target's. Only L and T are taken from them: they are not landmarks, so the
+    pre-fit still searches rotations, about the target's centroid, from this start."""
+    cI = np.array([np.mean(yI), np.mean(xI)])
+    cJ = np.array([np.mean(yJ), np.mean(xJ)])
+    unit = np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]])
+    return cI + unit, cJ + unit
 
 
 def parse_levels(text: str) -> list[tuple[int, int]]:
@@ -391,7 +413,8 @@ def parse_levels(text: str) -> list[tuple[int, int]]:
 
 
 def run_alignment(xI, yI, xJ, yJ, args, landmarks) -> dict:
-    kw = lddmm_kwargs(args, landmarks)
+    init = centroid_init(xI, yI, xJ, yJ) if landmarks is None and args.init == "centroid" else None
+    kw = lddmm_kwargs(args, landmarks, init)
     if args.method == "align_cells":
         dx = args.dx or 15.0
         blur_um = args.blur_um if args.blur_um is not None else 30.0
@@ -519,6 +542,7 @@ def align_section(name, src, ref, args, landmarks) -> dict:
         "input": src["kind"],
         **({"cells_element": src["element"], "table": src["table"]} if src["kind"] == "spatialdata" else {}),
         "n_cells": int(sok.sum()),
+        "init": "landmarks" if landmarks is not None else args.init,
         "seconds_fit": t_fit,
         "dx": out["dx"],
         "affine_xy": {k: xy_matrix(v).tolist() for k, v in candidates.items()},

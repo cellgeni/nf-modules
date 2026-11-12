@@ -36,7 +36,9 @@ process STALIGN {
     // copied into the output, registered to the reference (--sdata-elements all|none|a,b). Section names
     // (`--names a b c`, default: file names, or section_01.. when these clash), other columns, the
     // method (align_cells or lddmm), LDDMM parameters and the registered affine go in ext.args,
-    // e.g. `--names s1 s2 --mixture none`. See stalign_align.py --help.
+    // e.g. `--names s1 s2 --mixture none`. Sections need not overlap the reference: without landmarks
+    // each fit starts by moving the section's mean cell position onto the reference's (--init
+    // centroid; --init identity for STalign's default). See stalign_align.py --help.
     """
     export MPLCONFIGDIR=\$PWD/.cache/matplotlib
     export XDG_CACHE_HOME=\$PWD/.cache
