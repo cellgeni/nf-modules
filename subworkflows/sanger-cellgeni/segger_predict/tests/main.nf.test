@@ -10,7 +10,7 @@ nextflow_workflow {
     tag "subworkflows/segger_predict"
     tag "segger/segment"
     tag "segger/export"
-    tag "segger/exportgeojson"
+    tag "geojson/fromxeniumzarr"
 
     test("segger_predict - local directory input - stub") {
 

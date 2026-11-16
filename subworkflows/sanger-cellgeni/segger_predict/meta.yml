@@ -2,7 +2,7 @@ name: "segger_predict"
 description: |
   Run segger cell segmentation end-to-end: trains and segments a spatial transcriptomics
   dataset with SEGGER_SEGMENT, exports the results with SEGGER_EXPORT, then exports
-  seg_cells.zarr.zip from the export directory to GeoJSON with SEGGER_EXPORTGEOJSON.
+  seg_cells.zarr.zip from the export directory to GeoJSON with GEOJSON_FROMXENIUMZARR.
 keywords:
   - segmentation
   - spatial transcriptomics
@@ -14,7 +14,7 @@ keywords:
 components:
   - segger/segment
   - segger/export
-  - segger/exportgeojson
+  - geojson/fromxeniumzarr
 
 input:
   - meta:
@@ -49,7 +49,7 @@ output:
   - geojson:
       type: file
       description: |
-        GeoJSON GeometryCollection produced from SEGGER_EXPORT output file
+        GeoJSON FeatureCollection produced from SEGGER_EXPORT output file
         seg_cells.zarr.zip.
       pattern: "*.geojson"
   - versions:

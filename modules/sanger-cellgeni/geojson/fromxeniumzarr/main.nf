@@ -1,10 +1,10 @@
-process SEGGER_EXPORTGEOJSON {
+process GEOJSON_FROMXENIUMZARR {
     tag "${meta.id}"
     label 'process_medium'
 
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0'
-        : 'quay.io/cellgeni/spatialdata:0.7.3-spatialdata-io-0.7.0'}"
+        ? 'quay.io/cellgeni/spatialdata:0.9.0-spatialdata-io0.7.2'
+        : 'quay.io/cellgeni/spatialdata:0.9.0-spatialdata-io0.7.2'}"
 
     input:
     tuple val(meta), path(zarr_zip)

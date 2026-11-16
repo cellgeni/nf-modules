@@ -1,4 +1,4 @@
-name: "segger_exportgeojson"
+name: "geojson_fromxeniumzarr"
 description: Export polygon sets from a Xenium-style cells.zarr.zip file to Xenium Ranger GeoJSON
 keywords:
   - segmentation

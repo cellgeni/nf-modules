@@ -1,6 +1,6 @@
-include { SEGGER_SEGMENT       } from '../../../modules/sanger-cellgeni/segger/segment/main'
-include { SEGGER_EXPORT        } from '../../../modules/sanger-cellgeni/segger/export/main'
-include { SEGGER_EXPORTGEOJSON } from '../../../modules/sanger-cellgeni/segger/exportgeojson/main'
+include { SEGGER_SEGMENT         } from '../../../modules/sanger-cellgeni/segger/segment/main'
+include { SEGGER_EXPORT          } from '../../../modules/sanger-cellgeni/segger/export/main'
+include { GEOJSON_FROMXENIUMZARR } from '../../../modules/sanger-cellgeni/geojson/fromxeniumzarr/main'
 
 workflow SEGGER_PREDICT {
     take:
@@ -21,11 +21,11 @@ workflow SEGGER_PREDICT {
     // SEGGER_EXPORT writes Xenium-compatible output into export_dir; export the cell polygons to GeoJSON.
     def ch_polygons_zarr = SEGGER_EXPORT.out.export_dir.map { meta, export_dir -> [meta, file("${export_dir}/seg_cells.zarr.zip")] }
 
-    SEGGER_EXPORTGEOJSON(ch_polygons_zarr)
-    ch_versions = ch_versions.mix(SEGGER_EXPORTGEOJSON.out.versions_export_zarr_polygons_to_geojson.first())
+    GEOJSON_FROMXENIUMZARR(ch_polygons_zarr)
+    ch_versions = ch_versions.mix(GEOJSON_FROMXENIUMZARR.out.versions_export_zarr_polygons_to_geojson.first())
     def ch_segmentation = SEGGER_SEGMENT.out.segmentation
     def ch_export_dir = SEGGER_EXPORT.out.export_dir
-    def ch_geojson = SEGGER_EXPORTGEOJSON.out.geojson
+    def ch_geojson = GEOJSON_FROMXENIUMZARR.out.geojson
 
     emit:
     segmentation = ch_segmentation // channel: [ val(meta), path(parquet) ]
