@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "tacco_annotate"
+description: Transfer cell-type (or any categorical) annotations from an annotated single-cell reference onto spatial (or single-cell) data with TACCO, giving per-observation annotation fractions and the top annotation.
+keywords:
+  - tacco
+  - spatial transcriptomics
+  - annotation transfer
+  - deconvolution
+  - cell type
+  - optimal transport
+  - anndata
+tools:
+  - "tacco":
+      description: "Telling single-cell and spatial omics data apart: compositional annotation transfer based on optimal transport and other methods"
+      homepage: "https://simonwm.github.io/tacco/"
+      documentation: "https://simonwm.github.io/tacco/api.html"
+      tool_dev_url: "https://github.com/simonwm/tacco"
+      doi: "10.1038/s41587-023-01657-3"
+      licence:
+        - "BSD-3-Clause"
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - spatial:
+        type: file
+        description: |
+          AnnData to annotate (e.g. Xenium/Visium/Slide-seq cells or spots) with raw
+          counts in `.X`, or in the layer given by `--spatial-layer` in `ext.args`.
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5
+    - reference:
+        type: file
+        description: |
+          Annotated single-cell reference AnnData with raw counts in `.X` (or the layer
+          given by `--reference-layer`) and the annotation to transfer in the `.obs`
+          column given by `--annotation-key` in `ext.args`. Genes are matched on
+          `var_names`.
+        pattern: "*.h5ad"
+        ontologies:
+          - edam: "http://edamontology.org/format_3590" # HDF5
+
+output:
+  h5ad:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.h5ad":
+          type: file
+          description: |
+            The input spatial AnnData with the annotation fractions in
+            `.obsm[<result_key>]`, the top annotation in `.obs[<result_key>]` and its
+            fraction in `.obs[<result_key>_fraction]`. `<result_key>` defaults to the
+            annotation key.
+          pattern: "*.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5
+  annotation:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}_annotation.csv.gz":
+          type: file
+          description: |
+            Per-observation table (`obs_name` index) with one fraction column per
+            annotation category, the top annotation and its fraction.
+          pattern: "*_annotation.csv.gz"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  versions_tacco:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "tacco":
+          type: string
+          description: The name of the tool
+      - "python -c \"from importlib.metadata import version; print(version('tacco'))\"":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "tacco":
+          type: string
+          description: The name of the tool
+      - "python -c \"from importlib.metadata import version; print(version('tacco'))\"":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"
