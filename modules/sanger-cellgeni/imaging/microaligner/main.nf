@@ -4,9 +4,9 @@ process IMAGING_MICROALIGNER {
     tag "${meta.id}"
     label 'process_large'
 
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? "quay.io/cellgeni/microaligner:v1.0.6"
-        : "quay.io/cellgeni/microaligner:v1.0.6"}"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? "quay.io/cellgeni/microaligner:v1.0.7"
+        : "quay.io/cellgeni/microaligner:v1.0.7"}"
 
     input:
     tuple val(meta), path(config), path(images)
@@ -15,9 +15,6 @@ process IMAGING_MICROALIGNER {
     output:
     tuple val(meta), path("${prefix}_${method}_reg_result_stack.tif"), emit: registered_image
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

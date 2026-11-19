@@ -1,0 +1,68 @@
+nextflow_process {
+
+    name "Test Process OMETIF_CONCATENATE"
+    script "../main.nf"
+    config "./nextflow.config"
+    process "OMETIF_CONCATENATE"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "ometif"
+    tag "ometif/concatenate"
+
+    test("concat - two single-channel tifs onto a new channel axis") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'ref_image.ome.tif', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'moving_image.ome.tif', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                // each channel is stamped with its 1-based position in the input series
+                { assert new File(process.out.hyperstack[0][1].toString()).text.contains('Name="cycle_1_') },
+                { assert new File(process.out.hyperstack[0][1].toString()).text.contains('Name="cycle_2_') },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("concat - two single-channel tifs - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'ref_image.ome.tif', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'moving_image.ome.tif', checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

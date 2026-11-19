@@ -1,0 +1,66 @@
+nextflow_process {
+
+    name "Test Process RAW2FEATURES"
+    script "../main.nf"
+    process "RAW2FEATURES"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "raw2features"
+
+    test("sample - ome.zarr - resnet50") {
+
+        when {
+            params {
+                module_args = "--model resnet50 --device cpu"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${new File('modules/sanger-cellgeni/raw2features/tests/sample.ome.zarr').absolutePath}", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            def embeddings_zarr = process.out.embeddings[0][1]
+            assertAll(
+                { assert process.success },
+                { assert embeddings_zarr.toString().endsWith('test.embeddings.zarr') },
+                // .zattrs/.zmetadata embed a run timestamp + CLI invocation for provenance,
+                // so they differ between runs; check the deterministic array outputs instead.
+                { assert new File("${embeddings_zarr}/grids/mpp1_px224/coords/.zarray").exists() },
+                { assert new File("${embeddings_zarr}/grids/mpp1_px224/features/resnet50/.zarray").exists() },
+                { assert new File("${embeddings_zarr}/grids/mpp1_px224/mask/.zarray").exists() },
+                { assert process.out.versions_raw2features[0][1] == 'raw2features' },
+                { assert snapshot(process.out.versions_raw2features).match() }
+            )
+        }
+    }
+
+    test("sample - ome.zarr - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${new File('modules/sanger-cellgeni/raw2features/tests/sample.ome.zarr').absolutePath}", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

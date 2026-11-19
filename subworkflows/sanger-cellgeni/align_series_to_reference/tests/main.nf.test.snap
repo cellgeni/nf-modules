@@ -1,0 +1,45 @@
+{
+    "scraftpalom - ref + two moving images - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "/spatial_demo_datasets/3D_align/ref_image.ome.tif"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "aligned_moving_image.ome.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                [
+                    {
+                        "id": "test"
+                    },
+                    "aligned_moving_image.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_hyperstack.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "versions.yml:md5,3224af356ba5434c77531f9b9acb6873",
+                "versions.yml:md5,66f9b487c06df03e319b9f0a8f7f085b"
+            ]
+        ],
+        "timestamp": "2026-08-17T16:55:32.982361598",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

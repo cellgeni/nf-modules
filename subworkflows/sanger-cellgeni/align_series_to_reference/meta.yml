@@ -1,0 +1,66 @@
+name: "align_series_to_reference"
+description: |
+  Align a series of images onto a single reference image (the first image in
+  the series by default) using a configurable alignment method, then
+  concatenate the reference and all aligned images into a single OME-TIFF
+  hyperstack (by default stacked along the channel axis) in their original
+  series order. Splits the input series into one reference image and its
+  remaining moving images, dispatches every reference/moving pair to the
+  selected alignment method, then reassembles reference + aligned images in
+  their original order before concatenation. Only the "scraftpalom" method
+  (Scraft - Palom) is currently implemented; additional methods can be added
+  as further branches keyed on `params.alignment_method`.
+keywords:
+  - registration
+  - alignment
+  - spatial
+  - scraft
+  - palom
+  - hyperstack
+  - ome-tiff
+components:
+  - sanger-cellgeni/spatial/scraftpalom
+  - sanger-cellgeni/ometif/concatenate
+
+input:
+  - ch_images:
+      type: file
+      description: |
+        Structure: [ val(meta), path(images) ]
+        An ordered list of images to align. By default the first image
+        (index `params.align_reference_index ?: 0`) is used unchanged as the
+        reference; every other image is aligned onto it.
+      pattern: "*.{tif,tiff,ome.tif,ome.tiff}"
+
+output:
+  - reference:
+      type: file
+      description: |
+        The reference image, passed through unchanged.
+        Structure: [ val(meta), path(reference_image) ]
+  - aligned:
+      type: file
+      description: |
+        One aligned image per moving image in the input series.
+        Structure: [ val(meta), path(aligned_image) ]
+      pattern: "*.ome.tif"
+  - hyperstack:
+      type: file
+      description: |
+        The reference image and all aligned images concatenated into a single
+        OME-TIFF hyperstack, in their original series order (reference first).
+        Each channel name is prefixed with its 1-based position in that
+        series (e.g. "cycle_1_cy3", "cycle_2_cy3").
+        Structure: [ val(meta), path(hyperstack.ome.tif) ]
+      pattern: "*_hyperstack.ome.tif"
+  - versions:
+      type: file
+      description: |
+        File containing software versions.
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

@@ -1,0 +1,38 @@
+nextflow_process {
+
+    name "Test Process SEGTRAQ_POINTSTATS"
+    script "../main.nf"
+    process "SEGTRAQ_POINTSTATS"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "segtraq"
+    tag "segtraq/pointstats"
+
+    test("segtraq_pointstats - xenium zarr + labeled - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_xenium' ],
+                    file(params.modules_testdata_base_path + 'segtraq/xenium.zarr', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'segtraq/test_xenium_labeled.h5ad', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

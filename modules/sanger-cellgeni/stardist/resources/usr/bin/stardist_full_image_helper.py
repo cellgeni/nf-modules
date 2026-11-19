@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (c) 2026 Wellcome Sanger Institute
+
+import json
+import logging
+import uuid
+from pathlib import Path
+
+import fire
+import numpy as np
+from csbdeep.utils import normalize
+from shapely.geometry import Polygon, mapping
+from stardist.models import StarDist2D
+
+
+logging.basicConfig(level="INFO", format="[%(asctime)s][%(levelname)s] %(message)s")
+
+DEFAULT_MODEL_NAME = "2D_versatile_fluo"
+DETERMINISTIC_FEATURE_NAMESPACE = uuid.UUID("df0c588a-4c4b-5f72-80be-f39cc4d4ba6e")
+
+
+def _select_plane(array: np.ndarray, channel: int, z: int) -> np.ndarray:
+    image = np.asarray(array)
+    image = np.squeeze(image)
+
+    if image.ndim == 2:
+        return image
+
+    if image.ndim == 3:
+        if image.shape[-1] <= 16:
+            return image[..., channel]
+        if image.shape[0] <= 16:
+            return image[channel]
+        return image[z]
+
+    while image.ndim > 2:
+        small_axes = [axis for axis, size in enumerate(image.shape) if size <= 16]
+        axis = small_axes[0] if small_axes else 0
+        index = channel if axis == small_axes[-1] else z
+        image = np.take(image, index, axis=axis)
+        image = np.squeeze(image)
+
+    return image
+
+
+def load_image_plane(
+    image_path: str,
+    channel: int = 0,
+    z: int = 0,
+    timepoint: int = 0,
+    resolution_level: int = 0,
+) -> np.ndarray:
+    path = Path(image_path)
+
+    if path.suffix.lower() == ".pgm":
+        return _read_pgm(path)
+
+    try:
+        from aicsimageio import AICSImage
+
+        image = AICSImage(path)
+        return np.squeeze(
+            image.get_image_data("YX", C=channel, Z=z, T=timepoint, S=resolution_level)
+        )
+    except Exception as error:
+        logging.info("Falling back to tifffile reader: %s", error)
+
+    import tifffile
+
+    with tifffile.TiffFile(path) as tif:
+        series = tif.series[min(resolution_level, len(tif.series) - 1)]
+        if series.pages:
+            return _select_plane(series.pages[0].asarray(), channel=channel, z=z)
+        return _select_plane(series.asarray(), channel=channel, z=z)
+
+
+def _read_pgm(path: Path) -> np.ndarray:
+    tokens = []
+    with open(path, "rt") as handle:
+        for line in handle:
+            if line.startswith("#"):
+                continue
+            tokens.extend(line.split())
+
+    if tokens[0] != "P2":
+        raise ValueError(f"Unsupported PGM format in {path}")
+
+    width = int(tokens[1])
+    height = int(tokens[2])
+    max_value = int(tokens[3])
+    data = np.array(tokens[4:], dtype=np.float32).reshape(height, width)
+    if max_value != 255:
+        data = data / max_value * 255
+    return data.astype(np.float32)
+
+
+def segment(
+    image_path: str,
+    output_name: str,
+    channel: int = 0,
+    z: int = 0,
+    timepoint: int = 0,
+    resolution_level: int = 0,
+    model_name: str = DEFAULT_MODEL_NAME,
+    tile_size: int = 2048,
+):
+    logging.info(
+        "Loading image plane from '%s' with timepoint=%s, channel=%s, z=%s",
+        image_path,
+        timepoint,
+        channel,
+        z,
+    )
+    image = load_image_plane(
+        image_path,
+        channel=channel,
+        z=z,
+        timepoint=timepoint,
+        resolution_level=resolution_level,
+    )
+
+    model = download_model(model_name=model_name)
+
+    n_tiles = tuple(max(1, int(np.ceil(size / tile_size))) for size in image.shape[:2])
+    logging.info("Running StarDist prediction with n_tiles=%s", n_tiles)
+    labels, details = model.predict_instances(
+        normalize(image, 1, 99.8, axis=(0, 1)),
+        n_tiles=n_tiles,
+    )
+    coord = details["coord"]
+
+    logging.info("Converting outlines to GeoJSON format")
+    features = []
+    if coord.shape[0] != 0:
+        for object_id, polygon in enumerate(coord, start=1):
+            flat_coords = [(xy[1], xy[0]) for xy in polygon.reshape(-1, 2)]
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": None,
+                    "geometry": mapping(Polygon(flat_coords)),
+                    "cell_id": object_id,
+                    "id": uuid.uuid5(
+                        DETERMINISTIC_FEATURE_NAMESPACE,
+                        f"{object_id}:{flat_coords}",
+                    ),
+                }
+            )
+    else:
+        logging.info("No outlines found")
+
+    geojson = {"type": "FeatureCollection", "features": features}
+    with open(output_name, "wt") as handle:
+        json.dump(geojson, handle, separators=(",", ":"))
+
+
+def download_model(model_name: str = DEFAULT_MODEL_NAME, **_ignored):
+    logging.info("Downloading/loading StarDist2D model '%s'", model_name)
+    return StarDist2D.from_pretrained(model_name)
+
+
+if __name__ == "__main__":
+    options = {
+        "download-model": download_model,
+        "run": segment,
+        "version": "0.0.1",
+    }
+    fire.Fire(options)

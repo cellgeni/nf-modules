@@ -3,7 +3,7 @@ process IMAGING_MERGEPEAKS {
     label 'process_single'
 
     // conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/imagetileprocessor:0.1.13'
         : 'quay.io/cellgeni/imagetileprocessor:0.1.13'}"
 
@@ -13,9 +13,6 @@ process IMAGING_MERGEPEAKS {
     output:
     tuple val(meta), path("${output_name}"), emit: merged_peaks
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

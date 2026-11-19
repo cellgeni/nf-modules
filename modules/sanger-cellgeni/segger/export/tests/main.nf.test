@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process SEGGER_EXPORT"
+    script "../main.nf"
+    process "SEGGER_EXPORT"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "segger"
+    tag "segger/export"
+
+    test("xenium_explorer - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'spatial/segger/segger_segmentation.parquet', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'spatial/xenium/sample/', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

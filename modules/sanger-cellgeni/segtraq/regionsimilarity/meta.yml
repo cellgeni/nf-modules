@@ -1,0 +1,46 @@
+name: "segtraq_regionsimilarity"
+description: |
+  Detect transcript contamination via spatial distribution consistency for a 10x Xenium dataset.
+  Computes nucleus-cytoplasm similarity and border-neighbourhood similarity using SegTraQ,
+  which measure how consistently transcripts are distributed relative to expected spatial regions.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - contamination
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: SpatialData zarr directory for the Xenium sample.
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - obs:
+        type: file
+        description: |
+          CSV with per-cell region similarity scores
+          (nucleus-cytoplasm and border-neighbourhood correlations).
+        pattern: "*_region_similarity_obs.csv"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

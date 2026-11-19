@@ -1,0 +1,67 @@
+// nf-core modules test omero/attachtable
+nextflow_process {
+
+    name "Test Process OMERO_ATTACHTABLE"
+    script "../main.nf"
+    process "OMERO_ATTACHTABLE"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "omero"
+    tag "omero/attachtable"
+
+    test("attachtable - csv") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'path/to/omero/attachtable/example.csv', checkIfExists: true),
+                    1,
+                    1,
+                    'omero.example.org',
+                    4064,
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("attachtable - csv - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'path/to/omero/attachtable/example.csv', checkIfExists: true),
+                    1,
+                    1,
+                    'omero.example.org',
+                    4064,
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

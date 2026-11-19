@@ -1,0 +1,34 @@
+{
+    "proseg-to-baysor - stub": {
+        "content": [
+            [
+                "versions.yml:md5,db097bf369278ba55d196759aa4948b8"
+            ]
+        ],
+        "timestamp": "2026-10-09T18:38:34.889929317",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "proseg-to-baysor - transcripts.csv": {
+        "content": [
+            [
+                "versions.yml:md5,9ac197173023cd191665ae4f4ddead9f"
+            ],
+            {
+                "PROSEG_TO_BAYSOR": {
+                    "proseg": "3.2.0"
+                }
+            },
+            "transcript metadata lines: 13982",
+            "transcript metadata header: transcript_id,cell,is_noise,x,y,z,qv",
+            "cell_polygons - minimum file size > 5kb: true"
+        ],
+        "timestamp": "2026-10-09T18:38:29.151140941",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

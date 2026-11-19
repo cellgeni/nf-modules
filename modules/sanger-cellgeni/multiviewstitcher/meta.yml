@@ -1,0 +1,143 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "multiviewstitcher"
+description: Register and fuse the fields of every well of a phenix-icechunk plate with multiview-stitcher into per-well OME-Zarr images and a stitched OME-Zarr HCS plate in an icechunk repository.
+keywords:
+  - microscopy
+  - opera phenix
+  - stitching
+  - registration
+  - fusion
+  - icechunk
+  - ome-zarr
+tools:
+  - "multiview-stitcher":
+      description: "Registration and fusion of large imaging datasets in 2D and 3D"
+      homepage: "https://multiview-stitcher.github.io/multiview-stitcher/"
+      documentation: "https://multiview-stitcher.github.io/multiview-stitcher/"
+      tool_dev_url: "https://github.com/multiview-stitcher/multiview-stitcher"
+      licence:
+        - "BSD-3-Clause"
+      identifier: ""
+  - "phenix-icechunk":
+      description: "Expose an Opera Phenix / Harmony Index.xml export as a virtual OME-Zarr plate in an icechunk repo"
+      homepage: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      documentation: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      tool_dev_url: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      licence:
+        - "MIT"
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - repo:
+        type: directory
+        description: |
+          Icechunk repository written by phenix-icechunk (e.g. the `repo` output of PHENIXICECHUNK).
+          Its virtual chunks point at the source Harmony TIFFs by absolute path, so the source
+          export must be mounted into the container at that same path, e.g. `-B /path/to/export`
+          for singularity/apptainer (singularity.runOptions) or
+          `-v /path/to/export:/path/to/export` for docker (docker.runOptions).
+        pattern: "*.icechunk"
+        ontologies:
+          - edam: "http://edamontology.org/format_3915" # Zarr
+
+output:
+  ome_zarr:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.ome.zarr":
+          type: directory
+          description: One stitched OME-Zarr per well with a resolution pyramid, named <plate>_<well>[_z<method>].ome.zarr. The per-field shifts are in attrs["phenix_stitch"].
+          pattern: "*.ome.zarr"
+          ontologies:
+            - edam: "http://edamontology.org/format_3915" # Zarr
+  icechunk:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_stitched.icechunk":
+          type: directory
+          description: Icechunk repository holding the stitched wells as an OME-Zarr 0.5 HCS plate (/<row>/<col>/0), one commit per well.
+          pattern: "*_stitched.icechunk"
+          ontologies:
+            - edam: "http://edamontology.org/format_3915" # Zarr
+  shifts:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_field_shifts.csv":
+          type: file
+          description: Per-field registration shifts of every stitched well.
+          pattern: "*_field_shifts.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  qc:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*_qc.png":
+          type: file
+          description: Per-well QC plot with the shift map and channel previews.
+          pattern: "*_qc.png"
+          ontologies:
+            - edam: "http://edamontology.org/format_3603" # PNG
+  versions_multiviewstitcher:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "multiview-stitcher":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"multiview-stitcher\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_phenixicechunk:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "phenix-icechunk":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"phenix-icechunk\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "multiview-stitcher":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"multiview-stitcher\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "phenix-icechunk":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"phenix-icechunk\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

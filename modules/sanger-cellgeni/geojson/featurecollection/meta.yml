@@ -1,0 +1,43 @@
+name: "geojson/featurecollection"
+description: Convert an input GeoJSON into a normalized Polygon-only FeatureCollection.
+keywords:
+  - geojson
+  - polygon
+  - spatial
+  - normalization
+tools:
+  - "convert_geojson_featurecollection.py":
+      description: Convert and normalize GeoJSON FeatureCollection payloads.
+      homepage: "https://geojson.org/"
+      documentation: "https://geojson.org/"
+      tool_dev_url: "https://geojson.org/"
+      doi: ""
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information.
+          e.g. [ id:'sample1' ]
+    - geojson:
+        type: file
+        description: Input GeoJSON file.
+        pattern: "*.geojson"
+output:
+  - geojson:
+      - - meta:
+            type: map
+            description: Groovy Map containing sample information.
+        - "*.geojson":
+            type: file
+            description: Normalized GeoJSON FeatureCollection output.
+            pattern: "*.geojson"
+  - versions:
+      - versions:
+            type: string
+            description: Tool versions emitted by the module.
+authors:
+  - "codex"
+maintainers:
+  - "codex"
+

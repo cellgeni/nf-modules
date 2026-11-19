@@ -1,0 +1,74 @@
+nextflow_workflow {
+
+    name "Test Subworkflow SEGTRAQ_QC"
+    script "../main.nf"
+    workflow "SEGTRAQ_QC"
+
+    tag "subworkflows"
+    tag "subworkflows_sanger-cellgeni"
+    tag "subworkflows_sangercellgeni"
+    tag "subworkflows/segtraq_qc"
+    tag "segtraq/baseline"
+    tag "segtraq/clusteringstability"
+    tag "segtraq/regionsimilarity"
+    tag "segtraq/volume"
+
+    test("segtraq_qc - xenium bundle") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'xenium_sample' ],
+                    file(params.modules_testdata_base_path + 'spatial/xenium/sample/', checkIfExists: true),
+                    'all',
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert file(workflow.out.baseline_obs[0][1]).exists() },
+                { assert file(workflow.out.baseline_summary[0][1]).text.contains("num_cells") },
+                { assert file(workflow.out.clustering_obs[0][1]).exists() },
+                { assert file(workflow.out.clustering_metrics[0][1]).text.contains("silhouette_score") },
+                { assert file(workflow.out.region_similarity_obs[0][1]).exists() },
+                { assert file(workflow.out.volume_obs[0][1]).exists() }
+            )
+        }
+
+    }
+
+    test("segtraq_qc - xenium bundle - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'xenium_sample' ],
+                    file(params.modules_testdata_base_path + 'spatial/xenium/sample/', checkIfExists: true),
+                    'all',
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert file(workflow.out.baseline_obs[0][1]).exists() },
+                { assert file(workflow.out.baseline_summary[0][1]).exists() },
+                { assert file(workflow.out.clustering_obs[0][1]).exists() },
+                { assert file(workflow.out.clustering_metrics[0][1]).exists() },
+                { assert file(workflow.out.region_similarity_obs[0][1]).exists() },
+                { assert file(workflow.out.volume_obs[0][1]).exists() }
+            )
+        }
+
+    }
+
+}

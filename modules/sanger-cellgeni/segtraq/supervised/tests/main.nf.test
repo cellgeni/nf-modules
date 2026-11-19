@@ -1,0 +1,39 @@
+nextflow_process {
+
+    name "Test Process SEGTRAQ_SUPERVISED"
+    script "../main.nf"
+    process "SEGTRAQ_SUPERVISED"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "segtraq"
+    tag "segtraq/supervised"
+
+    test("segtraq_supervised - xenium zarr + labeled + reference - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test_xenium' ],
+                    file(params.modules_testdata_base_path + 'segtraq/xenium.zarr', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'segtraq/test_xenium_labeled.h5ad', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'segtraq/reference.h5ad', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

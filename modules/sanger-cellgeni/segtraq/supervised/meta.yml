@@ -1,0 +1,71 @@
+name: "segtraq_supervised"
+description: |
+  Compute supervised QC metrics for a 10x Xenium dataset using SegTraQ.
+  Requires cell-type labels from segtraq/labeltransfer and a reference scRNA-seq dataset
+  from which marker genes are derived. Computes per-cell marker purity (F1_purity,
+  positive_F1, negative_F1), neighbour contamination, and mutually-exclusive
+  co-expression rates.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - marker_purity
+  - contamination
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: SpatialData zarr directory for the Xenium sample.
+    - labeled_h5ad:
+        type: file
+        description: |
+          H5AD output from segtraq/labeltransfer containing `transferred_cell_type` in obs.
+        pattern: "*.h5ad"
+    - ref_h5ad:
+        type: file
+        description: |
+          Reference scRNA-seq AnnData used to derive cell-type marker genes.
+          Must contain cell-type labels in obs (default column: `celltype_major`).
+        pattern: "*.h5ad"
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - obs:
+        type: file
+        description: |
+          CSV with per-cell supervised QC metrics
+          (marker_purity scores, coexpression rates).
+        pattern: "*_supervised_obs.csv"
+
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - contamination:
+        type: file
+        description: |
+          CSV contamination matrix showing transcript leakage between cell types.
+        pattern: "*_contamination_matrix.csv"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

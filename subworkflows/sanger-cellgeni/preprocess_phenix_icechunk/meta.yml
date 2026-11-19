@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "preprocess_phenix_icechunk"
+description: |
+  Convert Opera Phenix / Harmony measurements into icechunk repositories, stitch every round and
+  well as a 3D stack with multiview-stitcher (one task per round and well, so the wells run in
+  parallel; rounds are not registered to each other), then collect the stitched wells of each
+  sample into one OME-Zarr HCS plate in a new icechunk repository, each round an acquisition.
+  The plate carries a metadata-only copy of each round's raw-data provenance (Index.xml contents,
+  per-plane TIFF table) so every well stays traceable to its raw TIFFs.
+
+  Expected module configuration:
+  MULTIVIEWSTITCHER ext.args = { "--projection none --wells ${meta.well}" }, so each task
+  stitches its own well as a 3D stack.
+keywords:
+  - microscopy
+  - opera phenix
+  - icechunk
+  - ome-zarr
+  - stitching
+  - 3d
+  - hcs
+components:
+  - sanger-cellgeni/phenixicechunk
+  - sanger-cellgeni/multiviewstitcher
+  - sanger-cellgeni/icechunk/stitchedplate
+input:
+  - measurements_ch:
+      type: file
+      description: |
+        Channel with one entry per measurement (imaging round).
+        Structure: [ val(meta), path(image_dir), val(index_name) ], meta: [ id, round_index ]
+output:
+  - repo:
+      type: directory
+      description: |
+        Icechunk repo per measurement.
+        Structure: [ val(meta), path(repo.icechunk) ], meta: [ id, sample, round_index ]
+  - stitched:
+      type: directory
+      description: |
+        multiview-stitcher 3D stack per round and well.
+        Structure: [ val(meta), path(ome.zarr) ], meta: [ id, sample, round_index, well ]
+  - qc:
+      type: file
+      description: |
+        multiview-stitcher QC plot per round and well.
+        Structure: [ val(meta), path(qc.png) ]
+  - plate:
+      type: directory
+      description: |
+        Icechunk repo per sample holding all stitched wells as an OME-Zarr 0.5 HCS plate with the
+        source plate layout, one image per round, each round a plate acquisition.
+        /sources/r<round> holds each round's raw-data provenance (Index.xml contents, per-plane
+        TIFF table, OME-XML); every image points to it and records the source snapshot,
+        Index.xml and measurement directory of its round.
+        Structure: [ val(meta), path(<sample>_stitched.icechunk) ], meta: [ id ]
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

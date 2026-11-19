@@ -7,22 +7,55 @@ nextflow_workflow {
     tag "subworkflows"
     tag "subworkflows_sangercellgeni"
     tag "subworkflows/nichecompass"
-    tag "spatial/nichecompasstraining"
+    tag "nichecompass/preprocess"
+    tag "nichecompass/train"
     tag "spatial/nichecompassanalysis"
 
 
-    // TODO nf-core: Change the test name preferably indicating the test-data and file-format used
-    test("nichecompass - mouse - 3") {
+    // test("nichecompass - mouse - 3") {
+
+    //     when {
+    //         params {
+    //             spatial_nichecompasstraining_args = '--species mouse'
+    //         }
+    //         workflow {
+    //             """
+    //             input[0] = [
+    //                 [ id:'test_20250830' ], // meta map
+    //                 file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+    //                 'Main_molecular_cell_type',
+    //                 'batch',
+    //                 'counts',
+    //                 'spatial',
+    //             ]
+    //             """
+    //         }
+    //     }
+
+    //     then {
+    //         assertAll(
+    //             { assert workflow.success},
+    //             { assert snapshot(workflow.out).match()}
+    //         )
+    //     }
+    // }
+
+    test("nichecompass concatenated - mouse - 3") {
 
         when {
             params {
-                spatial_nichecompasstraining_args = '--species mouse'
+                modules_testdata_base_path  = 's3://spatial_demo_datasets/'
+                nichecompass_train_args      = '--use_cuda_if_available false'
             }
             workflow {
                 """
                 input[0] = [
                     [ id:'test_20250830' ], // meta map
-                    file(params.modules_testdata_base_path + 'nichecompass/training/100/*.h5ad', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'nichecompass/training/100_concat/*.h5ad', checkIfExists: true),
+                    'Main_molecular_cell_type',
+                    'batch',
+                    'counts',
+                    'spatial',
                 ]
                 """
             }

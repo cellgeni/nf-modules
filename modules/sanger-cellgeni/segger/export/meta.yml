@@ -1,0 +1,56 @@
+name: "segger_export"
+description: Export segger segmentation results to various formats (xenium_explorer, anndata, spatialdata, merged)
+keywords:
+  - segmentation
+  - spatial transcriptomics
+  - xenium
+  - anndata
+  - spatialdata
+  - export
+tools:
+  - "segger":
+      description: "segger is a graph neural network-based cell segmentation tool for spatial transcriptomics data."
+      homepage: "https://github.com/dpeerlab/segger"
+      documentation: "https://github.com/dpeerlab/segger"
+      tool_dev_url: "https://github.com/dpeerlab/segger"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - segmentation:
+        type: file
+        description: Segmentation result parquet file produced by segger segment or segger predict
+        pattern: "*.parquet"
+    - source_dir:
+        type: directory
+        description: |
+          Original spatial transcriptomics data directory or SpatialData .zarr store
+          used as source for transcript coordinates and cell boundaries.
+
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - export_dir:
+        type: directory
+        description: |
+          Output directory containing exported files. Content depends on --format:
+          xenium_explorer produces seg_cells.zarr.zip, seg_analysis.zarr.zip, seg_experiment.xenium;
+          anndata produces .h5ad files; spatialdata produces a .zarr store;
+          merged produces transcripts_segmented.parquet.
+        pattern: "*_segger_export"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

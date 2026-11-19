@@ -1,0 +1,171 @@
+nextflow_process {
+
+    name "Test Process BAYSOR_RUN"
+    script "../main.nf"
+    process "BAYSOR_RUN"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "baysor"
+    tag "baysor/run"
+
+    test("baysor - csv - no prior") {
+
+        when {
+            params {
+                module_args = "-x x -y y -z z -g gene -m 20 -s 5 --n-clusters 3 --iters 30 --skip-ncv-color"
+                module_prior = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${new File('modules/sanger-cellgeni/baysor/run/tests/molecules.csv').absolutePath}", checkIfExists: true),
+                    [],
+                ]
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.molecules[0][1].toString().endsWith('test_baysor/segmentation.csv') },
+                // the molecule table is annotated with a cell assignment for every input molecule
+                { assert path(process.out.molecules[0][1]).readLines().size() == 1441 },
+                { assert path(process.out.molecules[0][1]).readLines()[0].contains('cell') },
+                // 3D input, so both 2D and per-layer 3D polygons are produced
+                { assert process.out.polygons_2d[0][1].toString().endsWith('segmentation_polygons_2d.json') },
+                { assert process.out.polygons_3d[0][1].toString().endsWith('segmentation_polygons_3d.json') },
+                // --plot was not requested
+                { assert process.out.plot.size() == 0 },
+                { assert process.out.report.size() == 0 },
+                { assert snapshot(
+                    process.out.versions_baysor_run,
+                    path(process.out.cell_stats[0][1]).readLines()[0],
+                ).match() }
+            )
+        }
+    }
+
+    test("baysor - csv - force 2d") {
+
+        when {
+            params {
+                module_args = "-x x -y y -g gene -m 20 -s 5 --n-clusters 3 --iters 30 --force-2d --skip-ncv-color --count-matrix-format tsv"
+                module_prior = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test2d' ],
+                    file("${new File('modules/sanger-cellgeni/baysor/run/tests/molecules.csv').absolutePath}", checkIfExists: true),
+                    [],
+                ]
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts[0][1].toString().endsWith('segmentation_counts.tsv') },
+                { assert process.out.polygons_2d[0][1].toString().endsWith('segmentation_polygons_2d.json') },
+                // no z column reaches the model, so there are no per-layer polygons
+                { assert process.out.polygons_3d.size() == 0 }
+            )
+        }
+    }
+
+    test("baysor - csv - prior column") {
+
+        when {
+            params {
+                module_args = "-x x -y y -z z -g gene -m 20 -s 5 --n-clusters 3 --iters 30 --skip-ncv-color --prior-segmentation-confidence 0.5"
+                module_prior = ":nucleus"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test_prior' ],
+                    file("${new File('modules/sanger-cellgeni/baysor/run/tests/molecules_with_nucleus.csv').absolutePath}", checkIfExists: true),
+                    [],
+                ]
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.molecules[0][1].toString().endsWith('test_prior_baysor/segmentation.csv') },
+                // the resolved parameter dump records that the prior came from a molecule-table column
+                { assert path(process.out.params[0][1]).text.contains('type = "column"') },
+                { assert path(process.out.params[0][1]).text.contains('column_name = "nucleus"') }
+            )
+        }
+    }
+
+    test("baysor - csv - toml config") {
+
+        when {
+            params {
+                module_args = "--iters 30 --skip-ncv-color"
+                module_prior = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test_config' ],
+                    file("${new File('modules/sanger-cellgeni/baysor/run/tests/molecules.csv').absolutePath}", checkIfExists: true),
+                    [],
+                ]
+                input[1] = file("${new File('modules/sanger-cellgeni/baysor/run/tests/baysor.toml').absolutePath}", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                // scale and min_molecules_per_cell come from the TOML, not from ext.args
+                { assert path(process.out.params[0][1]).text.contains('scale = 5') },
+                { assert path(process.out.params[0][1]).text.contains('min_molecules_per_cell = 20') }
+            )
+        }
+    }
+
+    test("baysor - csv - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                module_args = ""
+                module_prior = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file("${new File('modules/sanger-cellgeni/baysor/run/tests/molecules.csv').absolutePath}", checkIfExists: true),
+                    [],
+                ]
+                input[1] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

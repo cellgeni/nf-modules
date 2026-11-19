@@ -3,7 +3,9 @@ process IMAGING_POSTCODEPREP {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/postcode:0.2.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/postcode:0.2.0'
+        : 'quay.io/cellgeni/postcode:0.2.0'}"
 
     input:
     tuple val(meta), path(profile), path(tabular_codebook), path(readout_file), val(R)
@@ -11,9 +13,6 @@ process IMAGING_POSTCODEPREP {
     output:
     tuple val(meta), path(reformatted_profile), path(starfish_codebook), emit: for_decoding
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

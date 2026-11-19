@@ -1,0 +1,68 @@
+{
+    "concat - two single-channel tifs - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hyperstack.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
+                ],
+                "hyperstack": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hyperstack.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
+                ]
+            }
+        ],
+        "timestamp": "2026-08-17T16:53:04.191214349",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "concat - two single-channel tifs onto a new channel axis": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hyperstack.ome.tif:md5,82dc758bd1b5676065334e32ac165f25"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
+                ],
+                "hyperstack": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hyperstack.ome.tif:md5,82dc758bd1b5676065334e32ac165f25"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1c594f1602da07c1709b6f31acdbd3a5"
+                ]
+            }
+        ],
+        "timestamp": "2026-08-17T16:52:56.425642862",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

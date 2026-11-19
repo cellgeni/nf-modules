@@ -1,0 +1,69 @@
+{
+    "sample - ome.zarr - resnet50": {
+        "content": [
+            [
+                [
+                    "RAW2FEATURES",
+                    "raw2features",
+                    "0.2.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-05T15:38:58.258626397",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "sample - ome.zarr - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            [
+                                
+                            ]
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "RAW2FEATURES",
+                        "raw2features",
+                        "0.2.0"
+                    ]
+                ],
+                "embeddings": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            [
+                                
+                            ]
+                        ]
+                    ]
+                ],
+                "versions_raw2features": [
+                    [
+                        "RAW2FEATURES",
+                        "raw2features",
+                        "0.2.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-05T15:39:06.536112647",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

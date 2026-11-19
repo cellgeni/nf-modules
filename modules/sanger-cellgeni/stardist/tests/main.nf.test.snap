@@ -1,0 +1,84 @@
+{
+    "stardist - full image": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sd_outlines.geojson:md5,72a1d1125289188e6eb20a26f752dea0"
+                    ]
+                ],
+                "1": [
+                    [
+                        "STARDIST",
+                        "stardist",
+                        "0.0.1"
+                    ]
+                ],
+                "geojson": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sd_outlines.geojson:md5,72a1d1125289188e6eb20a26f752dea0"
+                    ]
+                ],
+                "versions_stardist": [
+                    [
+                        "STARDIST",
+                        "stardist",
+                        "0.0.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-05-23T10:06:51.438046964",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "stardist - full image explicit channel stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sd_outlines.geojson:md5,7dd580d60b02b9532d2f06e293f117dd"
+                    ]
+                ],
+                "1": [
+                    [
+                        "STARDIST",
+                        "stardist",
+                        "0.0.1"
+                    ]
+                ],
+                "geojson": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_sd_outlines.geojson:md5,7dd580d60b02b9532d2f06e293f117dd"
+                    ]
+                ],
+                "versions_stardist": [
+                    [
+                        "STARDIST",
+                        "stardist",
+                        "0.0.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-05-23T10:06:59.925573008",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

@@ -3,7 +3,9 @@ process IMAGING_GENERATECOMPANION {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/imagetileprocessor:0.1.16"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/imagetileprocessor:0.1.17'
+        : 'quay.io/cellgeni/imagetileprocessor:0.1.17'}"
 
     input:
     tuple val(meta), val(round), path(image_root_folder), val(master_file_name)
@@ -12,9 +14,6 @@ process IMAGING_GENERATECOMPANION {
     tuple val(meta), path("${out_csv_name}"), emit: csv
     tuple val(meta), path("${out_companion}"), emit: companion
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
@@ -37,7 +36,6 @@ process IMAGING_GENERATECOMPANION {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}_image${round}"
     out_csv_name = "${prefix}_image_tiles.csv"
     out_companion = "${prefix}_image.companion.ome"

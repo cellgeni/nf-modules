@@ -1,0 +1,53 @@
+nextflow_process {
+
+    name "Test Process GEOJSON_FEATURECOLLECTION"
+    config "./nextflow.config"
+    script "../main.nf"
+    process "GEOJSON_FEATURECOLLECTION"
+
+    tag "modules"
+    tag "modules_sanger_cellgeni"
+    tag "geojson"
+    tag "geojson/featurecollection"
+
+    test("geojson - keeps polygons only") {
+
+        when {
+            process {
+                """
+                input[0] = [ [id: 'test'], file("${moduleDir}/tests/input.geojson", checkIfExists: true) ]
+                """
+            }
+        }
+
+        then {
+            def out = new groovy.json.JsonSlurper().parseText(file(process.out.geojson[0][1]).text)
+            assertAll(
+                { assert process.success },
+                { assert out.type == "FeatureCollection" },
+                { assert out.features.size() == 1 },
+                { assert out.features[0].geometry.type == "Polygon" }
+            )
+        }
+    }
+
+    test("geojson - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [ [id: 'test'], file("${moduleDir}/tests/input.geojson", checkIfExists: true) ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.geojson[0][1]).text.contains("FeatureCollection") }
+            )
+        }
+    }
+}

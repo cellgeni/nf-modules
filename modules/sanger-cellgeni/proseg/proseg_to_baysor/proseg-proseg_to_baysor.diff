@@ -1,0 +1,117 @@
+Changes in component 'nf-core/proseg/proseg_to_baysor'
+Changes in 'proseg/proseg_to_baysor/meta.yml':
+--- modules/nf-core/proseg/proseg_to_baysor/meta.yml
++++ modules/nf-core/proseg/proseg_to_baysor/meta.yml
+@@ -38,24 +38,24 @@
+           - edam: http://edamontology.org/format_3989 # GZIP format
+ 
+ output:
+-  baysor_cell_polygons:
++  cell_polygons:
+     - - meta:
+           type: map
+           description: Groovy Map containing sample information
+-      - "*baysor-cell-polygons.geojson":
++      - "*proseg-to-baysor-cell-polygons.geojson":
+           type: file
+           description: "Path to the cell polygons file."
+-          pattern: "*baysor-cell-polygons.geojson"
++          pattern: "*proseg-to-baysor-cell-polygons.geojson"
+           ontologies:
+             - edam: http://edamontology.org/format_3464 # JSON
+-  baysor_transcript_metadata:
++  transcript_metadata:
+     - - meta:
+           type: map
+           description: Groovy Map containing sample information
+-      - "*baysor-transcript-metadata.csv":
++      - "*proseg-to-baysor-transcript-metadata.csv":
+           type: file
+           description: Transcript ids, genes, revised positions, assignment probability, etc.
+-          pattern: "*baysor-transcript-metadata.csv"
++          pattern: "*proseg-to-baysor-transcript-metadata.csv"
+           ontologies:
+             - edam: http://edamontology.org/format_3752 # CSV
+   versions:
+
+'modules/nf-core/proseg/proseg_to_baysor/environment.yml' is unchanged
+Changes in 'proseg/proseg_to_baysor/main.nf':
+--- modules/nf-core/proseg/proseg_to_baysor/main.nf
++++ modules/nf-core/proseg/proseg_to_baysor/main.nf
+@@ -1,20 +1,19 @@
+ process PROSEG_TO_BAYSOR {
+-    tag "$meta.id"
++    tag "${meta.id}"
+     label 'process_low'
+ 
+     conda "${moduleDir}/environment.yml"
+-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/38/38ebf0dd1e071eb5a99fd220459c09625c1465c5491a3e2dab392bfbe8acb45f/data':
+-        'community.wave.seqera.io/library/rust-proseg:2.0.5--dde937bdc1cf4715' }"
++    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
++        ? 'quay.io/cellgeni/proseg:3.2.0'
++        : 'quay.io/cellgeni/proseg:3.2.0'}"
+ 
+     input:
+-    tuple val(meta), path(transcript_metadata)
+-    tuple val(meta2), path(cell_polygons)
++    tuple val(meta), path(sd_zarr)
+ 
+     output:
+-    tuple val(meta), path("*baysor-cell-polygons.geojson")  , emit: baysor_cell_polygons
+-    tuple val(meta), path("*baysor-transcript-metadata.csv"), emit: baysor_transcript_metadata
+-    path "versions.yml"                                     , emit: versions
++    tuple val(meta), path("*-proseg-to-baysor-cell-polygons.geojson"), emit: cell_polygons
++    tuple val(meta), path("*-proseg-to-baysor-transcript-metadata.csv"), emit: transcript_metadata
++    path "versions.yml", emit: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -24,10 +23,9 @@
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     """
+     proseg-to-baysor \\
+-        ${transcript_metadata} \\
+-        ${cell_polygons} \\
+-        --output-transcript-metadata ${prefix}-baysor-transcript-metadata.csv \\
+-        --output-cell-polygons ${prefix}-baysor-cell-polygons.geojson \\
++        ${sd_zarr} \\
++        --output-transcript-metadata ${prefix}-proseg-to-baysor-transcript-metadata.csv \\
++        --output-cell-polygons ${prefix}-proseg-to-baysor-cell-polygons.geojson \\
+         ${args}
+ 
+     cat <<-END_VERSIONS > versions.yml
+@@ -39,12 +37,12 @@
+     stub:
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     """
+-    touch ${prefix}-baysor-transcript-metadata.csv
+-    touch ${prefix}-baysor-cell-polygons.geojson
++    touch ${prefix}-proseg-to-baysor-transcript-metadata.csv
++    touch ${prefix}-proseg-to-baysor-cell-polygons.geojson
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+-        proseg: \$(proseg --version | sed 's/proseg //')
++        proseg: "stub"
+     END_VERSIONS
+     """
+ }
+
+Changes in 'proseg/proseg_to_baysor/tests/main.nf.test':
+--- modules/nf-core/proseg/proseg_to_baysor/tests/main.nf.test
++++ modules/nf-core/proseg/proseg_to_baysor/tests/main.nf.test
+@@ -53,8 +53,8 @@
+                     process.out.versions,
+                     path(process.out.versions[0]).yaml,
+                     "transcript metadata lines: $lines",
+-                    "transcript metadata header: ${file(process.out.baysor_transcript_metadata[0][1]).readLines()[0]}",
+-                    "cell_polygons - minimum file size > 5kb: ${file(process.out.baysor_cell_polygons[0][1]).length() >= 5000}"
++                    "transcript metadata header: ${file(process.out.transcript_metadata[0][1]).readLines()[0]}",
++                    "cell_polygons - minimum file size > 5kb: ${file(process.out.cell_polygons[0][1]).length() >= 5000}"
+                 ).match() }
+             )
+         }
+
+'modules/nf-core/proseg/proseg_to_baysor/tests/main.nf.test.snap' is unchanged
+************************************************************

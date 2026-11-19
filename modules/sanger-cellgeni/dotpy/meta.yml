@@ -1,0 +1,161 @@
+---
+name: "dotpy"
+description: |
+  Run DOT (Deconvolution by Optimal Transport) on spatial transcriptomics data
+  using DOTpy. Transfers cell-type annotations from a single-cell reference
+  (h5ad) to a spatial dataset (h5ad) via multi-objective optimisation.
+keywords:
+  - spatial transcriptomics
+  - deconvolution
+  - optimal transport
+  - single-cell
+
+tools:
+  - "dotpy":
+      description: Python implementation of DOT for spatial transcriptomics deconvolution.
+      homepage: https://github.com/earmingol/DOTpy
+      documentation: https://github.com/earmingol/DOTpy
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy map containing sample metadata. Must contain at least `id` (string).
+          Example: [ id: 'sample1' ]
+    - sc_adata:
+        type: file
+        description:
+          Single-cell reference AnnData file (h5ad). Must have a cell-type
+          annotation column (default column name set via --cell-type-key in ext.args).
+        pattern: "*.h5ad"
+    - sp_adata:
+        type: file
+        description: Spatial transcriptomics AnnData file (h5ad). Must contain a
+          'spatial' key in obsm. Requires a raw counts matrix, either in .X (default)
+          or in a layer named via --counts-layer.
+        pattern: "*.h5ad"
+
+output:
+  weights:
+    - - meta:
+          type: map
+          description: Groovy map of sample metadata (passed through unchanged).
+      - "*_weights.csv":
+          type: file
+          description: |
+            CSV of per-spot cell-type deconvolution weights. One row per spot,
+            one column per cell type. Filename pattern: <prefix>_weights.csv
+          pattern: "*_weights.csv"
+
+  annotations:
+    - - meta:
+          type: map
+          description: Groovy map of sample metadata (passed through unchanged).
+      - "*_annotations.csv":
+          type: file
+          description: |
+            CSV of per-spot winning cell-type assignments (argmax of weights).
+            Filename pattern: <prefix>_annotations.csv
+          pattern: "*_annotations.csv"
+
+  versions_dotpy:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "dotpy":
+          type: string
+          description: The name of the tool
+      - 'python -c "import dotpy; print(dotpy.__version__)"':
+          type: eval
+          description: The expression to obtain the dotpy version
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - dotpy:
+          type: string
+          description: The name of the tool
+      - python -c "import dotpy; print(dotpy.__version__)":
+          type: eval
+          description: The expression to obtain the dotpy version
+
+authors:
+  - "Yinshui Chang: yc6@sanger.ac.uk"
+
+ext_args:
+  description: |
+    All run_dot_cli.py flags are passed via task.ext.args. The flags
+    --no-h5ad and --no-plots are always set by the module.
+  supported_flags:
+    - flag: "--cell-type-key"
+      default: "cell_type"
+      description: Column in sc_adata.obs containing cell-type labels.
+    - flag: "--mode"
+      default: "highres"
+      description: "Resolution mode: highres (Xenium/MERFISH/CosMx) or lowres (Visium/ST)."
+    - flag: "--device"
+      default: "auto"
+      description: "Compute device: auto, cuda, or cpu."
+    - flag: "--iterations"
+      default: "100"
+      description: Number of Frank-Wolfe optimisation iterations.
+    - flag: "--batch-size"
+      default: "5000"
+      description: GPU batch size (reduce if CUDA OOM).
+    - flag: "--ratios-weight"
+      default: "0.0"
+      description: Weight for cell-type abundance matching (0 disables; ~0.3 for lowres).
+    - flag: "--subcluster-size"
+      default: "10"
+      description: Maximum subclusters per cell type in the reference.
+    - flag: "--max-genes"
+      default: "5000"
+      description: Maximum number of genes used during optimisation.
+    - flag: "--counts-layer"
+      default: "(unset, uses sp_adata.X)"
+      description: |
+        Layer in sp_adata with raw counts. Set this if sp_adata.X is normalized —
+        DOT expects raw counts for the spatial data. Use "X" to explicitly force
+        use of sp_adata.X.
+    - flag: "--ref-counts-layer"
+      default: "(unset, uses sc_adata.X)"
+      description: |
+        Layer in sc_adata with raw counts. Set this if sc_adata.X is normalized —
+        DOT expects raw counts for the reference. Use "X" to explicitly force use
+        of sc_adata.X.
+    - flag: "--th-spatial"
+      default: "0.84"
+      description: Threshold on spatial similarity of adjacent spots.
+    - flag: "--th-gene-low"
+      default: "0.01"
+      description: Minimum fraction of spots a spatial gene must be expressed in (0 disables).
+    - flag: "--th-gene-high"
+      default: "0.99"
+      description: Maximum fraction of spots a spatial gene must be expressed in (1 disables).
+    - flag: "--mixed-precision"
+      default: "false"
+      description: "Boolean flag; include (no value) to enable float16 on GPU."
+    - flag: "--sample-key"
+      default: ""
+      description: Column in sp_adata.obs for multi-sample splitting (omit for single sample).
+    - flag: "--lineage-key"
+      default: ""
+      description: Column in sc_adata.obs with lineage annotations (optional).
+    - flag: "--save-combined"
+      default: "false"
+      description: "Boolean flag; include (no value) to save a combined results file at the end."
+    - flag: "--checkpoint-dir"
+      default: "(unset, checkpointing disabled)"
+      description: Directory for saving optimisation checkpoints.
+    - flag: "--checkpoint-freq"
+      default: "10"
+      description: Save a checkpoint every N iterations (only used if --checkpoint-dir is set).
+    - flag: "--resume-from"
+      default: "(unset)"
+      description: Path to a checkpoint file to resume from.
+    - flag: "--verbose"
+      default: "false"
+      description: "Boolean flag; include (no value) to print detailed progress messages."

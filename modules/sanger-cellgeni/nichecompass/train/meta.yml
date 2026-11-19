@@ -1,0 +1,73 @@
+name: "nichecompass_train"
+description: |
+  Train a NicheCompass model on a preprocessed spatial AnnData object.
+  Expects the AnnData produced by the nichecompass/preprocess module,
+  which embeds spatial neighbour graphs and prior gene program masks.
+  Builds the model, runs GPU-accelerated training, computes a latent-space
+  UMAP, and saves the trained model with a run_config.json for downstream analysis.
+keywords:
+  - spatial_atlas_building
+  - niche_identification
+  - niche_characterisation
+  - cell-cell_communication_inference
+  - model_training
+  - deep-learning
+tools:
+  - "nichecompass":
+      description: "NicheCompass is a package for end-to-end analysis of spatial multiomics data by the Lotfollahi Lab"
+      documentation: "https://nichecompass.readthedocs.io/en/latest/"
+      tool_dev_url: "https://github.com/Lotfollahi-lab/nichecompass"
+      doi: "https://doi.org/10.1038/s41588-025-02120-6"
+      licence: ["BSD-3-Clause"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - preprocessed_h5ad:
+        type: file
+        description: |
+          Preprocessed AnnData produced by nichecompass/preprocess.
+          Must contain spatial graphs, GP masks, and preprocessing context
+          in adata.uns['nichecompass_preprocess_params'].
+        pattern: "*_preprocessed.h5ad"
+    - nichecompass_data:
+        type: directory
+        description: |
+          NicheCompass reference data directory produced by nichecompass/preprocess.
+          Passed through to the output for the downstream analysis step.
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - nichecompass_model:
+        type: directory
+        description: Trained NicheCompass model directory (artifacts/model/).
+    - run_config:
+        type: file
+        description: |
+          JSON file recording all preprocessing and training parameters.
+          Required by the nichecompassanalysis module.
+        pattern: "run_config.json"
+    - data:
+        type: directory
+        description: NicheCompass reference data directory, passed through for downstream analysis.
+
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - nichecompass_figures:
+        type: directory
+        description: Optional training figures directory (artifacts/figures/).
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@ASUQ"
+maintainers:
+  - "@ASUQ"

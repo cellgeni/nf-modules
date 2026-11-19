@@ -3,9 +3,11 @@
 # Copyright (c) 2024 Wellcome Sanger Institute
 
 """ """
+
 import fire
 from spotiflow.model import Spotiflow
 from imagetileprocessor import slice_and_crop_image
+import numpy as np
 import csv
 
 
@@ -21,6 +23,8 @@ def main(
     Z: int = 0,
 ):
     crop = slice_and_crop_image(image_path, x_min, x_max, y_min, y_max, Z, C, 0)
+    crop = np.squeeze(crop)
+    assert len(crop.shape) == 2, "Crop should be a 2D array"
     model = Spotiflow.from_pretrained(model_name)
     peaks, details = model.predict(crop)
 

@@ -1,0 +1,49 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PREPROCESS_PHENIX_ICECHUNK"
+    script "../main.nf"
+    workflow "PREPROCESS_PHENIX_ICECHUNK"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_sangercellgeni"
+    tag "subworkflows/preprocess_phenix_icechunk"
+    tag "phenixicechunk"
+    tag "multiviewstitcher"
+    tag "icechunk/stitchedplate"
+
+    // Stub test only, see modules/sanger-cellgeni/phenixicechunk/tests/main.nf.test.
+    // Rounds are given out of order to check they are sorted by round_index.
+
+    test("two rounds - 3D multiview-stitcher - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of(
+                    [ [ id:'test', round_index:'2' ], file('.'), 'Index.xml' ],
+                    [ [ id:'test', round_index:'1' ], file('.'), 'Index.xml' ],
+                )
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.repo.size() == 2 },
+                { assert workflow.out.stitched.size() == 2 },
+                { assert workflow.out.stitched.collect { it[0] }.sort { it.id } == [
+                    [ id:'test_r1_A1', round_index:'1', sample:'test', well:'A1' ],
+                    [ id:'test_r2_A1', round_index:'2', sample:'test', well:'A1' ],
+                ] },
+                { assert workflow.out.qc.size() == 2 },
+                { assert workflow.out.plate.size() == 1 },
+                { assert workflow.out.plate[0][0] == [ id:'test' ] },
+                { assert file(workflow.out.plate[0][1]).name == 'test_stitched.icechunk' },
+            )
+        }
+    }
+}

@@ -1,0 +1,68 @@
+nextflow_process {
+
+    name "Test Process OMEZARR_PREPROCESS"
+    script "../main.nf"
+    process "OMEZARR_PREPROCESS"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "omezarr"
+    tag "omezarr/preprocess"
+
+    test("omezarr preprocess") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file('.'),
+                    'image_0',
+                    'A/1/0',
+                    "${outputDir}/test.ome.zarr",
+                ]
+                input[1] = file('.')
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert process.out.versions_omezarr_preprocess[0][1] == 'omezarr_preprocess' },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("omezarr preprocess - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    file('.'),
+                    'image_0',
+                    'A/1/0',
+                    "${outputDir}/test.ome.zarr",
+                ]
+                input[1] = file('.')
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert process.out.versions_omezarr_preprocess[0][1] == 'omezarr_preprocess' },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

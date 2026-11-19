@@ -1,0 +1,116 @@
+{
+    "dotpy - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_all_weights.csv:md5,4ec067f13149db5e680a7d2fdeba9f9a"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_all_annotations.csv:md5,308ced307adf3f6243241a9bcdc9fc0d"
+                    ]
+                ],
+                "2": [
+                    [
+                        "DOTPY",
+                        "dotpy",
+                        "1.0.0"
+                    ]
+                ],
+                "annotations": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_all_annotations.csv:md5,308ced307adf3f6243241a9bcdc9fc0d"
+                    ]
+                ],
+                "versions_dotpy": [
+                    [
+                        "DOTPY",
+                        "dotpy",
+                        "1.0.0"
+                    ]
+                ],
+                "weights": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_all_weights.csv:md5,4ec067f13149db5e680a7d2fdeba9f9a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-26T14:41:39.55088565",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "dotpy - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_weights.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_annotations.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        "DOTPY",
+                        "dotpy",
+                        "1.0.0"
+                    ]
+                ],
+                "annotations": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_annotations.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_dotpy": [
+                    [
+                        "DOTPY",
+                        "dotpy",
+                        "1.0.0"
+                    ]
+                ],
+                "weights": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_weights.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-26T14:41:56.132144393",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

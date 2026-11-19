@@ -1,0 +1,68 @@
+name: "segtraq_qc"
+description: |
+  Compute one or more SegTraQ QC metric groups directly from a 10x Xenium bundle.
+  The module reads the bundle once with spatialdata_io.xenium and can run baseline,
+  clustering stability, region similarity, and volume similarity metrics.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - segmentation
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+  - "spatialdata_io":
+      description: "Readers and writers for spatial omics data in SpatialData"
+      documentation: "https://spatialdata.scverse.org/projects/io/"
+      tool_dev_url: "https://github.com/scverse/spatialdata-io"
+      licence: ["BSD-3-Clause"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information e.g. `[ id:'sample1' ]`
+    - xenium_dir:
+        type: directory
+        description: |
+          Xenium output bundle directory.
+    - metrics:
+        type: string
+        description: |
+          Comma-separated SegTraQ metric groups to run. Supported values are
+          baseline, clustering_stability, region_similarity, volume, and all.
+output:
+  - baseline_obs:
+      type: file
+      description: CSV file with per-cell baseline QC metrics.
+      pattern: "*_baseline_obs.csv"
+  - baseline_summary:
+      type: file
+      description: JSON file with baseline dataset-level summary metrics.
+      pattern: "*_baseline_summary.json"
+  - clustering_obs:
+      type: file
+      description: CSV file with per-cell clustering stability metrics.
+      pattern: "*_clustering_stability_obs.csv"
+  - clustering_metrics:
+      type: file
+      description: JSON file with clustering stability summary metrics.
+      pattern: "*_clustering_stability_metrics.json"
+  - region_similarity_obs:
+      type: file
+      description: CSV file with per-cell region similarity metrics.
+      pattern: "*_region_similarity_obs.csv"
+  - volume_obs:
+      type: file
+      description: CSV file with per-cell volume similarity metrics.
+      pattern: "*_volume_similarity_obs.csv"
+  - versions:
+      type: file
+      description: File containing software versions.
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

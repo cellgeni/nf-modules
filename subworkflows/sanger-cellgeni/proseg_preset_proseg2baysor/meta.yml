@@ -1,0 +1,51 @@
+name: "proseg_preset_proseg2baysor"
+description: |
+  Run proseg with the Xenium preset on a transcripts parquet, convert the resulting
+  SpatialData zarr to Baysor-style cell polygons and transcript metadata with
+  proseg-to-baysor, and normalise the polygons into a GeoJSON FeatureCollection
+  suitable for xeniumranger import-segmentation.
+  Adapted from cellgeni/spatialxe `proseg_preset_proseg2baysor`.
+keywords:
+  - spatial_transcriptomics
+  - segmentation
+  - xenium
+  - proseg
+components:
+  - proseg/proseg
+  - proseg/proseg_to_baysor
+  - geojson/featurecollection
+input:
+  - _ch_bundle_path:
+      type: directory
+      description: |
+        Xenium bundle path (currently unused).
+        Structure: [ val(meta), path(xenium_bundle) ]
+  - ch_transcripts_parquet:
+      type: file
+      description: |
+        Xenium transcripts file.
+        Structure: [ val(meta), path(transcripts.parquet) ]
+      pattern: "*.parquet"
+output:
+  - proseg_sd_zarr:
+      type: directory
+      description: "proseg SpatialData zarr output. Structure: [ val(meta), path(*-output.zarr) ]"
+  - xr_polygons:
+      type: file
+      description: "Cell polygons as a GeoJSON FeatureCollection. Structure: [ val(meta), path(*.geojson) ]"
+      pattern: "*.geojson"
+  - xr_metadata:
+      type: file
+      description: "Baysor-style transcript metadata. Structure: [ val(meta), path(*-proseg-to-baysor-transcript-metadata.csv) ]"
+      pattern: "*.csv"
+  - coordinate_space:
+      type: string
+      description: "Coordinate space of the polygons (value channel, always `microns`)"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

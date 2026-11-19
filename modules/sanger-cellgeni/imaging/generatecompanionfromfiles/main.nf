@@ -3,7 +3,7 @@ process IMAGING_GENERATECOMPANIONFROMFILES {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/imagetileprocessor:0.1.16'
         : 'quay.io/cellgeni/imagetileprocessor:0.1.16'}"
 
@@ -13,9 +13,6 @@ process IMAGING_GENERATECOMPANIONFROMFILES {
     output:
     tuple val(meta), path("${out_companion_name}"), emit: companion
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

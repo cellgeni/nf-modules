@@ -1,0 +1,95 @@
+{
+    "perkinelmer - index xml - ome-tiff - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.summary.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.wells.txt:md5,fe6975a937016c20b43b17540e6c6246"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_A1.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
+                        "PHENIXICECHUNK",
+                        "phenix-icechunk",
+                        "0.3.1"
+                    ]
+                ],
+                "ome_tiff": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_A1.ome.tiff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "repo": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "repo:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "summary": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.summary.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                    ]
+                ],
+                "versions_phenixicechunk": [
+                    [
+                        "PHENIXICECHUNK",
+                        "phenix-icechunk",
+                        "0.3.1"
+                    ]
+                ],
+                "wells": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.wells.txt:md5,fe6975a937016c20b43b17540e6c6246"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-21T20:49:58.769322554",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

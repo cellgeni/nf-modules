@@ -1,0 +1,38 @@
+nextflow_process {
+
+    name "Test Process OMEZARR_CREATEEMPTYCONTAINER"
+    script "../main.nf"
+    process "OMEZARR_CREATEEMPTYCONTAINER"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "omezarr"
+    tag "omezarr/createemptycontainer"
+
+    test("omezarr createemptycontainer - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    '[["image_0", "A/1/0"]]',
+                    file('.'),
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert process.out.versions_omezarr_createemptycontainer[0][1] == 'omezarr_createemptycontainer' },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

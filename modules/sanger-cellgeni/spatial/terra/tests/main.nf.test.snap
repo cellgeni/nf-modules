@@ -1,0 +1,122 @@
+{
+    "terra - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "terra_demo_processed.h5ad:md5,f5870ba71ace63367823c1a3ed77676f"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    [
+                                        "cache-d40896068cd70f15_00000_of_00004.arrow:md5,60e84da410e5ff35b202a32b52e4aab9",
+                                        "cache-d40896068cd70f15_00001_of_00004.arrow:md5,8e48d3c90cbddd09445ab91d93523347",
+                                        "cache-d40896068cd70f15_00002_of_00004.arrow:md5,f770cd4a04e67bf5738291393e9514f9",
+                                        "cache-d40896068cd70f15_00003_of_00004.arrow:md5,c124f17ba4a14a95170387bb85f878bd",
+                                        "dataset_info.json:md5,881ff34e93b95fd173ef79175b2d6b78",
+                                        "generator-train.arrow:md5,bb939c6411a0a642107d56d2ec04a81a"
+                                    ],
+                                    "0.0.0.incomplete_info.lock:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "0.0.0_builder.lock:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ]
+                            ],
+                            "terra_demo_terra_demo_tokenized_data_generator_default-49f7e24e886bac92_0.0.0.lock:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,13c001890c2bb0da60fe61e5efa8bd77"
+                ],
+                "processed_anndata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "terra_demo_processed.h5ad:md5,f5870ba71ace63367823c1a3ed77676f"
+                    ]
+                ],
+                "tokenized_data": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            [
+                                [
+                                    [
+                                        "cache-d40896068cd70f15_00000_of_00004.arrow:md5,60e84da410e5ff35b202a32b52e4aab9",
+                                        "cache-d40896068cd70f15_00001_of_00004.arrow:md5,8e48d3c90cbddd09445ab91d93523347",
+                                        "cache-d40896068cd70f15_00002_of_00004.arrow:md5,f770cd4a04e67bf5738291393e9514f9",
+                                        "cache-d40896068cd70f15_00003_of_00004.arrow:md5,c124f17ba4a14a95170387bb85f878bd",
+                                        "dataset_info.json:md5,881ff34e93b95fd173ef79175b2d6b78",
+                                        "generator-train.arrow:md5,bb939c6411a0a642107d56d2ec04a81a"
+                                    ],
+                                    "0.0.0.incomplete_info.lock:md5,d41d8cd98f00b204e9800998ecf8427e",
+                                    "0.0.0_builder.lock:md5,d41d8cd98f00b204e9800998ecf8427e"
+                                ]
+                            ],
+                            "terra_demo_terra_demo_tokenized_data_generator_default-49f7e24e886bac92_0.0.0.lock:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,13c001890c2bb0da60fe61e5efa8bd77"
+                ]
+            }
+        ],
+        "timestamp": "2026-08-14T13:58:10.238897126",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.4"
+        }
+    },
+    "terra - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "terra_demo_processed.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,13c001890c2bb0da60fe61e5efa8bd77"
+                ],
+                "processed_anndata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "terra_demo_processed.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "tokenized_data": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,13c001890c2bb0da60fe61e5efa8bd77"
+                ]
+            }
+        ],
+        "timestamp": "2026-08-14T13:58:40.94312599",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.4"
+        }
+    }
+}

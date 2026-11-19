@@ -2,7 +2,9 @@ process SPATIAL_NICHECOMPASSANALYSIS {
     tag "${meta.id}"
     label 'process_high'
 
-    container "quay.io/cellgeni/nichecompass:0.3.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/nichecompass:0.3.1'
+        : 'quay.io/cellgeni/nichecompass:0.3.1'}"
 
     stageInMode 'copy'
 
@@ -14,14 +16,13 @@ process SPATIAL_NICHECOMPASSANALYSIS {
     tuple val(meta), path("${out_dir}_analysis.ipynb"), emit: notebook
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_dir = "${prefix}_nichecompass"
     """
+    export HOME=/tmp
+    export XDG_CONFIG_HOME=/tmp/.config
     mkdir ${out_dir}
     papermill \\
         "${moduleDir}/resources/usr/bin/nichecompass_analyse_sample_integration.ipynb" \\
@@ -44,7 +45,6 @@ process SPATIAL_NICHECOMPASSANALYSIS {
   """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_dir = "${prefix}_nichecompass"
     """

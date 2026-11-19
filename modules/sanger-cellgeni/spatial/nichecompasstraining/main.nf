@@ -2,23 +2,25 @@ process SPATIAL_NICHECOMPASSTRAINING {
     tag "${meta.id}"
     label 'process_gpu'
 
-    container "quay.io/cellgeni/nichecompass:0.3.0"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/nichecompass:0.3.1'
+        : 'quay.io/cellgeni/nichecompass:0.3.1'}"
 
     input:
     tuple val(meta), path(h5ad, stageAs: "inputs/*")
 
     output:
     tuple val(meta), path("${out_name}/artifacts/model"), path("${out_name}/run_config.json"), path("${out_name}/data"), emit: nichecompass_model
+    tuple val(meta), path("${out_name}/artifacts/figure"), emit: nichecompass_figure, optional: true
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     out_name = "${prefix}_nichecompass_dir"
     """
+    export HOME=/tmp
+    export XDG_CONFIG_HOME=/tmp/.config
     nichecompass_train_sample_integration.py \\
         --batches ${h5ad} \\
         --model_dir "${out_name}" \\

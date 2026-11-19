@@ -1,0 +1,63 @@
+nextflow_process {
+
+    name "Test Process SEGTRAQ_BASELINE"
+    script "../main.nf"
+    process "SEGTRAQ_BASELINE"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
+    tag "segtraq"
+    tag "segtraq/baseline"
+
+    test("segtraq_baseline - A02_4xHipSci sdata") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'A02_4xHipSci' ],
+                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.obs[0][1]).exists() },
+                { assert file(process.out.obs[0][1]).size() > 0 },
+                { assert file(process.out.summary[0][1]).exists() },
+                { assert file(process.out.summary[0][1]).text.contains("num_cells") }
+            )
+        }
+
+    }
+
+    test("segtraq_baseline - A02_4xHipSci sdata - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'A02_4xHipSci' ],
+                    file(params.modules_testdata_base_path + 'spatialdata_tests/A02_4xHipSci.sdata/', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

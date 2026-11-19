@@ -1,0 +1,47 @@
+{
+    "omezarr createemptycontainer - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "OMEZARR_CREATEEMPTYCONTAINER",
+                        "omezarr_createemptycontainer",
+                        "0.1.0"
+                    ]
+                ],
+                "out_zarr": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            
+                        ]
+                    ]
+                ],
+                "versions_omezarr_createemptycontainer": [
+                    [
+                        "OMEZARR_CREATEEMPTYCONTAINER",
+                        "omezarr_createemptycontainer",
+                        "0.1.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-14T09:54:17.861328621",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

@@ -1,0 +1,183 @@
+nextflow_process {
+
+    name "Test Process STALIGN"
+    script "../main.nf"
+    process "STALIGN"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "stalign"
+
+    // tests/data: synthetic Xenium-like cell tables (~4,200 cells each) of one tissue. The
+    // reference (target_cells) and the sources are differently resampled, smoothly warped (20-30 um),
+    // rotated (+25 / -15 degrees) and shifted; landmarks.csv has 5 points of section 1.
+    // Default section names come from the file names: source, source2.
+
+    test("series - two sections to one reference, landmarks for section 1") {
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    [
+                        file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/data/source2_cells.csv.gz", checkIfExists: true)
+                    ],
+                    file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/landmarks.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def summary = new groovy.json.JsonSlurper().parse(file(process.out.summary[0][1]))
+            assertAll(
+                { assert process.success },
+                { assert summary.engine == 'cpp' },
+                { assert summary.method == 'align_cells' },
+                { assert summary.affine_used == 'stalign' },
+                { assert summary.sections.keySet() as List == ['source', 'source2'] },
+                { assert summary.sections.source.n_cells == 4237 },
+                { assert summary.sections.source.landmark_error.mean < 15 },
+                { assert summary.sections.source2.landmark_error == null },
+                // the true maps are affine + a 20-30 um warp: LDDMM should explain most of it
+                { assert summary.sections.every { k, v -> v.rms_lddmm_vs_affine.stalign < 30 } },
+                { assert file("${process.out.spatialdata[0][1]}/zarr.json").exists() },
+                { assert process.out.qc[0][1].size() == 2 },
+                { assert snapshot(
+                    path(process.out.cells[0][1]).linesGzip[0],
+                    path(process.out.cells[0][1]).linesGzip.size(),
+                    file("${process.out.spatialdata[0][1]}/images").list().sort(),
+                    file("${process.out.spatialdata[0][1]}/shapes").list().sort(),
+                    file("${process.out.spatialdata[0][1]}/tables").list().sort(),
+                    process.out.transform[0][1].collect { file(it).name },
+                    process.out.findAll { key, val -> key.startsWith('versions') },
+                ).match() }
+            )
+        }
+    }
+
+    test("single section - lddmm, similarity, named") {
+
+        when {
+            params {
+                module_args = "--method lddmm --niter 300 --affine similarity --target-cs target --names rep1"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test_lm' ],
+                    file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
+                    file("${moduleDir}/tests/data/landmarks.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def summary = new groovy.json.JsonSlurper().parse(file(process.out.summary[0][1]))
+            assertAll(
+                { assert process.success },
+                { assert summary.engine == 'cpp' },
+                { assert summary.method == 'lddmm' },
+                { assert summary.affine_used == 'similarity' },
+                { assert summary.target_cs == 'target' },
+                // landmarks of section 1 are matched to the section named rep1
+                { assert summary.sections.rep1.landmark_error.mean < 25 },
+                { assert snapshot(
+                    path(process.out.cells[0][1]).linesGzip.size(),
+                    process.out.findAll { key, val -> key.startsWith('versions') },
+                ).match() }
+            )
+        }
+    }
+
+    // source2.zarr and target.zarr: the same cells as SpatialData objects laid out like
+    // spatialdata_io.xenium (cell_circles and transcripts in micrometers, a 'global' system in
+    // morphology pixels, a morphology_focus image and a table annotating cell_circles)
+    test("spatialdata input - SpatialData section and reference mixed with a cell table") {
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test_sd' ],
+                    [
+                        file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/data/source2.zarr", checkIfExists: true)
+                    ],
+                    file("${moduleDir}/tests/data/target.zarr", checkIfExists: true),
+                    file("${moduleDir}/tests/data/landmarks.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def summary = new groovy.json.JsonSlurper().parse(file(process.out.summary[0][1]))
+            def sdata = process.out.spatialdata[0][1]
+            assertAll(
+                { assert process.success },
+                { assert summary.reference_input == 'spatialdata' },
+                { assert summary.sections.collect { k, v -> v.input } == ['table', 'spatialdata'] },
+                { assert summary.sections.source2.cells_element == 'cell_circles' },
+                { assert summary.sections.source2.n_cells == 4212 },
+                { assert summary.sections.source.landmark_error.mean < 15 },
+                { assert summary.sections.every { k, v -> v.rms_lddmm_vs_affine.stalign < 30 } },
+                { assert summary.sections.source2.copied_elements.morphology_focus == 'source2_morphology_focus' },
+                { assert summary.copied_elements.table == 'reference_table' },
+                { assert snapshot(
+                    path(process.out.cells[0][1]).linesGzip[0],
+                    path(process.out.cells[0][1]).linesGzip.size(),
+                    file("${sdata}/images").list().sort(),
+                    file("${sdata}/points").list().sort(),
+                    file("${sdata}/shapes").list().sort(),
+                    file("${sdata}/tables").list().sort(),
+                    process.out.findAll { key, val -> key.startsWith('versions') },
+                ).match() }
+            )
+        }
+    }
+
+    test("series - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                module_args = ""
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    [
+                        file("${moduleDir}/tests/data/source_cells.csv.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/data/source2_cells.csv.gz", checkIfExists: true)
+                    ],
+                    file("${moduleDir}/tests/data/target_cells.csv.gz", checkIfExists: true),
+                    []
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}

@@ -1,0 +1,36 @@
+{
+    "proseg - stub": {
+        "content": [
+            [
+                "versions.yml:md5,192f1e1e121e1de1eeacfbc09c7f5a7d"
+            ]
+        ],
+        "timestamp": "2026-10-09T18:37:58.564002152",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    },
+    "proseg - transcripts.csv": {
+        "content": [
+            [
+                "versions.yml:md5,45544907eabe6e18d91c2e423e330b11"
+            ],
+            {
+                "PROSEG": {
+                    "proseg": "3.2.0"
+                }
+            },
+            "zarr exists: true",
+            "cell metadata header: cell,original_cell_id,centroid_x,centroid_y,centroid_z,cluster,volume,surface_area,scale",
+            "cell_polygons_layers - minimum file size > 5kb: true",
+            "union_cell_polygons - minimum file size > 5kb: true",
+            "%%MatrixMarket matrix coordinate real general"
+        ],
+        "timestamp": "2026-10-09T18:37:53.161771839",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

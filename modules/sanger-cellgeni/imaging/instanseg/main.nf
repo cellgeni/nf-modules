@@ -3,7 +3,7 @@ process IMAGING_INSTANSEG {
     label 'process_medium'
 
     // conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
         ? 'quay.io/cellgeni/instanseg:v1-0.0.2'
         : 'quay.io/cellgeni/instanseg:v1-0.0.2'}"
 
@@ -13,9 +13,6 @@ process IMAGING_INSTANSEG {
     output:
     tuple val(meta), path("${output_name}"), emit: wkts
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
@@ -38,7 +35,6 @@ process IMAGING_INSTANSEG {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}_${x_min}_${y_min}_${x_max}_${y_max}"
     output_name = "${prefix}_instanseg_outlines.wkt"
     """

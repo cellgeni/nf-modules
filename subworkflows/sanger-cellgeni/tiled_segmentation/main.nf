@@ -1,8 +1,8 @@
-include { IMAGING_CELLPOSE as CELLPOSE } from '../../../modules/sanger-cellgeni/imaging/cellpose/main'
-include { IMAGING_STARDIST as STARDIST } from '../../../modules/sanger-cellgeni/imaging/stardist/main'
-include { IMAGING_INSTANSEG as INSTANSEG } from '../../../modules/sanger-cellgeni/imaging/instanseg/main'
-include { IMAGING_DEEPCELL as DEEPCELL } from '../../../modules/sanger-cellgeni/imaging/deepcell/main'
-include { IMAGING_MERGEOUTLINES as MERGEOUTLINES } from '../../../modules/sanger-cellgeni/imaging/mergeoutlines/main'
+include { IMAGING_CELLPOSE as CELLPOSE                  } from '../../../modules/sanger-cellgeni/imaging/cellpose/main'
+include { IMAGING_STARDIST as STARDIST                  } from '../../../modules/sanger-cellgeni/imaging/stardist/main'
+include { IMAGING_INSTANSEG as INSTANSEG                } from '../../../modules/sanger-cellgeni/imaging/instanseg/main'
+include { IMAGING_DEEPCELL as DEEPCELL                  } from '../../../modules/sanger-cellgeni/imaging/deepcell/main'
+include { IMAGING_MERGEOUTLINES as MERGEOUTLINES        } from '../../../modules/sanger-cellgeni/imaging/mergeoutlines/main'
 include { IMAGING_GENERATETILES as GENERATE_TILE_COORDS } from '../../../modules/sanger-cellgeni/imaging/generatetiles/main'
 
 
@@ -12,16 +12,17 @@ workflow TILED_SEGMENTATION {
     method
 
     main:
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
     GENERATE_TILE_COORDS(images)
     ch_versions = ch_versions.mix(GENERATE_TILE_COORDS.out.versions.first())
 
-    images_tiles = GENERATE_TILE_COORDS.out.tile_coords
+    def images_tiles = GENERATE_TILE_COORDS.out.tile_coords
         .splitCsv(header: true, sep: ",")
         .map { meta, coords ->
             [meta, coords.X_MIN, coords.Y_MIN, coords.X_MAX, coords.Y_MAX]
         }
-    tiles_and_images = images_tiles.combine(images, by: 0)
+    def tiles_and_images = images_tiles.combine(images, by: 0)
+    def wkts = null
     if (method == "CELLPOSE") {
         CELLPOSE(tiles_and_images.combine(channel.from(params.cell_diameters)))
         wkts = CELLPOSE.out.wkts.groupTuple(by: 0)
@@ -47,8 +48,9 @@ workflow TILED_SEGMENTATION {
     }
     MERGEOUTLINES(wkts)
     ch_versions = ch_versions.mix(MERGEOUTLINES.out.versions.first())
+    def ch_geojson = MERGEOUTLINES.out.multipoly_geojsons
 
     emit:
-    geojson = MERGEOUTLINES.out.multipoly_geojsons // channel: [ val(meta), [ geojson ] ]
+    geojson  = ch_geojson // channel: [ val(meta), [ geojson ] ]
     versions = ch_versions // channel: [ versions.yml ]
 }

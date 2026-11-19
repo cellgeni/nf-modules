@@ -1,0 +1,59 @@
+{
+    "segtraq_baseline - A02_4xHipSci sdata - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "A02_4xHipSci"
+                        },
+                        "A02_4xHipSci_baseline_obs.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "A02_4xHipSci"
+                        },
+                        "A02_4xHipSci_baseline_summary.json:md5,20d79ad5eec83ec8f086b78ea56308ba"
+                    ]
+                ],
+                "2": [
+                    [
+                        "SEGTRAQ_BASELINE",
+                        "segtraq",
+                        ""
+                    ]
+                ],
+                "obs": [
+                    [
+                        {
+                            "id": "A02_4xHipSci"
+                        },
+                        "A02_4xHipSci_baseline_obs.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "summary": [
+                    [
+                        {
+                            "id": "A02_4xHipSci"
+                        },
+                        "A02_4xHipSci_baseline_summary.json:md5,20d79ad5eec83ec8f086b78ea56308ba"
+                    ]
+                ],
+                "versions": [
+                    [
+                        "SEGTRAQ_BASELINE",
+                        "segtraq",
+                        ""
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.4"
+        },
+        "timestamp": "2026-04-18T00:38:55.808613351"
+    }
+}

@@ -740,6 +740,84 @@ def concat_batches_with_block_adj(
     return adata
 
 
+def _replace_nonfinite_in_matrix(mat: Any) -> int:
+    """
+    Replace non-finite values (NaN/Inf) with 0 in dense or sparse matrices.
+    Returns the number of replaced entries.
+    """
+    if sp.issparse(mat):
+        data = mat.data
+        mask = ~np.isfinite(data)
+        count = int(mask.sum())
+        if count:
+            data[mask] = 0.0
+            mat.eliminate_zeros()
+        return count
+    arr = np.asarray(mat)
+    mask = ~np.isfinite(arr)
+    count = int(mask.sum())
+    if count:
+        arr[mask] = 0.0
+    return count
+
+
+def sanitize_adata_for_training(
+    adata: ad.AnnData,
+    *,
+    counts_key_effective: str,
+    adj_key: str,
+    spatial_key: str,
+) -> None:
+    """
+    Clean common NaN/Inf sources that can crash metrics during evaluation.
+    """
+    if not adata.obs_names.is_unique:
+        logging.warning("Observation names are not unique; making them unique.")
+        adata.obs_names_make_unique()
+
+    if spatial_key in adata.obsm:
+        spatial = np.asarray(adata.obsm[spatial_key])
+        if not np.isfinite(spatial).all():
+            bad = int((~np.isfinite(spatial)).sum())
+            raise ValueError(
+                f"Non-finite values detected in obsm['{spatial_key}'] "
+                f"({bad} entries). Please fix spatial coordinates."
+            )
+
+    if counts_key_effective == "X":
+        mat = adata.X
+        count = _replace_nonfinite_in_matrix(mat)
+        if mat.dtype != np.float32:
+            logging.warning("Casting expression matrix (X) from %s to float32.", mat.dtype)
+            adata.X = mat.astype(np.float32)
+    else:
+        mat = adata.layers[counts_key_effective]
+        count = _replace_nonfinite_in_matrix(mat)
+        if mat.dtype != np.float32:
+            logging.warning(
+                "Casting expression matrix (%s) from %s to float32.",
+                counts_key_effective,
+                mat.dtype,
+            )
+            adata.layers[counts_key_effective] = mat.astype(np.float32)
+    if count:
+        logging.warning(
+            "Replaced %d non-finite values in expression matrix (%s) with 0.",
+            count,
+            counts_key_effective,
+        )
+
+    if adj_key in adata.obsp:
+        adj = adata.obsp[adj_key]
+        count = _replace_nonfinite_in_matrix(adj)
+        if count:
+            logging.warning(
+                "Replaced %d non-finite values in adjacency (%s) with 0.",
+                count,
+                adj_key,
+            )
+
+
 def add_gp_masks_to_adata(
     adata: ad.AnnData,
     combined_gp_dict: dict[str, Any],
@@ -953,6 +1031,13 @@ def main(argv: list[str] | None = None) -> None:
         adata_batch_list,
         adj_key=params.adj_key,
         batch_key=params.sample_key,
+    )
+
+    sanitize_adata_for_training(
+        adata,
+        counts_key_effective=counts_key_effective,
+        adj_key=params.adj_key,
+        spatial_key=params.spatial_key,
     )
 
     ### 5. Add GP masks to data

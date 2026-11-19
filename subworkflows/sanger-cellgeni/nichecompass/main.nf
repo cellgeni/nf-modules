@@ -1,21 +1,43 @@
-include { SPATIAL_NICHECOMPASSTRAINING } from '../../../modules/sanger-cellgeni/spatial/nichecompasstraining/main'
+include { NICHECOMPASS_PREPROCESS      } from '../../../modules/sanger-cellgeni/nichecompass/preprocess/main'
+include { NICHECOMPASS_TRAIN           } from '../../../modules/sanger-cellgeni/nichecompass/train/main'
 include { SPATIAL_NICHECOMPASSANALYSIS } from '../../../modules/sanger-cellgeni/spatial/nichecompassanalysis/main'
+include { SCRAFT_SPLITH5AD             } from '../../../modules/sanger-cellgeni/scraft/splith5ad/main'
 
 workflow NICHECOMPASS {
     take:
-    ch_h5ad // channel: [ val(meta), [ h5ad ] ]
+    ch_input // channel: [ val(meta), path(h5ad), val(cell_type_key), val(sample_key), val(counts_key), val(spatial_key) ]
 
     main:
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    SPATIAL_NICHECOMPASSTRAINING(ch_h5ad)
-    ch_versions = ch_versions.mix(SPATIAL_NICHECOMPASSTRAINING.out.versions.first())
+    // Carry the four mandatory AnnData keys alongside the split step;
+    // sample_key is reused as the obs column to split on
+    def ch_keys = ch_input.map { meta, _h5ad, cell_type_key, sample_key, counts_key, spatial_key ->
+        [meta, cell_type_key, sample_key, counts_key, spatial_key]
+    }
 
-    SPATIAL_NICHECOMPASSANALYSIS(SPATIAL_NICHECOMPASSTRAINING.out.nichecompass_model)
+    SCRAFT_SPLITH5AD(
+        ch_input.map { meta, h5ad, _cell_type_key, sample_key, _counts_key, _spatial_key ->
+            [meta, h5ad, sample_key]
+        }
+    )
+    ch_versions = ch_versions.mix(SCRAFT_SPLITH5AD.out.versions.first())
+
+    NICHECOMPASS_PREPROCESS(
+        SCRAFT_SPLITH5AD.out.h5ad_splits.join(ch_keys)
+    )
+    ch_versions = ch_versions.mix(NICHECOMPASS_PREPROCESS.out.versions.first())
+
+    NICHECOMPASS_TRAIN(NICHECOMPASS_PREPROCESS.out.preprocessed)
+    ch_versions = ch_versions.mix(NICHECOMPASS_TRAIN.out.versions.first())
+
+    SPATIAL_NICHECOMPASSANALYSIS(NICHECOMPASS_TRAIN.out.nichecompass_model)
     ch_versions = ch_versions.mix(SPATIAL_NICHECOMPASSANALYSIS.out.versions.first())
+    def ch_nichecompass_dir = SPATIAL_NICHECOMPASSANALYSIS.out.nichecompass_dir
+    def ch_notebook = SPATIAL_NICHECOMPASSANALYSIS.out.notebook
 
     emit:
-    nichecompass_dir = SPATIAL_NICHECOMPASSANALYSIS.out.nichecompass_dir // channel: [ val(meta), [ nichecompass_dir ] ]
-    notebook = SPATIAL_NICHECOMPASSANALYSIS.out.notebook // channel: [ val(meta), [ notebook.ipynb ] ]
-    versions = ch_versions // channel: [ versions.yml ]
+    nichecompass_dir = ch_nichecompass_dir // channel: [ val(meta), path(nichecompass_dir) ]
+    notebook         = ch_notebook // channel: [ val(meta), path(notebook.ipynb) ]
+    versions         = ch_versions // channel: [ versions.yml ]
 }

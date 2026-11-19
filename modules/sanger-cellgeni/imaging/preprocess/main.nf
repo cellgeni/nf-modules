@@ -3,7 +3,9 @@ process IMAGING_PREPROCESS {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cellgeni/clij2:0.28"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/clij2:0.28'
+        : 'quay.io/cellgeni/clij2:0.28'}"
 
     input:
     tuple val(meta), path(root_folder), val(master_file_name), val(image_id), val(index)
@@ -12,9 +14,6 @@ process IMAGING_PREPROCESS {
     output:
     tuple val(meta), path("${out_img_name}"), emit: fovs
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
@@ -36,8 +35,6 @@ process IMAGING_PREPROCESS {
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     out_img_name = "${image_id}.tif"
     """
     touch ${out_img_name}

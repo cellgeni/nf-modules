@@ -1,0 +1,67 @@
+// nf-core modules test omero2pandas/fetch
+nextflow_process {
+
+    name "Test Process OMERO2PANDAS_FETCH"
+    script "../main.nf"
+    process "OMERO2PANDAS_FETCH"
+
+    tag "modules"
+    tag "modules_sangercellgeni"
+    tag "omero2pandas"
+    tag "omero2pandas/fetch"
+
+    test("annotation id + linking index") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    79260,
+                    0,
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+    test("annotation id + linking index - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ],
+                    79260,
+                    0,
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    path(process.out.versions[0]).yaml
+                ).match() }
+            )
+        }
+
+    }
+
+}

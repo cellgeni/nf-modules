@@ -1,0 +1,52 @@
+name: "segtraq_labeltransfer"
+description: |
+  Transfer cell-type labels from a reference scRNA-seq dataset to a 10x Xenium SpatialData object
+  using SegTraQ. The transferred labels are stored in the output AnnData obs column
+  `transferred_cell_type`, which is required by the segtraq/supervised module.
+keywords:
+  - spatial_transcriptomics
+  - quality_control
+  - xenium
+  - label_transfer
+  - cell_type_annotation
+tools:
+  - "segtraq":
+      description: "SegTraQ is a quality-control toolkit for evaluating cell segmentations in spatial transcriptomics data"
+      documentation: "https://lazdaria.github.io/SegTraQ/"
+      tool_dev_url: "https://github.com/lazdaria/SegTraQ"
+      licence: ["MIT"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - zarr_dir:
+        type: directory
+        description: SpatialData zarr directory for the Xenium sample.
+    - ref_h5ad:
+        type: file
+        description: |
+          Reference scRNA-seq AnnData (H5AD) with cell-type labels in obs.
+          The column name is controlled by `--cell_type_key` (default: `celltype_major`).
+        pattern: "*.h5ad"
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - labeled:
+        type: file
+        description: |
+          H5AD AnnData of the Xenium cell table with `transferred_cell_type` added to obs.
+        pattern: "*_labeled.h5ad"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@tl10"
+maintainers:
+  - "@tl10"

@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "icechunk_stitchedplate"
+description: Collect the stitched wells of phenix-icechunk plates (OME-TIFFs or OME-Zarrs) into one OME-Zarr 0.5 HCS plate in a new icechunk repository, keeping the source plate layout and a metadata-only copy of every source repo's raw-data provenance (Index.xml contents, per-plane TIFF table, export files), so every well stays traceable to its raw TIFFs.
+keywords:
+  - microscopy
+  - opera phenix
+  - stitching
+  - icechunk
+  - ome-zarr
+  - hcs
+  - plate
+tools:
+  - "phenix-icechunk":
+      description: "Expose an Opera Phenix / Harmony Index.xml export as a virtual OME-Zarr plate in an icechunk repo"
+      homepage: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      documentation: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      tool_dev_url: "https://github.com/BioinfoTongLI/phenix-icechunk"
+      licence:
+        - "MIT"
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - images:
+        type: file
+        description: |
+          Stitched images, one or more per well: OME-TIFFs (e.g. ASHLAR, registered across rounds)
+          or OME-Zarr directories (e.g. multiview-stitcher, one per round, 2D or 3D).
+        pattern: "*.{ome.tif,ome.tiff,ome.zarr}"
+        ontologies:
+          - edam: "http://edamontology.org/format_3727" # OME-TIFF
+          - edam: "http://edamontology.org/format_3915" # Zarr
+    - layout:
+        type: list
+        description: |
+          One map per image, in the order of `images`: `[ well:'A1', rounds:[ '1', '2' ] ]`.
+          `rounds` are the round_index values of the source repos whose channels the image holds,
+          in channel order. Each distinct `rounds` becomes one plate acquisition.
+    - repos:
+        type: directory
+        description: |
+          Source icechunk repos written by phenix-icechunk, one per round. Only their metadata is
+          read (plate layout, channel names, snapshot and commit metadata, /phenix and /OME), so
+          the source export need not be mounted.
+        pattern: "*.icechunk"
+        ontologies:
+          - edam: "http://edamontology.org/format_3915" # Zarr
+    - rounds:
+        type: list
+        description: round_index of each source repo, in the order of `repos`.
+
+output:
+  repo:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.icechunk":
+          type: directory
+          description: |
+            Icechunk repository holding the stitched wells as an OME-Zarr 0.5 HCS plate
+            (/<row>/<col>/<image>, one image per acquisition), one commit per well. The raw-data
+            provenance of every round is copied under /sources/r<round>: the source plate's
+            /phenix group (images table with one row per plane and its TIFF file, the export's
+            non-TIFF files), /OME/METADATA.ome.xml and the phenix attrs of the source wells and
+            fields. Each image's attrs["phenix_stitch"] lists its input file and, per round, the
+            source snapshot, Index.xml, measurement directory and its /sources/r<round> group.
+          pattern: "*.icechunk"
+          ontologies:
+            - edam: "http://edamontology.org/format_3915" # Zarr
+  summary:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.summary.json":
+          type: file
+          description: JSON summary with the plate name, number of wells and the acquisitions.
+          pattern: "*.summary.json"
+          ontologies:
+            - edam: "http://edamontology.org/format_3464" # JSON
+  versions_phenixicechunk:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "phenix-icechunk":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"phenix-icechunk\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "phenix-icechunk":
+          type: string
+          description: The name of the tool
+      - "python -c 'import importlib.metadata as m; print(m.version(\"phenix-icechunk\"))'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

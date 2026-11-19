@@ -1,0 +1,74 @@
+nextflow_process {
+
+    name "Test Process PROSEG_TO_BAYSOR"
+    config "./nextflow.config"
+    script "../main.nf"
+    process "PROSEG_TO_BAYSOR"
+
+    tag "modules"
+    tag "modules_sanger_cellgeni"
+    tag "proseg"
+    tag "proseg/proseg"
+    tag "proseg/proseg_to_baysor"
+
+    setup {
+        run("PROSEG") {
+            script "../../proseg/main.nf"
+            process {
+                """
+                input[0] = [
+                    [id: "test_run_proseg"],
+                    file(params.modules_testdata_base_path + "spatial_omics/xenium/homo_sapiens/spatial_gene_expression.csv", checkIfExists: true)
+                ]
+                input[1] = 'xenium'
+                input[2] = ['csv.gz', 'csv.gz', 'csv.gz']
+                """
+            }
+        }
+    }
+
+    test("proseg-to-baysor - transcripts.csv") {
+
+        when {
+            process {
+                """
+                input[0] = PROSEG.out.sd_zarr
+                """
+            }
+        }
+
+        then {
+            def lines = file(process.out.transcript_metadata[0][1]).readLines().size()
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    path(process.out.versions[0]).yaml,
+                    "transcript metadata lines: $lines",
+                    "transcript metadata header: ${file(process.out.transcript_metadata[0][1]).readLines()[0]}",
+                    "cell_polygons - minimum file size > 5kb: ${file(process.out.cell_polygons[0][1]).length() >= 5000}"
+                ).match() }
+            )
+        }
+    }
+
+    test("proseg-to-baysor - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = PROSEG.out.sd_zarr
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.versions).match() }
+            )
+        }
+    }
+}
