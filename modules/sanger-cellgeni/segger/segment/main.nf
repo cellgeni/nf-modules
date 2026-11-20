@@ -3,15 +3,15 @@ process SEGGER_SEGMENT {
     label 'process_gpu'
 
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/segger:0.3.1'
-        : 'quay.io/cellgeni/segger:0.3.1'}"
+        ? 'quay.io/cellgeni/segger:1.0.0'
+        : 'quay.io/cellgeni/segger:1.0.0'}"
 
     input:
     tuple val(meta), path(input_dir)
 
     output:
     tuple val(meta), path("${out_dir}/segger_segmentation.parquet"), emit: segmentation
-    tuple val("${task.process}"), val('segger'), eval('python -c "from importlib.metadata import version; print(version(\'segger\'))"'), emit: versions, topic: versions
+    tuple val("${task.process}"), val('segger'), eval('python -c "from importlib.metadata import version; print(version(\'segger\'))"'), emit: versions_segger, topic: versions
 
     script:
     def args = task.ext.args ?: ''

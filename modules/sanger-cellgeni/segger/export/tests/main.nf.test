@@ -6,10 +6,11 @@ nextflow_process {
 
     tag "modules"
     tag "modules_sanger-cellgeni"
+    tag "modules_sangercellgeni"
     tag "segger"
     tag "segger/export"
 
-    test("xenium_explorer - stub") {
+    test("xenium - stub") {
 
         options "-stub"
 

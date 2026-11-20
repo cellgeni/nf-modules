@@ -14,6 +14,8 @@ tools:
       documentation: "https://github.com/dpeerlab/segger"
       tool_dev_url: "https://github.com/dpeerlab/segger"
       licence: ["MIT"]
+      identifier: ""
+
 input:
   - - meta:
         type: map
@@ -23,27 +25,52 @@ input:
     - input_dir:
         type: directory
         description: |
-          Input directory containing the spatial transcriptomics dataset.
-          Supports Xenium (detected_transcripts.parquet, cell_boundaries.parquet),
-          MERSCOPE (detected_transcripts.csv/.parquet), and CosMX formats.
+          Input directory with the spatial transcriptomics dataset, passed as `-i`.
+          The platform is detected from its contents: 10x Xenium (`transcripts.parquet`
+          and boundary parquets), Vizgen MERSCOPE, NanoString CosMx, or segger's
+          standard format (set `--platform standard` in ext.args). Custom transcripts and
+          boundaries files can be given with `--transcripts`, `--boundaries` and
+          `--platform` in ext.args.
 
 output:
-  - - meta:
-        type: map
-        description: |
-          Groovy Map containing sample information
-          e.g. `[ id:'sample1' ]`
-    - segmentation:
-        type: file
-        description: |
-          Parquet file with segmentation results. Columns include row_index,
-          segger_similarity, segger_cell_id, and similarity_threshold.
-        pattern: "*_segger/segger_segmentation.parquet"
+  segmentation:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/segger_segmentation.parquet":
+          type: file
+          description: |
+            One row per transcript, with columns row_index, segger_cell_id,
+            segger_similarity and similarity_threshold. Use SEGGER_EXPORT to turn it
+            into AnnData, cell boundaries, SpatialData or Xenium Ranger inputs.
+            By default `segger segment` also writes `<out_dir>/export/adata.h5ad`, which
+            this module does not emit; pass `--empty-export` in ext.args to skip it.
+          pattern: "*_segger/segger_segmentation.parquet"
+          ontologies: []
+  versions_segger:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "segger":
+          type: string
+          description: The name of the tool
+      - "python -c \"from importlib.metadata import version; print(version('segger'))\"":
+          type: eval
+          description: The expression to obtain the version of the tool
 
-  - versions:
-      type: file
-      description: File containing software versions
-      pattern: "versions.yml"
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "segger":
+          type: string
+          description: The name of the tool
+      - "python -c \"from importlib.metadata import version; print(version('segger'))\"":
+          type: eval
+          description: The expression to obtain the version of the tool
 
 authors:
   - "@BioinfoTongLI"

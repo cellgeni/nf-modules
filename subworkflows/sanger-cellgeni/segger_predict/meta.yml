@@ -1,8 +1,10 @@
 name: "segger_predict"
 description: |
-  Run segger cell segmentation end-to-end: trains and segments a spatial transcriptomics
-  dataset with SEGGER_SEGMENT, exports the results with SEGGER_EXPORT, then exports
-  seg_cells.zarr.zip from the export directory to GeoJSON with GEOJSON_FROMXENIUMZARR.
+  Run segger cell segmentation end-to-end: train and segment a spatial transcriptomics
+  dataset with SEGGER_SEGMENT, then export the result with SEGGER_EXPORT. To get the
+  Xenium Ranger GeoJSON and transcript assignment, set SEGGER_EXPORT's ext.args to
+  include the `xeniumranger` element (e.g. `anndata boundaries xeniumranger`); this
+  needs Xenium input.
 keywords:
   - segmentation
   - spatial transcriptomics
@@ -14,48 +16,56 @@ keywords:
 components:
   - segger/segment
   - segger/export
-  - geojson/fromxeniumzarr
 
 input:
-  - meta:
-      type: map
+  - ch_input:
       description: |
-        Groovy Map containing sample information
-        e.g. `[ id:'sample1' ]`
-  - input_dir:
-      type: directory
-      description: |
-        Input directory containing the spatial transcriptomics dataset.
-        Supports Xenium (detected_transcripts.parquet, cell_boundaries.parquet),
-        MERSCOPE (detected_transcripts.csv/.parquet), and CosMX formats.
-        Also used as source_dir for the export step.
+        Channel with the input dataset
+        Structure: [ val(meta), path(input_dir) ]
+      structure:
+        - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - input_dir:
+            type: directory
+            description: |
+              Input directory with the spatial transcriptomics dataset (10x Xenium,
+              Vizgen MERSCOPE, NanoString CosMx or segger standard format). Also used
+              as source_dir for the export step; the `xeniumranger` element needs a
+              Xenium bundle.
 
 output:
   - segmentation:
-      type: file
       description: |
-        Parquet file with segmentation results produced by SEGGER_SEGMENT.
-        Columns include row_index, segger_similarity, segger_cell_id, and similarity_threshold.
+        segger_segmentation.parquet from SEGGER_SEGMENT, with columns row_index,
+        segger_cell_id, segger_similarity and similarity_threshold.
+        Structure: [ val(meta), path(parquet) ]
       pattern: "*_segger/segger_segmentation.parquet"
   - export_dir:
-      type: directory
       description: |
-        Output directory containing exported files produced by SEGGER_EXPORT.
-        Content depends on the --format argument passed via ext.args:
-        xenium_explorer produces seg_cells.zarr.zip, seg_analysis.zarr.zip, seg_experiment.xenium;
-        anndata produces .h5ad files; spatialdata produces a .zarr store;
-        merged produces transcripts_segmented.parquet.
+        Directory with every file SEGGER_EXPORT wrote (adata.h5ad,
+        cell_boundaries.parquet, transcripts.parquet, xenium_* files, depending on
+        the elements in ext.args).
+        Structure: [ val(meta), path(export_dir) ]
       pattern: "*_segger_export"
   - geojson:
-      type: file
       description: |
-        GeoJSON FeatureCollection produced from SEGGER_EXPORT output file
-        seg_cells.zarr.zip.
-      pattern: "*.geojson"
+        xenium_cell_boundaries.geojson for `xeniumranger import-segmentation
+        --viz-polygons`. Only emitted when SEGGER_EXPORT exports `xeniumranger`.
+        Structure: [ val(meta), path(geojson) ]
+      pattern: "*_segger_export/xenium_cell_boundaries.geojson"
+  - transcript_assignment:
+      description: |
+        xenium_transcript_assignment.csv for `xeniumranger import-segmentation
+        --transcript-assignment`. Only emitted when SEGGER_EXPORT exports `xeniumranger`.
+        Structure: [ val(meta), path(csv) ]
+      pattern: "*_segger_export/xenium_transcript_assignment.csv"
   - versions:
-      type: file
-      description: File containing software versions
-      pattern: "versions.yml"
+      description: |
+        Channel with the tool versions of SEGGER_SEGMENT and SEGGER_EXPORT
+        Structure: [ val(process), val(tool), val(version) ]
 
 authors:
   - "@BioinfoTongLI"

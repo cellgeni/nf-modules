@@ -1,11 +1,15 @@
 name: "segger_export"
-description: Export segger segmentation results to various formats (xenium_explorer, anndata, spatialdata, merged)
+description: |
+  Export a segger segmentation to AnnData, cell boundaries, filtered transcripts and
+  Xenium Ranger import-segmentation inputs. The elements to write are given as
+  positional arguments in ext.args (e.g. `anndata boundaries xeniumranger`); with
+  none given, segger writes `anndata` and `boundaries`.
 keywords:
   - segmentation
   - spatial transcriptomics
   - xenium
   - anndata
-  - spatialdata
+  - xeniumranger
   - export
 tools:
   - "segger":
@@ -14,6 +18,8 @@ tools:
       documentation: "https://github.com/dpeerlab/segger"
       tool_dev_url: "https://github.com/dpeerlab/segger"
       licence: ["MIT"]
+      identifier: ""
+
 input:
   - - meta:
         type: map
@@ -22,33 +28,114 @@ input:
           e.g. `[ id:'sample1' ]`
     - segmentation:
         type: file
-        description: Segmentation result parquet file produced by segger segment or segger predict
+        description: segger_segmentation.parquet produced by SEGGER_SEGMENT
         pattern: "*.parquet"
+        ontologies: []
     - source_dir:
         type: directory
         description: |
-          Original spatial transcriptomics data directory or SpatialData .zarr store
-          used as source for transcript coordinates and cell boundaries.
+          The input directory given to SEGGER_SEGMENT, passed as `-i`. The `xeniumranger`
+          element needs it to be a Xenium bundle (it reads the raw transcript_id from
+          its transcripts.parquet).
 
 output:
-  - - meta:
-        type: map
-        description: |
-          Groovy Map containing sample information
-          e.g. `[ id:'sample1' ]`
-    - export_dir:
-        type: directory
-        description: |
-          Output directory containing exported files. Content depends on --format:
-          xenium_explorer produces seg_cells.zarr.zip, seg_analysis.zarr.zip, seg_experiment.xenium;
-          anndata produces .h5ad files; spatialdata produces a .zarr store;
-          merged produces transcripts_segmented.parquet.
-        pattern: "*_segger_export"
+  export_dir:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}":
+          type: directory
+          description: Directory with every exported file
+          pattern: "*_segger_export"
+  adata:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/adata.h5ad":
+          type: file
+          description: Cell x gene AnnData built from filtered transcripts (`anndata` element)
+          pattern: "*_segger_export/adata.h5ad"
+          ontologies:
+            - edam: "http://edamontology.org/format_3590" # HDF5
+  boundaries:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/cell_boundaries.parquet":
+          type: file
+          description: |
+            GeoParquet of cell polygons built from assigned transcripts (`boundaries`
+            element). Polygons are smoothed with 2 Chaikin iterations by default;
+            set `--chaikin-iterations 0` in ext.args to disable.
+          pattern: "*_segger_export/cell_boundaries.parquet"
+          ontologies: []
+  transcripts:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/transcripts.parquet":
+          type: file
+          description: Filtered transcripts with their segger cell assignment (`transcripts-filtered` element)
+          pattern: "*_segger_export/transcripts.parquet"
+          ontologies: []
+  xenium_transcript_assignment:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/xenium_transcript_assignment.csv":
+          type: file
+          description: |
+            Transcript assignment (transcript_id, cell, is_noise) for
+            `xeniumranger import-segmentation --transcript-assignment` (`xeniumranger` element)
+          pattern: "*_segger_export/xenium_transcript_assignment.csv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3752" # CSV
+  xenium_cell_boundaries:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${out_dir}/xenium_cell_boundaries.geojson":
+          type: file
+          description: |
+            GeoJSON cell polygons with `segger-<n>` feature ids, for
+            `xeniumranger import-segmentation --viz-polygons` (`xeniumranger` element)
+          pattern: "*_segger_export/xenium_cell_boundaries.geojson"
+          ontologies:
+            - edam: "http://edamontology.org/format_3464" # JSON
+  versions_segger:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "segger":
+          type: string
+          description: The name of the tool
+      - "python -c \"from importlib.metadata import version; print(version('segger'))\"":
+          type: eval
+          description: The expression to obtain the version of the tool
 
-  - versions:
-      type: file
-      description: File containing software versions
-      pattern: "versions.yml"
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "segger":
+          type: string
+          description: The name of the tool
+      - "python -c \"from importlib.metadata import version; print(version('segger'))\"":
+          type: eval
+          description: The expression to obtain the version of the tool
 
 authors:
   - "@BioinfoTongLI"
